@@ -1,0 +1,156 @@
+<script type="text/javascript">
+	var editor;
+	$(function() {
+		$("#goback").click(function(){
+			redriect($(this).attr("url"));
+		})
+		
+		editor = KindEditor.editor({
+			allowFileManager : true,
+			filterMode: false
+		});
+		
+		$('#schoollog').click(function() {
+			editor.loadPlugin('image', function() {
+				editor.plugin.imageDialog({
+					imageUrl : $('#schoollog').val(),
+					clickFn : function(url, title, width, height, border, align) {
+						$('#schoollog').val(url);
+						editor.hideDialog();
+					}
+				});
+			});
+		});
+		
+		//增加学校
+		$("#add").click(function(){
+			var schoollogo = $('#schoollog').val();
+			if( !schoollogo ) {
+				alert("请上传学校LOGO!");
+				return;
+			}
+			
+			var sname = $('#schoolname').val();
+			if( !sname ) {
+				alert("请填写学校名称!");
+				return;
+			}
+			
+			$.ajax({
+				type:"post",
+				url :"/yuanku/vip-addSchool.html",
+				data : {"logo":schoollogo,"sname":sname},
+				success : function( text ) {
+					if( text == "false" ) {
+						alert("学校名重复!");
+					} else {
+						$(".main").fadeOut(function(){
+							$(this).empty().html(text);
+							$(this).fadeIn();
+						})
+					}
+				},
+				async:true
+			});
+		});
+		
+		//删除学校
+		$(".del").click(function() {
+			$.ajax({
+				type:"post",
+				url :"/yuanku/vip-delSchool.html",
+				data : {"sid":$(this).data("sid")},
+				success : function( text ) {
+					if( text == "false" ) {
+						alert("删除失败,请稍后重试!");
+					} else {
+						$(".main").fadeOut(function(){
+							$(this).empty().html(text);
+							$(this).fadeIn();
+						})
+					}
+				},
+				async:true
+			});
+		});
+		
+		//搜索学校
+		$("#seek").click(function(){
+			$.ajax({
+				type:"post",
+				url :"/yuanku/vip-schoolManage.html",
+				data : {"sname":$("#searchName").val()},
+				success : function( text ) {
+						$(".main").fadeOut(function(){
+							$(this).empty().html(text);
+							$(this).fadeIn();
+						})
+				},
+				async:true
+			});
+		});
+	})
+</script>
+
+<div class="panel panel-primary margin-base " id="vipMana">
+	<div class="panel-heading">
+    	<h3 class="panel-title">
+    		<label>学校管理</label>
+    		<span id="goback" url="/yuanku/adminIndex-vipMana.html" class="pull-right glyphicon glyphicon-circle-arrow-left" aria-hidden="true"></span>
+    	</h3>
+	</div>
+	<div class="panel-body">
+		<div class="row">
+				<form class="form-group">
+					<div class="col-lg-5">
+						<input id="schoollog" type="text" class="form-control" placeholder="学校LOGO" value="">
+					</div>
+					<div class="col-lg-5">
+						<input id="schoolname" type="text" class="form-control" placeholder="学校名称" value="">
+					</div>
+					<div class="col-lg-2">
+						<button id="add" type="button" class="btn btn-info btn-ms paddingLR"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 添加</button>
+					</div>
+				</form>
+		</div>
+		<div class="line-base"></div>
+		<div class="row">
+				<form class="form-group">
+					<div class="col-lg-5">
+						<input id="searchName" type="text" class="form-control" placeholder="学校名称" value="<{if isset($smarty.post.sname)}><{$smarty.post.sname}><{/if}>">
+					</div>
+					<div class="col-lg-2">
+						<button id="seek" type="button" class="btn btn-primary btn-ms paddingLR"><span class="glyphicon glyphicon-search" aria-hidden="true"></span> 搜索</button>
+					</div>
+				</form>
+		</div>
+		<div class="line-base"></div>
+	</div>
+	<table class="table table-striped table-bordered table-hover">
+		<thead>
+			<tr>
+				<td>编号</td>
+				<td>学校LOGO</td>
+				<td>学校名称</td>
+				<td>操作</td>
+			</tr>
+		</thead>
+		<tbody>
+			<{foreach $data.data as $school}>
+				<tr>
+					<td><{$school.sid}></td>
+					<td>
+						<img src="<{$school.logo}>" alt="加载失败" class="img-rounded" width="50">
+					</td>
+					<td><{$school.sname}></td>
+					<td>
+						<span class="del glyphicon glyphicon-trash mouse" data-sid="<{$school.sid}>" ></span>
+					</td>
+				</tr>
+			<{/foreach}>
+		</tbody>
+	</table>
+	<div class="panel-footer">
+		<{include file="admin/pages.html" url="/yuanku/vip-schoolManage.html" }>
+	</div>
+</div>

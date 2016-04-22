@@ -1,0 +1,142 @@
+<script type="text/javascript">
+	$(function(){
+		//返回按钮
+		$("#goback").click(function() {
+			redriect($(this).attr("url"));
+		})
+		//修改
+		$("#submit button").click(function() {
+			//修改页面的跳转
+			$.ajax({
+				type:"post",
+				url:"/yuanku/QiyeManager-updZhaopin.html",
+				data:{
+					"company":$("#Maltercompany").val(),"position":$("#Malterposition").val(),
+					"address":$("#Malteraddress").val(),"experience":$("#Malterexperience").val(),
+	  	   	   	    "degree":$("#Malterdegree").val(),"pay":$("#Malterpay").val(),"responsible":$("#Malterresponsible").val(),
+	  	   	   	    "requires":$("#Malterrequires").val(),"contacts":$("#Maltercontacts").val(),"zid":$("#zid").val()
+				},
+				dataType:"json",
+				success:function( obj ){
+					if(obj.code==1){//修改成功
+						alert(obj.message);			
+						redriect("/yuanku/QiyeManager-companyManager.html");
+					}else if(obj.code==0){//修改失败
+						alert(obj.message);						
+					}
+				},
+				async:true
+			});
+		});
+	})
+		
+</script>
+<div class="panel panel-primary margin-base">
+	<div class="panel-heading">
+		<h3 class="panel-title"><label>更新招聘信息</label>
+			<span id="goback" url="/yuanku/QiyeManager-companyManager.html" class="pull-right glyphicon glyphicon-circle-arrow-left" aria-hidden="true"style="cursor: pointer;"></span>
+		</h3>
+
+	</div>
+	<div class="panel-body">
+		<div class="row">
+			<div class="col-lg-6">
+				<form class="form-horizontal">
+					<!--<div class="form-group">
+						<label for="fileup" class="col-lg-3 control-label">公司logo</label>
+						<div class="col-lg-8">
+							<input type="button" id="fileup" value="选择图片" />
+							<input type="text" id="imgurl" placeholder="选择图片" readonly="readonly" value="<{if !empty($data)}><{$data.poster}><{/if}>" />
+						</div>
+					</div>-->
+					<div class="form-group">
+						<label for="Maltercompany" class="col-lg-3 control-label">公司名称</label>
+						<div class="col-lg-8">
+							<input type="hidden" name="zid" id="zid" value="<{if !empty($data)}><{$data.zid}><{/if}>" />
+							<input type="text" class="form-control" id="Maltercompany" placeholder="公司名称" value="<{if !empty($data)}><{$data.company}><{/if}>">
+						</div>
+						<div class="col-lg-5"></div>
+					</div>
+					<div class="form-group">
+						<label for="Malterposition" class="col-lg-3 control-label">职位名称</label>
+						<div class="col-lg-8">
+							<input type="text" class="form-control" id="Malterposition" name="Malterposition" placeholder="职位名称" value="<{if !empty($data)}><{$data.position}><{/if}>">
+						</div>
+						<div class="col-lg-5"></div>
+					</div>
+					<div class="form-group">
+						<label for="Malteraddress" class="col-lg-3 control-label">工作地址</label>
+						<div class="col-lg-8">
+							<input type="text" class="form-control" id="Malteraddress" name="Malteraddress" placeholder="工作地址" value="<{if !empty($data)}><{$data.address}><{/if}>">
+						</div>
+						<div class="col-lg-5"></div>
+					</div>
+					<div class="form-group">
+						<label for="Malterexperience" class="col-lg-3 control-label">工作经验</label>
+						<div class="col-lg-8">
+							<input type="text" class="form-control" id="Malterexperience" name="Malterexperience" placeholder="工作经验" value="<{if !empty($data)}><{$data.experience}><{/if}>">
+						</div>
+						<div class="col-lg-5"></div>
+					</div>
+					<div class="form-group">
+						<label for="Malterdegree" class="col-lg-3 control-label">学历要求</label>
+						<div class="col-lg-8">
+							<select  class="form-control" id="Malterdegree">
+								<option value="不限">不限</option>
+								<option value="高中" <{if isset($data) && $data.degree eq "高中"}>selected<{/if}> >高中</option>						
+								<option value="大专" <{if isset($data) && $data.degree eq "大专"}>selected<{/if}> >大专</option>
+								<option value="本科" <{if isset($data) && $data.degree eq "本科"}>selected<{/if}> >本科</option>
+								<option value="研究生" <{if isset($data) && $data.degree eq "研究生"}>selected<{/if}> >研究生</option>
+							</select>
+						</div>
+						<div class="col-lg-5"></div>
+					</div>
+					<div class="form-group">
+						<label for="Malterpay" class="col-lg-3 control-label">薪资待遇</label>
+						<div class="col-lg-8">
+							<input type="text" class="form-control" id="Malterpay" name="Malterpay" placeholder="薪资待遇" value="<{if !empty($data)}><{$data.pay}><{/if}>">
+						</div>
+						<div class="col-lg-5"></div>
+					</div>
+					<div class="form-group">
+						<label for="Malterresponsible" class="col-lg-3 control-label">岗位职责</label>
+						<div class="col-lg-8">
+							<textarea name="" rows="8" cols="5" id="Malterresponsible" class="form-control" value=""><{if !empty($data)}><{$data.responsible}><{/if}></textarea>
+						</div>
+						<div class="col-lg-5"></div>
+					</div>
+					<div class="form-group">
+						<label for="Malterrequires" class="col-lg-3 control-label">任职要求</label>
+						<div class="col-lg-8">
+							<textarea name="" rows="8" cols="5" id="Malterrequires" class="form-control" value=""><{if !empty($data)}><{$data.requires}><{/if}></textarea>
+						</div>
+						<div class="col-lg-5"></div>
+					</div>
+					<div class="form-group">
+						<label for="Maltercontacts" class="col-lg-3 control-label">联系方式</label>
+						<div class="col-lg-8">
+							<textarea name="" rows="2" cols="5" id="Maltercontacts" class="form-control" value=""><{if !empty($data)}><{$data.contacts}><{/if}></textarea>
+						</div>
+						<div class="col-lg-5"></div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-sm-offset-5 col-sm-10" id="submit">
+							<button type="button" class="btn btn-primary col-lg-2">
+								<{if empty($data)}>
+									新增
+									<{else}>
+										更新
+								<{/if}>
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="col-lg-6">
+				<!--<img src="/yuanku/img/touxiang.jpg" id="img" width=/>-->
+				<img src="/yuanku/img/study/img_05.jpg" height="180px" width="480px" id="img" />
+			</div>
+		</div>
+	</div>
+</div>

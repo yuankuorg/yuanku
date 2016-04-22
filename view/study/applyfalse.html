@@ -1,0 +1,22 @@
+<div class="page">
+	<script type="text/javascript">
+		$(function() {
+			$(".applyfalse .js_grid").click(function() {
+				pageManager.go($(this).data("id"));
+			});
+		})
+	</script>
+	<div class="weui_msg">
+		<div class="weui_icon_area"><i class="weui_icon_safe weui_icon_safe_warn"></i></div>
+		<div class="weui_text_area">
+			<h2 class="weui_msg_title">申请失败</h2>
+			<p class="weui_msg_desc">您的积分不够</p>
+		</div>
+		<div class="weui_opr_area">
+			<p class="weui_btn_area">
+				<a href="javascript:;" class="weui_btn weui_btn_primary js_grid" data-id = "uigs">返回关卡页</a>
+				<a href="javascript:;" class="weui_btn weui_btn_default js_grid" data-id = "offer">获取积分</a>
+			</p>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,83 @@
+
+<div class="page">
+	<script type="text/javascript">
+		$(function (){
+			$(".js_grid .offerdetails").click(function (){
+				pageManager.go($(this).data("id"),data);
+			})
+		})
+	</script>
+	<div class="bd">
+		<{foreach $data as $details}>
+		<div class="weui_cells weui_cells_access litterfont_fjz">
+            <a data-id="offerdetails" class="weui_cell js_grid">
+                <div class="weui_cell_hd Headportrait_fjz overflow_fjz" style="width: 4.5em;">
+                	<img src="<{$details.img}>"/>
+                	<div class="overflow_fjz">
+                		<{$details.name}>
+                	</div>
+                </div>
+                <div class="weui_cell_bd weui_cell_primary overflow_fjz">
+                    <p>
+                    	<span>Q:</span>
+                    	<{$details.content}>
+                    </p>
+                    <p>
+                    	悬赏积分:
+                    	<span>
+                    		<{$details.rewardpoints}>
+                    	</span>
+                    </p>
+                    <p>
+                    	<span>
+                    		<{$details.releasetime}>
+                    	</span>
+                    	<span>&nbsp;&nbsp;&nbsp;</span>
+                    	<span class="litterimg_fjz">
+                    		<img src="/yuanku/img/study/discuss_fjz.png"/>
+                    	</span>
+                    	<span>6</span>
+                    </p>
+                </div>
+            </a>
+		</div>
+		<{/foreach}>
+		
+		<div class="weui_cells litterfont_fjz">
+			<{foreach $data_s as $details_s}>
+            <div class="weui_cell">
+                <div class="weui_cell_hd floatchilddiv_fjz" >
+                	<img src="<{$details_s.img}>" style="width:20px;margin-right:5px;display:block;float: left;">
+                	<div>
+                		<{$details_s.name}>
+                	</div>
+                	<span class="colorred_fjz">&nbsp;解答:</span>
+                </div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <p>
+                    	<{$details_s.reply}>
+                    </p>
+                </div>
+                <div class="weui_cell_ft colorred_fjz">
+                	<span>解答</span>
+                </div>
+            </div>
+          <{/foreach}> 
+            
+            
+            <!--<div class="weui_cell">
+                <div class="weui_cell_hd floatchilddiv_fjz" >
+                	<img src="/yuanku/img/2.jpg" style="width:20px;margin-right:5px;display:block;float: left;">
+                	<div>度娘</div>
+                	<span class="colorred_fjz">&nbsp;解答:</span>
+                </div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <p>透明度调节就行了</p>
+                </div>
+                <div class="weui_cell_ft colorred_fjz">
+                	<span>解答</span>
+                </div>
+            </div>-->
+        </div>
+	</div>
+</div>	

@@ -1,0 +1,125 @@
+<script type="text/javascript">
+$(function(){
+//	点击新增按钮或是更新按钮
+	$("#submit button").click(function(){
+		var flag=true;//这里有好几层循环，要几个return
+		$("#topicclassAdd input[type=text]").each(function(){
+			if($(this).attr("name")=="tc_name"){
+				var n_title=$(this).val();
+				if(n_title.length==0 || n_title.length>50){
+					$(this).parent().next().html("话题类别名称不能为空或超过50字符！");
+					flag=false;
+					return false;
+				}
+			}else if($(this).attr("name")=="tc_description"){
+				var n_title=$(this).val();
+				if(n_title.length==0 || n_title.length>100){
+					$(this).parent().next().html("话话题类别描述不能为空或超过100字符！");
+					flag=false;
+					return false;
+				}
+			}			
+		});	
+		
+		if( !flag ){
+			return;
+		}
+		var tc_id=$("input[name=data-id]").val();
+		if( tc_id ){
+			$.ajax({
+				type:"post",
+				url:"/yuanku/topicClass-doupdateTopicClass.html",
+						data:{"tc_id":tc_id,"tc_name":$("input[name=tc_name]").val(),"tc_description":$("input[name=tc_description]").val(),"items":$("select[name=items]").val()},
+						dataType:"json",
+						success:function( obj ){
+							if(obj.code==1){//修改成功
+								alert(obj.message);							
+							}else if(obj.code==0){//修改失败
+								alert(obj.message);						
+							}
+							redriect("/yuanku/topicClass-TopicClassMana.html");
+						},
+				async:true
+			});
+		}else{
+			$.ajax({
+				type:"post",
+				url:"/yuanku/topicClass-doaddTopicClass.html",
+				data:{"tc_name":$("input[name=tc_name]").val(),"tc_description":$("input[name=tc_description]").val(),"items":$("select[name=items]").val()},
+				success:function( text ){
+					if(text=="true"){
+						alert("增加成功！");
+					}else if(text=="false"){
+						alert("增加失败！");
+					}
+					redriect("/yuanku/topicClass-TopicClassMana.html");
+				},
+				async:true
+			});	
+
+		}
+
+	});	
+	
+	//用于清除提示
+	$("#topicclassAdd input[type=text]").focus(function(){
+		$(this).parent().next().html("");
+	});
+	
+});
+</script>
+<div class="panel panel-primary margin-base">
+	<div class="panel-heading">
+		<h3 class="panel-title"><label>
+			<{if empty($data)}>
+				话题类别添加
+			<{else}>
+				话题类别查看
+			<{/if}>			
+		</label></h3>		
+    </div>
+    <div class="panel-body" id="topicclassAdd">
+		<form class="form-horizontal">
+		  <div class="form-group">
+		    <label for="tc_name" class="col-lg-2 control-label">话题类别名称</label>
+		    <div class="col-lg-5">
+		    	<input type="hidden" name="data-id" id="data-id" value="<{if !empty($data)}><{$data.tc_id}><{/if}>" />
+		      	<input type="text" class="form-control" id="tc_name" name="tc_name" placeholder="话题类别名称"
+		      	value="<{if !empty($data)}><{$data.tc_name}><{/if}>">
+		    </div><div class="col-lg-4"></div>
+		  </div>
+		  <div class="form-group">
+		    <label for="tc_description" class="col-lg-2 control-label">话题类别描述</label>
+		    <div class="col-lg-5">
+		      <input type="text" class="form-control" id="tc_description" name="tc_description" placeholder="话题类别描述"
+		      	value="<{if !empty($data)}><{$data.tc_description}><{/if}>">
+		    </div><div class="col-lg-4"></div>
+		  </div>
+		  <div class="form-group">
+		    <label for="tc_description" class="col-lg-2 control-label">话题所属项目</label>
+		    <div class="col-lg-5">
+		      <select name="items" class="iid form-control">
+				    <option value="0">选择项目</option>
+				    <{$item.iid}>
+					<{foreach $itemdata.items as $item}>
+						<option value="<{$item.iid}>" <{if !empty($data) and $data.items eq $item.iid}>selected<{/if}> ><{$item.iname}></option>
+					<{/foreach}>
+				</select>
+		    </div><div class="col-lg-4"></div>
+		  </div>
+		  <div class="form-group">
+		    <div class="col-lg-offset-2 col-lg-8" id="submit">
+		      <button type="button" class="btn btn-primary col-lg-2">
+		      	<{if empty($data)}>
+					新增
+				<{else}>
+					更新
+				<{/if}>
+		      </button>
+		    </div>
+		  </div>
+		</form>    	
+    </div>
+</div>
+
+

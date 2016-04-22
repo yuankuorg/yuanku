@@ -1,0 +1,259 @@
+<script type="text/javascript">
+	$(function(){
+		$("#add").click(function(){
+			redriect($(this).attr("url"));
+		});
+		$("#f5").click(function(){
+			redriect($(this).attr("url"));
+		});
+		//编辑
+		$(".compile").click(function(){
+			$.ajax({
+				type:"post",
+				url:"/yuanku/vip-vipCompile.html",
+				data:{"vid":$(this).attr("vip_id")},
+				success:function(text){
+					$(".main").fadeOut(function(){
+						$(this).html(text);
+						$(this).fadeIn();
+						$(".header h3 label").html("会员详情");
+						$(".sub").html("修改");
+					});
+				},
+				async:true
+			});
+		});
+		//删除
+		$(".del").click(function(){
+			var thisVip=$(this);
+			var name=$(this).parents('tr').find("input[name=vname]").attr('data');
+			var status=$(this).parents('tr').find("input[name=sname]").attr('data');
+			$('#delModal').modal({
+				backdrop : true,
+				keyboard : true,
+				show     : true
+			});
+			$('#delModal').unbind().on('hidden.bs.modal',function(){
+				var re = $("#modalok").attr("data-sub");
+				if(re=='true'){
+					$.ajax({
+						type:"post",
+						url:"/yuanku/vip-vipDel.html",
+						data:{"vid":thisVip.attr("vip_id")},
+						success: function(text){
+							$("#modalok").attr("data-sub","false");
+							if(text==false){
+								$('#myModal').modal({
+									backdrop : true,
+									keyboard : true,
+									show     : true,
+									remote	 : '/yuanku/admin-showflase.html'
+								});
+							}else{
+								redriect("/yuanku/adminIndex-vipMana.html");
+							}						
+						}
+					});
+				}else{
+					$('#delModal').modal("hide");
+				}
+			});
+		});
+		//搜索
+		$("#seek").click(function(){
+			var status = $("#status").val();
+			var items = $("#items").val();
+			var date_start = $("input[name=date_start]").val();
+			var date_end = $("input[name=date_end]").val();
+			$.ajax({
+				type:"post",
+				url:"/yuanku/vip-vipSeek.html",
+				data:{"mobile":$("input[name=seek_mobile]").val(),"name":$("input[name=seek_name]").val(),"status":status,"date_start":date_start,"date_end":date_end,"items":items},
+				success:function(text){
+					$(".main").fadeOut(function(){
+						$(this).empty().html(text);
+						$(this).fadeIn();
+					})
+				},
+				async:true
+			});
+		})
+		//批量删除
+		$("#delSome").click(function(){
+			//获取批量删除行数据
+			var delarr = new Array();
+			$("table tbody tr").each(function(){
+				if($(this).find("input[name=delVip]:checked").length != 0){
+					var delobj = {};
+					$(this).find("td").each(function(){
+						if($(this).attr("name") == "vname" || $(this).attr("name") =="sname"){
+							var name = $(this).attr("name");
+							var val = $(this).attr("data");
+							if(val!=''){
+								delobj[name]=val;
+								return delobj
+							}
+						}
+					})
+				}
+				delarr.push(delobj);
+			});
+			var ids = [];
+			$("input[name=delVip]:checked").each(function(){
+				ids.push($(this).val());
+			});
+			if(ids.length==0){
+				$('#myModal').modal({
+					backdrop : true,
+					keyboard : true,
+					show     : true,
+					remote	 : '/yuanku/admin-chooseOne.html'
+				});
+				return;
+			}else{
+				$('#delModal').modal({
+					backdrop : true,
+					keyboard : true,
+					show     : true
+				});
+				$('#delModal').unbind().on('hidden.bs.modal',function(){
+					var re = $("#modalok").attr("data-sub");
+					if(re=='true'){
+						$.ajax({
+							type:"post",
+							url:"/yuanku/vip-delSomeVip.html",
+							data:{"ids":ids,"delarr":delarr},//
+							success: function(text){
+								
+								if(text==false){
+									$("#modalok").attr("data-sub","false");
+									$('#myModal').modal({
+										backdrop : true,
+										keyboard : true,
+										show     : true,
+										remote	 : '/yuanku/admin-showflase.html'
+									});
+								}else{
+									$("#modalok").attr("data-sub","false");
+									redriect("/yuanku/adminindex-vipMana.html");
+								}						
+							}
+						});
+					}else{
+						$('#delModal').modal("hide");
+					}
+				});
+			}
+			
+		});
+		
+		//学校管理
+		$("#schoolMan").click(function(){
+			redriect("/yuanku/vip-schoolManage.html");
+		});
+	});
+</script>
+<div class="panel panel-primary margin-base " id="vipMana">
+	<div class="panel-heading">
+    	<h3 class="panel-title"><label>学员管理</label>
+    		<span class="pull-right mouse mouse" href="/yuanku/vip-logstatus.html" data-toggle="modal" data-target="#myModal">
+    			<span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>
+				<span>状态修改记录</span>
+			</span>
+    		<span class="pull-right mouse mouse" href="/yuanku/vip-modalVip.html" data-toggle="modal" data-target="#myModal">
+    			<span class="glyphicon glyphicon glyphicon-cog " aria-hidden="true"></span>
+				<span>状态/项目</span>
+			</span>
+			<span class="pull-right mouse mouse" id="schoolMan">
+    			<span class="glyphicon glyphicon glyphicon-cog " aria-hidden="true"></span>
+				<span>学校</span>
+			</span>
+    	</h3>
+	</div>
+	<div class="panel-body">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="col-lg-4">
+					<form class="form-group">
+						<div class="col-lg-6">
+							<input name="seek_mobile" type="text" class="form-control" placeholder="手机号" value="<{if !empty($smarty.post.mobile)}><{$smarty.post.mobile}><{/if}>">
+						</div>
+						<div class="col-lg-6">
+							<input name="seek_name" type="text" class="form-control" placeholder="姓名" value="<{if !empty($smarty.post.name)}><{$smarty.post.name}><{/if}>">
+						</div>
+					</form>
+				</div>
+				<div class="col-lg-8">
+					<form class="form-inline">
+						<select id="status" class="form-control">
+							<option value="0">状态选择</option>
+							<{foreach $data.status as $status}>
+								<option value="<{$status.id}>" <{if !empty($smarty.post.status) && $smarty.post.status eq $status.id }>selected<{/if}>  ><{$status.name}></option>
+							<{/foreach}>
+						</select>
+						<select id="items" class="form-control">
+							<option value="0">项目选择</option>
+							<{foreach $data.items as $items}>
+								<option value="<{$items.id}>" <{if !empty($smarty.post.items) && $smarty.post.items eq $items.id }>selected<{/if}> ><{$items.name}></option>
+							<{/foreach}>
+						</select>
+							
+						<input name="date_start" type="date" class="form-control" placeholder="kaishi" value="<{if !empty($smarty.post.date_start)}><{$smarty.post.date_start}><{/if}>" >
+						---
+						<input name="date_end" type="date" class="form-control" placeholder="jieshu" value="<{if !empty($smarty.post.date_end)}><{$smarty.post.date_end}><{/if}>">
+						<div class="form-group">
+							<button id="seek" type="button" class="btn btn-primary btn-ms paddingLR"><span class="glyphicon glyphicon-search" aria-hidden="true"></span> 搜索</button>
+							<button id="add" url="/yuanku/vip-vipDetails.html" type="button" class="btn btn-info btn-ms paddingLR"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 添加</button>
+							<button id="f5" url="/yuanku/adminIndex-vipMana.html" type="button" class="btn btn-warning btn-ms paddingLR"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> 重置</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		
+		<div class="line-base"></div>
+	</div>
+	<table class="table table-striped table-bordered table-hover">
+		<thead>
+			<tr>
+				<td>选择</td>
+				<td>手机</td>
+				<td>微信</td>
+				<td>姓名</td>
+				<td>会员角色</td>
+				<td>状态</span></td>
+				<td>性别</td>
+				<td>学校</td>
+				<td>积分</td>
+				<td>报名日期</td>
+				<td>操作</td>
+			</tr>
+		</thead>
+		<tbody>
+			<{foreach $data.data as $vip}>
+				<tr>
+					<td><input type="checkbox" name="delVip" id="" value="<{$vip.id}>" /></td>
+					<td><{$vip.mobile}></td>
+					<td><{$vip.weixin}></td>
+					<td name="vname" data = "<{$vip.vname}>"><{$vip.vname}></td>
+					<input type="hidden" name="vname" data = "<{$vip.vname}>"/>
+					<td><{$vip.iname}></td>
+					<td name="sname" data = "<{$vip.statusid}>"><{$vip.sname}></td>
+					<input type="hidden" name="sname" data = "<{$vip.statusid}>"/>
+					<td><{$vip.sex}></td>
+					<td><{$vip.schoolname}></td>
+					<td><{$vip.exchange}></td>
+					<td><{$vip.joinDate}></td>
+					<td>
+						<span class="compile glyphicon glyphicon-pencil mouse" vip_id="<{$vip.id}>" ></span>
+						<span class="del glyphicon glyphicon-trash mouse"  vip_id="<{$vip.id}>"></span>
+					</td>
+				</tr>
+			<{/foreach}>
+		</tbody>
+		<td><span id="delSome" class="glyphicon glyphicon-trash mouse"></span></td>
+	</table>
+	<div class="panel-footer">
+		<{include file="admin/pages.html" url="/yuanku/vip-vipSeek.html" }>
+	</div>
+</div>

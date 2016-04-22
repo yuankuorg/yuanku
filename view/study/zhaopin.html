@@ -1,0 +1,246 @@
+<div class="page">
+	<script type="text/javascript">
+		function goMore() {
+			//页面跳转
+			$(".zhaopin .js_grid").click(function(){
+				var data ={"zid": $(this).attr("data")};
+				pageManager.go($(this).data("id"),data);
+			});
+		}
+		$(function(){
+			goMore();
+			//头栏切换
+			$(".zhaopin #zgh_weui_border").click(function(){
+				$("#zgh_weui_border").css("border-bottom","3px solid #039702");
+				$("#zgh_weui_border_act").css("border-bottom","none");
+				$("#my").css("display","none");
+				$("#add").css("display","block");
+			});
+			$(".zhaopin #zgh_weui_border_act").click(function(){
+				$("#zgh_weui_border").css("border-bottom","none");
+				$("#zgh_weui_border_act").css("border-bottom","3px solid #039702");
+				$("#my").css("display","block");
+				$("#add").css("display","none");
+			});
+			
+			//表单不为空验证
+			 $(".zhaopin #sub").click(function(){
+	  	   	    if ( $("#company").val().length == 0 ) {
+	  	   	   	   	$("#company").css("border","1px solid #DE5347");
+	  	   	   	   	$("#company").focus(function(){
+	  	   	   	   		   $(this).css("border","none");
+	  	   	   	   	});
+	  	   	   	   	return;
+	  	   	    }else if ( $("#position").val().length == 0 ) {
+	  	   	    	$("#position").css("border","1px solid #DE5347");
+	  	   	   	   	$("#position").focus(function(){
+	  	   	   	   		   $(this).css("border","none");
+	  	   	   	   	});
+	  	   	   	   	return;
+	  	   	    }else if ( $("#address").val().length == 0 ) {
+	  	   	    	$("#address").css("border","1px solid #DE5347");
+	  	   	   	   	$("#address").focus(function(){
+	  	   	   	   		   $(this).css("border","none");
+	  	   	   	   	});
+	  	   	   	   	return;
+	  	   	    }
+//		    
+//		        //新增数据，把表单数据存入数据库
+		    	$.ajax({
+		  	   	   	type: "post",
+		  	   	   	url : "/yuanku/Qiye-goAddZhaopin.html",
+		  	   	   	data: {"company":$("#company").val(),"position":$("#position").val(),"address":$("#address").val(),"experience":$("#experience").val(),
+		  	   	   	      "pay":$("#pay").val(),"degree":$("#degree").val(),"responsible":$("#responsible").val(),"requires":$("#requires").val(),"contacts":$("#contacts").val()},
+		  	   	   	success:function(res){
+		  	   	   		   if( res == "false" ){
+		  	   	   		   	    $("#dialog").dialog("提示","增加失败");
+		  	   	   		   }else{
+		  	   	   		   	    $("#dialog").dialog("提示","增加成功");
+	           	   	   		    pageManager.back().go("zhaopin");
+		  	   	   		   }
+		  	   	   	},
+		  	   	   	async:true
+	  	   	   });
+		    });
+		    
+		    //加载更多
+		    var i=1
+			$(".zhaopin #getmore").click(function(){
+//				i++;
+				$.ajax({ 
+					type:"post",
+					url:"/yuanku/Qiye-getmoreZhaopin.html",
+					data:{"curpage":i},
+					success:function( text ){
+						if( text == "" || text.length == 0 ){
+							$("#dialog").dialog("提示","无更多内容");
+							$(".zhaopin #getmore").hide();
+						}else{
+							$(".zhaopin #morezhao1").append(text);
+							goMore();
+						}
+					},
+					async:true
+				});
+			});
+        });
+	</script>
+	<div>
+		<div class="zgh_weui_herad" id="zgh_weui_border_act" data-id="myzhaopin">我的招聘</div>
+		<div class="zgh_weui_herad" id="zgh_weui_border" data-id="addzhaopin">发布招聘</div>
+	</div>
+<!--
+作者：dovshui@163.com
+时间：2016-01-22
+描述：我的招聘
+-->
+<div id="my">
+	<div class="hd height">
+	    <img src="/yuanku/img/study/img_05.jpg" style="width: 100%;"/>
+	</div>
+	<div class="bd" id="morezhao1">
+		<{foreach $data as $info}>
+			<div class="weui_cells">
+				<a class="weui_cell js_grid" href="javascript:;" data="<{$info.zid}>" data-id="checkMyZhaopin">
+				    <div class="weui_cell_hd">
+				        <img src="<{$info.img}>" alt="icon" style="height:56px;margin-right: 10px;">
+				    </div>
+				    <div class="weui_cell_bd weui_cell_primary">
+				    	<p class="p_list"><h3><{$info.company}></h3></p>
+				        <p class="p_list"><{$info.position}></p>
+				    </div>
+				    <div>
+				    	<p class="ft_list1" style="float: right;"></p>
+						<p class="ft_list4">￥<{$info.pay}></p>
+				    </div>
+				</a>
+			</div>
+			<div class="weui_cells_tips">
+				<{$info.name}>&nbsp;发布于<span>&nbsp;<{$info.datetime}></span>
+			</div>
+		<{/foreach}>
+	</div>
+	<a href="javascript:void(0);" class="weui_btn weui_btn_plain_default" id="getmore" style="font-size: 14px;margin: 10px 10px;">加载更多</a>
+</div>
+<!--
+作者：dovshui@163.com
+时间：2016-01-22
+描述：发布招聘
+-->
+	<div id="add" style="display:none;">
+		<div class="hd"></div>
+		<div class="bd">
+			<div class="weui_cells weui_cells_form">
+				<div class="weui_cells">
+					<div class="weui_cell">
+						<div class="weui_cell_hd">
+							<label class="weui_label" style="color: #000000;">公司名称</label>
+						</div>
+						<div class="weui_cell_bd weui_cell_primary">
+							<input class="weui_input" id="company" type="text" placeholder=""/>
+						</div>
+					</div>
+                </div>
+				<div class="weui_cells">
+					<div class="weui_cell">
+						<div class="weui_cell_hd">
+							<label class="weui_label">职位名称</label>
+						</div>
+						<div class="weui_cell_bd weui_cell_primary">
+							<input class="weui_input" id="position" type="text" placeholder=""/>
+						</div>
+					</div>
+                </div>
+                <div class="weui_cells">
+					<div class="weui_cell">
+						<div class="weui_cell_hd">
+							<label class="weui_label">工作地址</label>
+						</div>
+						<div class="weui_cell_bd weui_cell_primary">
+							<input class="weui_input" id="address" type="text" placeholder=""/>
+						</div>
+					</div>
+                </div>
+                <div class="weui_cells">
+					<div class="weui_cell weui_cell_select">
+						<div class="weui_cell_hd">
+							<label class="weui_label weui_xzk">工作经验</label>
+						</div>
+						<div class="weui_cell_bd weui_cell_primary">
+							<select  class="weui_select" id="experience" style="font-size: 14px;">
+								<option value="应界">应界</option>
+								<option value="1年">1年</option>
+								<option value="1-3年">1-3年</option>						
+								<option value="3-5年">3-5年</option>
+								<option value="5-8年">5-8年</option>
+								<option value="8-10年">8-10年</option>
+								<option value="10年以上">10年以上</option>
+							</select>
+						</div>
+					</div>
+                </div>
+                <div class="weui_cells">
+                	<div class="weui_cell weui_cell_select" >
+						<div class="weui_cell_hd">
+							<label class="weui_label weui_xzk" style="color: #000000;">薪资待遇</label>
+						</div>
+						<div class="weui_cell_bd weui_cell_primary">
+							<select  class="weui_select" id="pay" style="font-size: 14px;">
+								<option value="面议">面议</option>
+								<option value="3000-5000">3000-5000</option>						
+								<option value="5000-8000">5000-8000</option>
+								<option value="8000-15000">8000-15000</option>
+								<option value="15000-20000">15000-20000</option>
+							</select>
+						</div>
+					</div>
+                </div>
+                <div class="weui_cells">
+					<div class="weui_cell weui_cell_select" >
+						<div class="weui_cell_hd">
+							<label class="weui_label weui_xzk">学历要求</label>
+						</div>
+						<div class="weui_cell_bd weui_cell_primary">
+							<select  class="weui_select" id="degree" style="font-size: 14px;">
+								<option value="0">请选择</option>
+								<option value="高中">高中</option>						
+								<option value="大专">大专</option>
+								<option value="本科">本科</option>
+								<option value="研究生">研究生</option>
+							</select>
+						</div>
+					</div>
+                </div>
+			</div>
+			<div class="weui_cells_title">岗位职责</div>
+			<div class="weui_cells weui_cells_form">
+				<div class="weui_cell">
+					<div class="weui_cell_bd weui_cell_primary">
+						<textarea class="weui_textarea" id="responsible" placeholder="请输入岗位职责" rows="7" style="font-size: 14px;"></textarea>
+						<div class="weui_textarea_counter"></div>
+					</div>
+				</div>
+			</div>
+			<div class="weui_cells_title">任职要求</div>
+			<div class="weui_cells weui_cells_form">
+				<div class="weui_cell">
+					<div class="weui_cell_bd weui_cell_primary">
+						<textarea class="weui_textarea" id="requires" placeholder="请输入任职要求" rows="7" style="font-size: 14px;"></textarea>
+						<div class="weui_textarea_counter"></div>
+					</div>
+				</div>
+			</div>
+			<div class="weui_cells_title">联系方式</div>
+			<div class="weui_cells weui_cells_form">
+				<div class="weui_cell">
+					<div class="weui_cell_bd weui_cell_primary">
+						<div class="weui_cell_bd weui_cell_primary">
+							<input class="weui_input" id="contacts" type="text" placeholder=""/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<a href="javascript:;" style="margin:15px 15px;" class="weui_btn weui_btn_primary js_grid" id="sub">提交</a>
+	</div>
+</div>

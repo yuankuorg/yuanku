@@ -1,0 +1,77 @@
+<script type="text/javascript">
+	$(function(){
+		//将选好的值放到vipDetails页面对应的格子中
+		$("#comfirOpenId").click(function(){
+			var OpenIDDOM=$("#OpIdModal tbody tr input[type=radio]:checked").parent().parent();
+			var OpenId=OpenIDDOM.find("input[type=hidden]").attr("data");
+			var uname=OpenIDDOM.find("td[name=uname]").html();
+			var imgurl=OpenIDDOM.find("td img").attr('src');
+			
+			$(".selectOpenId").find('input[name=weixin]').val(uname);			
+			$(".selectOpenId").find('input[name=weixinOpenId]').val(OpenId);
+			$(".selectimg").find("img").attr("src",imgurl);
+			$('#imgurl').val(imgurl);
+		});
+		//搜索
+		$(".sousuo").click(function(){
+			$.ajax({
+				type:"post",
+				url:"/yuanku/vip-ShowOpenId.html",
+				data:{"uname":$(".form-inline").find('input[name=uname]').val()},
+				success:function(text){
+					$("#myModal .modal-content").empty().html(text);
+				},
+				async:true
+			});
+		});
+		//重置
+		$(".f6").click(function(){
+			$(".form-control").val("");
+		});
+	});
+	
+</script>
+<div class="modal-body" id="OpIdModal">
+	<div class="panel panel-primary margin-base">
+		<div class="panel-heading">
+			<h3 class="panel-title"><label>选择会员</label></h3>		
+		</div>
+		
+		<div class="panel-body">
+		<form class="form-inline">
+			<input name="uname" type="text" class="form-control" placeholder="微信昵称" value="<{if isset($smarty.post.uname)}><{$smarty.post.uname}><{/if}>" >
+			<div class="form-group">
+				<button id="seek" class="sousuo" type="button" class="btn btn-primary btn-ms paddingLR"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>搜 索</button>
+				<button id="f5" class="f6" url="/yuanku/vip-ShowOpenId.html" type="button" class="btn btn-warning btn-ms paddingLR"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>重 置</button>
+			</div>
+		</form>
+		</div>	
+	
+		<div class="panel-body">
+		<table class="table table-hover table-bordered">
+			<thead>
+				<tr>
+					<th width="10%">用户头像</th>
+					<th width="20%">用户昵称</th>
+					<th width="5%"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<{foreach $data.data as $Oid}>
+					<tr>
+						<td><img src="<{$Oid.headimg}>" width="50px" height="50px"/></td>
+						<input type="hidden" name="OpenId" data="<{$Oid.openId}>" />
+						<td name="uname"><{$Oid.uname}></td>
+						<td><input type="radio" name="OId" id="" value="" /></td>
+					</tr>
+				<{/foreach}>
+			</tbody>
+		</table>	
+	  		<{include file="admin/modalPages.html"  url="/yuanku/vip-ShowOpenId.html"}>
+		</div>
+	
+		<div class="modal-footer">
+			<button type="button" id="comfirOpenId" class="btn btn-primary" data-dismiss="modal">确定</button>
+		</div>
+	</div>
+</div>

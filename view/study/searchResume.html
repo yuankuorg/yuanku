@@ -1,0 +1,88 @@
+<!--
+	作者：dovshui@163.com
+	时间：2016-01-22
+	描述：查找简历
+-->
+<div class="page">
+	<script type="text/javascript">
+	    function more(){
+    		$(".searchResume .js_grid").click(function() {
+				var rid ={"rid" :$(this).data("rid")};
+				pageManager.go($(this).data("id"),rid);
+		    });
+    	}
+        $(function(){
+        	more();
+		    //搜索
+		    $(".searchResume #searchRes").click(function(){
+		    	$.ajax({
+		    		type:"post",
+		    		url:"/yuanku/Qiye-gosearchResume.html",
+		    		data:{"name":$("#searchTar").val()},
+		    		success: function(res){
+		    			$(".bd").html(res);
+		    		},
+		    		async:true
+		    	});
+		    });
+		    //加载更多
+		    
+		    var j=1;
+		    $(".searchResume #getmoreRes").click(function(){
+		    	j++;
+		    	$.ajax({
+		    		type:"post",
+		    		url:"/yuanku/Qiye-getmoreResume.html",
+					data:{"curpage":j,"name":$("#searchTar").val()},
+					success:function( text ){
+						if( text != "" ){
+							$("#moreRes1").append(text);
+							more();
+						}else{
+							$("#dialog").dialog("提示","无更多内容");
+//							$(".searchResume #getmoreRes").hide();
+						}
+				    },
+		    	    async:true
+		    	})
+		    });
+	    });
+	</script>
+	<div class="weui_cells">
+		<div class="weui_cell weui_vcode" style="padding: 5px 5px;">
+	        <div class="weui_cell_bd weui_cell_primary">
+	            <input class="weui_input" id="searchTar" type="text" placeholder="请输入姓名" value="<{if isset($smarty.post.name)}><{$smarty.post.name}><{/if}>"/>
+	        </div>
+	        <div>
+	            <a href="javascript:;" id="searchRes"><img src="/yuanku/img/study/search.png" style="height: 25px;"/></a>
+	        </div>
+	    </div>
+    </div>
+	
+	<div class="bd">
+        <div class="weui_cells_access" id="moreRes1">
+        	<{foreach $data as $d}>
+        		<div class="weui_cells">
+					<a class="weui_cell js_grid" href="javascript:;" data-id="checkResume" data-rid="<{$d.rid}>">
+					    <div class="weui_cell_hd">
+					        <img src="<{$d.img}>" alt="icon" style="height:56px;margin-right: 10px;">
+					    </div>
+					    <div class="weui_cell_bd weui_cell_primary">
+					    	<p class="ft_list1">工作经验：<span><{$d.workexp}></span></p>
+					    	<p class="ft_list1">所在城市：<span><{$d.city}></span></p>
+					    	<p class="ft_list1">最高学历：<span><{$d.heighedu}></span></p>
+					    </div>
+					    <div>
+					        <p class="ft_list3"></p>
+					    </div>
+					</a>
+				</div>
+				<div class="weui_cells_tips">
+					<{$d.name}>&nbsp;&nbsp;&nbsp;<{$d.mobile}>&nbsp;&nbsp;&nbsp;<{$d.email}>
+				</div>
+			<{/foreach}>
+		</div>  
+		<a href="javascript:void(0);" class="weui_btn weui_btn_plain_default" id="getmoreRes" style="font-size: 14px;margin: 10px 10px;">加载更多</a>
+    </div>
+</div>
+		

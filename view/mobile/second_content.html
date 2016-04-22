@@ -1,0 +1,32 @@
+<{if !empty($dataset)}>
+<{foreach $dataset as $topics}>
+	<section class="topicBox">
+    	<section class="topicItem">
+    	<{foreach $topics.topic as $huati}>
+	        <img src="<{$huati.t_img|replace:'.':'_900_500.'}>" style="width:100%"/>
+	        <section >
+	        	<p class="p1">
+	        		<span style="line-height:1.35em"><{$huati.t_title}></span>	
+	        	</p>
+	        </section>
+        <{/foreach}>
+       	</section>
+        <{foreach $topics.news as $zixun}>
+	        <a href="/yuanku/mobile-third-<{$zixun.n_id}>.html">
+	        <section class="newsItem">
+	            <img src="<{$zixun.n_img}>"/>
+	            <section>
+	                <p class="p2">
+	                    <strong><{$zixun.n_title|replace:'.':'_50_50.'}></strong>
+	                </p>
+	                <p class="p2">
+	                	<span><{$zixun.code}></span>
+	                	<span class="timespan"><{$zixun.addtime}></span>
+	                </p>
+	            </section>
+	        </section>
+	        </a>
+        <{/foreach}>
+    </section>
+<{/foreach}>
+<{/if}>

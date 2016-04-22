@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html lang="zh-CH">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1"> 
+		<title>资讯</title>
+		<link rel="stylesheet" type="text/css" href="/yuanku/css/mobile.css"/>	
+		<script src="/yuanku/js/jquery-1.10.2.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<{include file="mobile/navtop.html" url="/yuanku/adminIndex-comment.html" }>
+			<div style="height: 50px;"></div>
+		<!--正文和标题-->
+	    <section class="t-main">	
+	    	<!--标题-->
+	        <section class="t-title">
+	            <section class="t-title2">	            	
+	                <p class="title">
+	                   <strong><{if !empty($re)}><{$re.news.n_title}><{/if}></strong>
+	                </p>
+	                <p class="subtitle">
+	                    <strong><{if !empty($re)}><{$re.news.addtime}><{/if}>源酷创意</strong>
+	                </p>
+	            </section>
+	            <section class="title1"></section>
+	        </section>
+	        <!--正文-->
+	        <section class="article">
+				<{if !empty($re)}><{$re.news.n_content}><{/if}>
+	        </section>
+	        	<{include file="mobile/comment.html"}>
+		</section>
+		<section class="nav">
+	    	<{include file="mobile/navBottom.html"}>
+	    </section>
+	</body>
+</html>

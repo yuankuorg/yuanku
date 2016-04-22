@@ -1,0 +1,10 @@
+truncate table study_commodity;
+truncate table study_exchange;
+truncate table study_chuang;
+truncate table study_chuangstate;
+truncate table study_taskrec;
+truncate table study_task;
+truncate table study_employment;
+truncate table study_entstore;
+truncate table study_dynamic;
+truncate table study_resume;

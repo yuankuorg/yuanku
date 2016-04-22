@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<link rel="stylesheet" type="text/css" href="/yuanku/css/mobile_yxr.css"/>
+		<link rel="stylesheet" type="text/css" href="/yuanku/css/mobile.css"/>
+		<script src="/yuanku/js/jquery-1.10.2.min.js" type="text/javascript" charset="utf-8"></script>
+		
+		<script type="text/javascript">
+			var tc_id = <{$smarty.get["tc_id"]}>;//获取该二级页面的id
+			var curpage = 1;
+			
+			function load() {
+				$.ajax({
+					type:"post",
+					url:"/yuanku/mobile-getSecondContent.html",
+					data : {"tc_id":tc_id,"curpage":curpage},
+					success : function( text ) {
+						$(".moring").hide();
+						$(".more").show();
+						$(".main").append(text);
+					},
+					async:true
+				});
+			}
+			
+			$(function(){
+				load();
+				
+				$(".more").click(function(){
+					$(".more").hide();
+					$(".moring").show();
+					curpage++;
+					load();
+				});
+				
+			});
+		</script>
+	</head>
+	<body>
+		<{include file="mobile/navtop.html"}>
+		<div style="margin-bottom: 35px;">
+			<div class="main"></div>
+			
+			<div style="bottom: 0px;height: 30px;line-height: 30px;text-align: center;">
+				<a href="javascript:void(0);" class="more">加载更多</a>
+				<img class="moring" src="/yuanku/img/more.jpg" style="display: none;width: 30px;margin: auto;">
+			</div>
+		</div>
+		<{include file="mobile/navBottom.html"}>
+	</body>
+</html>

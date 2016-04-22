@@ -1,0 +1,110 @@
+<script type="text/javascript">
+	function search() {
+		$.ajax({
+			type:"post",
+			url: "/yuanku/wechatUser-wechatUser.html",
+			data:{ "wenum" : $("#wenum").val() , "remarknum" : $("#remarknum").val() , "sexs" : $("#sexs").val() },
+			success:function(text){
+				$(".main").fadeOut(function(){
+					$(this).html(text);
+					$(this).fadeIn();	
+				});	
+			},
+			async:true
+		});
+	}
+	$(function(){
+		//搜索
+		$("#search").click(function(){
+			search();
+		});
+		
+		//清除
+		$("#clear").click(function(){
+			redriect( $(this).attr("url") );
+		});
+		
+		//单条新增
+		$("#add").click(function() {
+			$.ajax({
+				type:"post",
+				url:"/yuanku/wechatUser-addUser.html",
+				data : {"openid":$("#openid").val()},
+				success : function( text ) {
+					if( text == "true" ) {
+						search();
+					} else {
+						alert("增加失败!");
+					}
+				},
+				async:true
+			});
+		});
+	});
+</script>
+<div class="panel panel-primary margin-base" id="table">
+	<div class="panel-heading" id="panel-heading"><h3 class="panel-title manuser"><label>用户管理</label></h3></div>
+	<div class="panel-body">
+		<p>
+			<form class="form-inline">
+				<div class="form-group">
+				  	<label for="openid"></label>
+				    <input type="text" class="form-control" id="openid" placeholder="openid" value="">
+				</div>
+				<button id="add" url="/yuanku/vip-vipDetails.html" type="button" class="btn btn-info btn-ms paddingLR">
+					<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>添加
+				</button>
+			</form>
+		</p>
+		<div class="line-base"></div>
+		<p>
+			<form class="form-inline">
+				<div class="form-group">
+				  	<label for="exampleInputName2"></label>
+				    <input type="text" class="form-control" id="wenum" placeholder="微信名" value="<{if !empty($smarty.post.wenum)}><{$smarty.post.wenum}><{/if}>">
+				</div>
+				<div class="form-group">
+				  	<label for="exampleInputName3"></label>
+				    <input type="text" class="form-control" id="remarknum" placeholder="备注名" value="<{if !empty($smarty.post.remarknum)}><{$smarty.post.remarknum}><{/if}>">
+				</div>
+				<div class="form-group">
+				  	<label for="exampleInputName3"></label>
+				    <input type="text" class="form-control" id="sexs" placeholder="性别" value="<{if !empty($smarty.post.sexs)}><{$smarty.post.sexs}><{/if}>">
+				</div>
+				<button type="button" class="btn btn-primary" id="search">
+					<span class="glyphicon glyphicon-search"></span>搜索
+				</button>
+				<button type="button" class="btn btn-warning" id="clear" url="/yuanku/wechatUser-wechatUser.html">
+					<span class="glyphicon glyphicon-refresh"></span>重置
+				</button>
+	 		</form>
+		</p>
+		
+		<table class="table table-striped table-hover" style="border: 1px solid #ccc; border-right: none; font-size: 16px;">
+			<thead>
+				<tr>
+					<th><label>编号</label></th>
+					<th><label>头像</label></th>
+					<th><label>昵称</label></th>
+					<th><label>性别</label></th>
+					<th><label>备注</label></th>
+				</tr>
+			</thead>
+			<tbody>
+				<{foreach $data as $res}>
+					<tr>
+						<td><{$res.uid}></td>
+						<td><img src="<{$res.headimg}>" alt="加载失败" class="img-rounded" width="50"></td>
+						<td><{$res.uname}></td>
+						<td><{if $res.sex eq 1}>男<{else}>女<{/if}></td>
+						<td name="remark"><{$res.remark}></td>
+					</tr>
+				<{/foreach}>
+			</tbody>
+		</table>
+		
+		<div class="panel-footer" style="border: none;">
+			<{include file="admin/pages.html" url="/yuanku/wechatUser-wechatUser.html" }>
+		</div>
+	</div>
+</div>

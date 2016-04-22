@@ -1,0 +1,295 @@
+<script type="text/javascript">
+	var editor;
+	$(function(){
+		//创建KindEditor
+		editor = KindEditor.editor({
+			allowFileManager : true,
+			filterMode: false
+		});
+		
+		//点击选择图片的按钮
+		$('#fileup').click(function() {
+			editor.loadPlugin('image', function() {
+				editor.plugin.imageDialog({
+					imageUrl : $('#imgurl').val(),
+					clickFn : function(url, title, width, height, border, align) {
+						$('#imgurl').val(url);
+						editor.hideDialog();
+						$("#img").attr({ src: url, alt: "Test Image" });
+					}
+				});
+			});
+		});
+		$("#goback").click(function(){
+			redriect($(this).attr("url"));
+		})
+		//编辑时选中状态和项目
+		iidsid();
+		function iidsid(){
+			var sid = $(".sid").attr("vip_sid");
+			var obj = null;
+			$(".sid option").each(function(){
+				obj = $(this).attr("value");
+				if(sid == obj){
+					$(this).attr("selected","true");
+				}
+			})
+			var iid = $(".iid").attr("vip_iid");
+			var obj = null;
+			$(".iid option").each(function(){
+				obj = $(this).attr("value");
+				if(iid == obj){
+					$(this).attr("selected","true");
+				}
+			})
+		}
+		//添加或修改会员
+		var oldStatus=$("select[name=status] option:selected").attr("value");
+		$(".sub").click(function(){
+			var flag = true;
+			$("#data input,select").each(function(){
+				var name = $(this).attr("name");
+				var val = $(this).val();
+				var reg = /^[1][3,5,8,9][0-9]{9}$/;
+				//手机
+				if (name == "mobile" && (!reg.test(val) || val.length == 0)){
+					$(this).css("border","1px solid rgba(255,0,0,0.5)");
+					flag = false;
+					return false;
+				}
+				//姓名
+				if(name == "name" && val.length == 0){
+					$(this).css("border","1px solid rgba(255,0,0,0.5)");
+					flag = false;
+					return false;
+				}
+				//状态
+				if(name =="status"){
+					$(this).find("option").each(function(){
+						if( $(this).is(":selected") && $(this).attr("value") == "0" ){
+							alert("状态不能为空");
+							flag = false;
+							return false;
+						}
+					})
+				}
+			});
+			
+			if( !flag ) {
+				return
+			}
+			
+			var openid= $(".selectOpenId").find("input[name=weixinOpenId]").val();
+			var sid = $("#sid").val();
+			var item = $("select[name=items] option:selected").attr("value");
+			
+			//如果绑订了微信，助学成才、名企精英、学校导师的学校不能为空
+			if( item == 6 || item == 7 || item == 8 ) {
+				if( openid && !sid ) {
+					$("#schoolname").css("border","1px solid rgba(255,0,0,0.5)");
+					return;
+				}
+			}
+			
+			var headimg=$('.selectimg').find('img').attr('src');
+			var exchange = $("#exchange").val();
+			var sex = $("input[name=vipsex]:checked").attr("value");
+			var status = $("select[name=status] option:selected").attr("value");
+			var remark = $("textarea[name=remark]").val();
+			var schoolname = $("#schoolname").val();
+			
+			$('#delModal').modal({
+				backdrop : true,
+				keyboard : true,
+				show     : true
+			});
+			$('#delModal').unbind().on('hidden.bs.modal',function(){
+				var re = $("#modalok").attr("data-sub");
+				if(re=='true'){
+					var vid = $("#vid").attr("value");
+					var img = $("#imgurl").val();
+					if(!vid){
+						$.ajax({
+							type:"post",
+							url:"/yuanku/vip-addVip.html",
+							data:{'headimg':headimg,"sex":sex,"item":item,"status":status,"mobile":$("input[name=mobile]").val(),"weixin":$("input[name=weixin]").val(),"name":$("input[name=name]").val(),"domicile":$("input[name=domicile]").val(),"school":sid,"remark":remark,"img":img,"openid":openid,"schoolname":schoolname},
+							success:function(text){
+								if(text=='true'){
+									BsModel.OpenModel({
+										"title" : "提示",
+										"content" : "恭喜你，添加成功！"
+									});
+									$(".main").fadeOut(function(){
+										redriect("/yuanku/adminIndex-vipMana.html");
+									})
+								}else{
+									BsModel.OpenModel({
+										"title" : "提示",
+										"content" : "增加失败,请与管理员联系！"
+									});
+								}
+							},
+							async:true
+						});
+					}else{
+						$.ajax({
+							type:"post",
+							url:"/yuanku/vip-alterVip.html",
+							data:{"vid":vid,"sex":sex,"item":item,"status":status,"mobile":$("input[name=mobile]").val(),"weixin":$("input[name=weixin]").val(),"name":$("input[name=name]").val(),"domicile":$("input[name=domicile]").val(),"school":sid,"remark":remark,"img":img,"oldStatus":oldStatus,"openid":openid,"exchange":exchange,"schoolname":schoolname},
+							success:function(text){
+								if(text == "true"){
+									BsModel.OpenModel({
+										"title" : "提示",
+										"content" : "恭喜你，修改成功！"
+									});
+									redriect("/yuanku/adminIndex-vipMana.html");
+								}else if(text == "false"){
+									BsModel.OpenModel({
+										"title" : "提示",
+										"content" : "修改失败,请与管理员联系！"
+									});
+								}
+							},
+							async:true
+						});
+					}
+				}else {
+					$('#delModal').modal("hide");
+				}
+			});
+		})
+		
+		$("input").focus(function(){
+			$(this).css("border","1px solid #cccccc");
+		})
+		
+		//绑订微信弹窗
+		$("#bindwexi").click(function(){
+			$.ajax({
+				type:"post",
+				url:"/yuanku/vip-ShowOpenId.html",
+				success:function(text){
+					$("#myModal .modal-content").empty().html(text);
+				},
+				async:true
+			});
+		})
+		
+		//弹出学校选择层
+		$("#bindschool").click(function(){
+			$.ajax({
+				type:"post",
+				url:"/yuanku/vip-schoolPop.html",
+				success:function(text){
+					$("#myModal .modal-content").empty().html(text);
+				},
+				async:true
+			});
+		});
+	})
+</script>
+<div class="panel panel-primary margin-base" id="vipDetails">
+	<div class="header panel-heading">
+		<h3 class="panel-title">
+			<label>增加会员</label>
+			<span id="goback" url="/yuanku/adminIndex-vipMana.html" class="pull-right glyphicon glyphicon-circle-arrow-left" aria-hidden="true"></span>
+		</h3>
+	</div>
+	<div class="panel-body">
+		<div id="data" class="row">
+			<div class="col-lg-6">
+				<form class="form-horizontal">
+					<div class="form-group">
+						<label class="col-lg-3 col-lg-offset-2 control-label">手机号:</label>
+						<div class="col-lg-6">
+							<input type="hidden" name="vid" id="vid" value="<{if isset($data.data)}><{$data.data.id}><{/if}>" />
+							<input type="hidden" name="exchange" id="exchange" value="<{if isset($data.data)}><{$data.data.exchange}><{/if}>" />
+							<input name="mobile" type="text" class="form-control" placeholder="mobile" value="<{if isset($data.data)}><{$data.data.mobile}><{/if}>" >
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 col-lg-offset-2 control-label">微信:</label>
+						<div class="col-lg-6 selectOpenId">
+							<input name="weixin" type="text" class="form-control" 
+								placeholder="weixin" value="<{if isset($data.data)}><{$data.data.weixin}><{/if}>" 
+								style="width: 80%;display: inline-block;">
+							<button type="button" style="display: inline-block; width: 20%;" class="btn btn-default" id="bindwexi" data-toggle="modal" data-target="#myModal">绑定</button>
+			      			<input type="hidden" name="weixinOpenId" value="<{if isset($data.data)}><{$data.data.openid}><{/if}>" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 col-lg-offset-2 control-label">姓名:</label>
+						<div class="col-lg-6">
+							<input name="name" type="text" class="form-control" placeholder="name" value="<{if isset($data.data)}><{$data.data.name}><{/if}>">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 col-lg-offset-2 control-label">性别:</label>
+						<div class="col-lg-6">
+							<label>男</label> <input type="radio" name="vipsex" value="男" placeholder="sex" <{if isset($data.data) && $data.data.sex eq "男"}>checked="checked"<{elseif empty($data.data)}>checked="checked"<{/if}> >
+							<label>女</label> <input type="radio" name="vipsex" value="女" placeholder="sex" <{if isset($data.data) && $data.data.sex eq "女"}>checked="checked"<{/if}>>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 col-lg-offset-2 control-label">户籍:</label>
+						<div class="col-lg-6">
+							<input name="domicile" type="text" class="form-control" placeholder="domicile" value="<{if isset($data.data)}><{$data.data.domicile}><{/if}>">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 col-lg-offset-2 control-label">毕业学校:</label>
+						<div class="col-lg-6">
+							<input id="schoolname" type="text" class="form-control" placeholder="school" value="<{if isset($data.data)}><{$data.data.schoolname}><{/if}>" readonly>
+							<button type="button" style="display: inline-block; width: 20%;" class="btn btn-default" id="bindschool" data-toggle="modal" data-target="#myModal">选择</button>
+							<input id="sid" type="hidden" value="<{if isset($data.data)}><{$data.data.school}><{/if}>">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 col-lg-offset-2 control-label">会员角色:</label>
+						<div class="col-lg-6">
+							<select name="items" class="iid form-control" vip_iid="<{if isset($data.data)}><{$data.data.iid}><{/if}>">
+							    <option value="0">选择角色</option>
+								<{foreach $data.items as $items}>
+									<option value="<{$items.id}>" <{if isset($data.data) && $data.data.items eq $items.id}>selected<{/if}> > <{$items.name}></option>
+								<{/foreach}>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 col-lg-offset-2 control-label">状态:</label>
+						<div class="col-lg-6">
+							<select name="status" class="sid form-control" vip_sid="<{$vip.sid}>">
+								<option value="0">状态选择</option>
+								<{foreach $data.status as $status}>
+									<option value="<{$status.id}>" <{if isset($data.data) && $data.data.status eq $status.id}>selected<{/if}> ><{$status.name}></option>
+								<{/foreach}>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 col-lg-offset-2 control-label">备注:</label>
+						<div class="col-lg-6">
+							<textarea  name="remark" class="form-control" rows="3"><{if isset($data.data)}><{$data.data.remark}><{/if}></textarea>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="col-lg-3 selectimg">
+				<img src="<{if isset($data.data) && !empty($data.data.img)}><{$data.data.img}><{else}>/yuanku/img/touxiang.jpg<{/if}>" 
+ 					height="200px" width="200px" id="img"/>
+				<input type="button" id="fileup" value="选择图片" />
+				<input type="text" id="imgurl" placeholder="选择图片" readonly="readonly" 
+				      	value="<{if isset($data.data) && !empty($data.data.img)}><{$data.data.img}><{/if}>"/>
+				<div style="display: none;">
+			    	<textarea id="touxiang" name="touxiang">
+			    	</textarea>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-lg-offset-5 col-lg-6" >
+					<button type="button" class="sub btn btn-default">添加</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

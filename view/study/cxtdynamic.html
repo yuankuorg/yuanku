@@ -1,0 +1,118 @@
+<!--我的动态-->
+<div class="page">
+	<script type="text/javascript">
+		$(function(){
+			var i = 1;
+			var j = 1;
+			$("#cxt_border").click(function(){
+				$("#cxt_border_act").css("border-bottom","none");
+				$(this).css("border-bottom","3px solid #039702");
+				$("#cxtall").css("display","block");
+				$("#cxtmy").css("display","none");
+			});
+			$("#cxt_border_act").click(function(){
+				$("#cxt_border").css("border-bottom","none");
+				$(this).css("border-bottom","3px solid #039702");
+				$("#cxtmy").css("display","block");
+				$("#cxtall").css("display","none");
+			});
+			//点击获取更多我的动态信息
+			$("#mymore").click(function(){
+				j++;
+				$('#loadingToast').loadingShow();
+				$.ajax({
+					type:"post",
+					url:"cxt-getmoremydynamic.html",
+					dataType:"json",
+					data:{"curpage":j},
+					success:function( json ){
+						$('#loadingToast').hide();
+						if( json != false){
+							for(var dyn in json ){
+								var temp = json[dyn];
+								var str = '<div class="weui_cells"><div class="weui_cell"><div class="weui_cell_hd"><img src="' + temp.img + '" alt="icon"></div><div class="weui_cell_bd weui_cell_primary"><p>' + temp.dcontent + '</p><p class="cxt_time">' + temp.time + '</p></div></div></div>';
+								$("#cxtmy #dynamicmy").append(str);
+							}
+						}else{
+							$('#loadingToast').hide();
+							$("#dialog").dialog("提示","无更多内容");
+							$("#mymore").css("display","none");
+						}
+					},
+					async:true
+				});
+			});
+			//点击获取更多全部动态信息
+			$("#allmore").click(function(){
+				i++;
+				$('#loadingToast').loadingShow();
+				$.ajax({
+					type:"post",
+					dataType:"json",
+					url:"cxt-getmorealldynamic.html",
+					data:{"curpage":i},
+					success:function( json ){
+						$('#loadingToast').hide();
+						if( json == false){
+							$("#dialog").dialog("提示","无更多内容");
+							$("#allmore").css("display","none");
+						}
+						for(var dyn in json ){
+							var temp = json[dyn];
+							var str = '<div class="weui_cells"><div class="weui_cell"><div class="weui_cell_hd"><img src="' + temp.img + '" alt="icon"></div><div class="weui_cell_bd weui_cell_primary"><h4>'+temp.name +'</h4><p>'+ temp.dcontent +'</p><p class="cxt_time">' + temp.time + '</p></div></div></div>';
+							$("#cxtall #dynamicall").append(str);
+						}
+					},
+					async:true
+				});
+			});
+		});
+	</script>
+	<div class="dongtai" id="cxt_border" data-id="alldynamic">全部动态</div>
+	<div class="dongtai" id="cxt_border_act" data-id="mydynamic">我的动态</div>
+	<!--全部动态-->
+	<div id="cxtall">
+		<div class="bd" id="dynamicall">	
+			<{foreach $alldynamic as $all}>
+			    <div class="weui_cells">
+		    		<div class="weui_cell">
+				    	<div class="weui_cell_hd">
+				        	<img src="<{$all.img}>" alt="icon">
+				    	</div>
+					    <div class="weui_cell_bd weui_cell_primary">
+					    	<h4><{$all.name}></h4>
+					    	<p><{$all.dcontent}></p>
+					    	<p class="cxt_time"><{$all.time}></p>
+				    	</div>
+				    </div>
+		        </div>
+	        <{/foreach}>
+		</div>
+		<div class="bd">
+			<a href="javascript:void(0);" class="weui_btn weui_btn_plain_default" id="allmore" style="font-size: 14px; margin: 10px 10px;">加载更多</a>
+		</div>
+		<div class="weui_cell_ft" style="height: 20px;"></div>
+	</div>
+    <!--我的动态-->
+    <div id="cxtmy">
+		<div class="bd" id="dynamicmy">
+			<{foreach $mydynamic as $my}>
+				<div class="weui_cells">
+		    		<div class="weui_cell">
+				    	<div class="weui_cell_hd">
+				        	<img src="<{$my.img}>" alt="icon">
+				    	</div>
+					    <div class="weui_cell_bd weui_cell_primary">
+					    	<p><{$my.dcontent}></p>
+					    	<p class="cxt_time"><{$my.time}></p>
+				    	</div>
+				    </div>
+		        </div>
+	        <{/foreach}>
+		</div>
+		<div class="bd">
+			<a href="javascript:void(0);" class="weui_btn weui_btn_plain_default" id="mymore" style="font-size: 14px; margin: 10px 10px;">加载更多</a>
+		</div>
+		<div class="weui_cell_ft" style="height: 20px;"></div>
+	</div>
+</div>

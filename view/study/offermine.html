@@ -1,0 +1,123 @@
+<!--
+	作者：linghonfu123@126.com
+	时间：2016-01-30
+	描述：问题页
+-->
+<div class="page">
+	<script type="text/javascript">
+		$(function() {
+			$(".offermine #reply").click(function(){
+				if( $("#addtitle").css("display") == "none" ) {
+					$("#addtitle").css("display","block");
+				} else {
+					$("#addtitle").css("display","none");
+				}
+			});
+			//点击采纳后改变当前任务的状态
+			$(".offermine .adopted").click(function(){
+				$('#loadingToast').loadingShow();
+				var vid = $(this).data("vid");
+				var taskid = $(this).data("taskid");
+				var trid = $(this).data("trid");
+				
+				$.ajax({
+					type:"post",
+					url:"offer-adopted.html",
+					data:{taskid : taskid, trid :trid ,vid : vid},
+					success:function(text){
+						$('#loadingToast').hide();
+						if ( text == "true") {
+							$("#dialog").dialog("提示","操作成功！");
+	  	   	   		   	 	pageManager.back().back().go("offer");
+						} else{
+							$("#dialog").dialog("提示","操作失败请稍后重试!");
+						}
+					},
+					async:true
+				});
+			});
+			//点击提交按钮后
+			$(".offermine #task_re").click(function(){
+				if ( $("#taskcontent").val().length == 0 ) {
+	  	   	   	   $("#dialog").dialog("提示","回复不能为空!");
+	  	   	   	   	return;
+	  	   	    }
+				$.ajax({
+					type:"post",
+					url:"offer-taskRec.html",
+					data:{
+						"reply" : $("#taskcontent").val(),
+						"taskid": $(this).data("taskid")
+					},
+					success:function(text){
+						if ( text == "true") {
+							$('#loadingToast').loadingShow();
+							pageManager.back();
+							$('#loadingToast').hide();
+						} else{
+							$("#dialog").dialog("提示","操作失败请稍后重试!");
+						}
+					},
+					async:true
+				});
+			});
+		});
+	</script>
+	<div class="bd">
+		<div class="weui_cells">
+			<div class="weui_cell">
+				<div class="weui_cell_hd">
+					<img src="<{$detail.img}>"alt="头像" style="width : 50px;">
+				</div>
+				<div class="weui_cell_bd weui_cell_primary">
+					<h4><{$detail.title}>
+					</h4>
+					<p style="font-size: 13px;"><{$detail.content}></p>
+				</div>
+				<div class="weui_cell_ft">
+					<{if $detail.state eq 1}>
+		    			<i class="weui_icon_success" title="已解决"></i>
+		    		<{else}>
+		    			<i class="weui_icon_info" title="待解决"></i>
+		    		<{/if}>
+					<span id="reply">
+						<img src="/yuanku/img/study/078.png"/>
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="weui_cells_tips">
+			<{$detail.name}>&nbsp;发布于&nbsp;<{$detail.releasetime}>
+			<span style="color: red;float: right;margin-right: 5px;">赏金:<{$detail.rewardpoints}>&nbsp;&nbsp;回复:<{$count}></span>
+		</div>
+		
+		<!--评论的提交按钮-->
+		<div class="weui_cells weui_cells_form" id="addtitle" style="display: none;padding: 1px 15px;">
+            <div class="weui_cell">
+                <div class="weui_cell_bd weui_cell_primary">
+                    <textarea id="taskcontent" class="weui_textarea" placeholder="请输入评论" rows="3"></textarea>
+                </div>
+    		</div>
+    		<div class="bd spacing" style="float: right;margin:2px;">
+	            <a href="javascript:;" id="task_re" class="weui_btn weui_btn_mini weui_btn_primary" data-taskid= "<{$detail.taskid}>">提交</a>
+	        </div>
+        </div>
+		
+		<{foreach $alldata as $d}>
+		<div class="weui_cells">
+			<div class="weui_cell">
+				<div class="weui_cell_hd">
+					<img src="<{$d.img}>"alt="头像" style="width : 50px;">
+				</div>
+				<div class="weui_cell_bd weui_cell_primary">
+					<p style="font-size: 13px;"><{$d.reply}></p>
+				</div>
+			</div>
+		</div>
+		<div class="weui_cells_tips">
+			<{$d.name}>&nbsp;回复于<span>&nbsp;<{$d.datetime}></span>
+			<span style="display:<{if $detail.state eq 1 or $d.vid eq $smarty.session.vip.id}>none<{else}>block<{/if}>;float: right;margin-right: 5px;"><a href="#" class="adopted" data-trid="<{$d.trid}>" data-vid="<{$d.vid}>" data-taskid="<{$detail.taskid}>">采纳</a></span>
+		</div>
+		<{/foreach}>
+	</div>
+</div>

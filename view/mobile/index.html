@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="/yuanku/css/mobile.css"/>
+		<script src="/yuanku/js/jquery-1.10.2.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+	<{include file="mobile/navtop.html" url="/yuanku/adminIndex-comment.html" }>
+	<section style="border: 0px; margin: 5px 0px; box-sizing: border-box;  clear: both; padding: 0px;">
+	        <section style="box-sizing: border-box;">
+	            <img data-width="100%" src="/yuanku/img/img8.gif" 
+	            	style="box-sizing:border-box; height:auto !important; width:100%;display: block;" title="" vspace="0"/>
+	        </section>
+	    </section>
+	    <section class="conetnBox">	
+	    	<strong>
+	    		<span style="WORD-WRAP: break-word !important; MAX-WIDTH: 100%;COLOR: rgb(231,71,9); PADDING-BOTTOM: 4px; PADDING-TOP: 4px; PADDING-LEFT: 10px; padding-right:8px; border-radius: 5px!important;">最新资讯</span>
+	    		<a href="/yuanku/mobile-second-4.html" style="float:right">更多</a>
+	    	</strong><br/>
+	    	<{foreach $data.data as $res}>
+	    	<span>【<{$res.addtime|date_format:"%Y-%m-%d"}>】<a href="/yuanku/mobile-third-<{$res.n_id}>.html"><{$res.n_title}></a></span><br/>
+	        <{/foreach}>
+	    </section>
+	    <section class="conetnBox">
+	            <strong>
+	            	<span style="WORD-WRAP: break-word !important; MAX-WIDTH: 100%;COLOR: rgb(231,71,9); PADDING-BOTTOM: 4px; PADDING-TOP: 4px; PADDING-LEFT: 10px; padding-right:8px; border-radius: 5px!important;">源酷资讯</span>
+	            </strong>
+	            	<a href="/yuanku/mobile-enterJoinVip.html">2015精英人才招聘火热进行!</a>  
+	    </section>
+	    <section class="conetnBox">
+	        <strong><span style="WORD-WRAP: break-word !important; MAX-WIDTH: 100%;COLOR: rgb(231,71,9); PADDING-BOTTOM: 4px; PADDING-TOP: 4px; PADDING-LEFT: 10px; PADDING-RIGHT: 10px; MARGIN-RIGHT: 8px; border-radius: 5px!important;">项目展示 <span style="color:#000000"></span></span>
+	        	<a href="/yuanku/mobile-second-3.html" style="float:right">更多</a>
+	        </strong><br/>
+	        <section class="img">
+	        	<ul>
+	        		<{foreach $data.data1 as $res}>
+	        		<li><a href="/yuanku/mobile-third-<{$res.n_id}>.html"><img src="<{$res.n_img}>"/></a></li>
+	        		<{/foreach}>
+	        	</ul>
+	        	<div style="clear: both;"></div>
+	        </section>
+	    </section>
+	    <section class="conetnBox">  
+	           <strong>
+	           	<span style="WORD-WRAP: break-word !important; MAX-WIDTH: 100%;COLOR: rgb(231,71,9); PADDING-BOTTOM: 4px; PADDING-TOP: 4px; PADDING-LEFT: 10px; padding-right:8px; border-radius: 5px!important;">公司介绍</span>
+	           </strong><br/>
+	           <section class="titles">
+	           		广州源酷创意科技有限公司成立于中国广告业和电子商务业发展迅猛的21世纪初,由国内知名的金融证券公司和房地产商投资运营....<a href="/yuanku/mobile-third-<{foreach $data.data2 as $res}><{$res.n_id}><{/foreach}>.html">查看更多</a><!--http://u.eqxiu.com/s/W6Ojax56-->
+	           </section>
+	    </section>
+	    <section class="conetnBox">  
+	           <strong>
+	           	<span style="WORD-WRAP: break-word !important; MAX-WIDTH: 100%;COLOR: rgb(231,71,9); PADDING-BOTTOM: 4px; PADDING-TOP: 4px; PADDING-LEFT: 10px; padding-right:8px; border-radius: 5px!important;">源酷文化</span>
+			   </strong><br/>
+	           <section class="titles">
+	           		<p>1.源酷使命:为客户提供专业的,符合时代发展趋势并具有竞争里的品牌策划与IT技术服务</p><p>2.源酷愿景:成为国内最权威的品牌策划、IT技术服务及高端人才培养方案的提供商....<a href="/yuanku/mobile-third-<{foreach $data.data3 as $res}><{$res.n_id}><{/foreach}>.html">查看更多</a></p>
+	           </section>
+	    </section>
+	    <section class="conetnBox">  
+	           	<strong>
+	           	<span style="WORD-WRAP: break-word !important; MAX-WIDTH: 100%;COLOR: rgb(231,71,9); PADDING-BOTTOM: 4px; PADDING-TOP: 4px; PADDING-LEFT: 10px; padding-right:8px; border-radius: 5px!important;">最新招聘</span>
+				<a href="/yuanku/mobile-second-5.html" style="float:right">更多</a></strong><br/>
+	          	<section class="zhaopin">
+	          		<ul>
+	          			<{foreach $data.data4 as $res}>
+	          			<li><a href="/yuanku/mobile-third-<{$res.n_id}>.html"><{$res.n_title|truncate:8:""}></a></li>
+
+	          			<{/foreach}>
+	          		</ul>
+	          	<div style="clear: both;"></div>
+	          	</section>
+	    </section>
+	    <section class="conetnBox">  
+	           <strong>
+	           	<span style="WORD-WRAP: break-word !important; MAX-WIDTH: 100%;COLOR: rgb(231,71,9); PADDING-BOTTOM: 4px; PADDING-TOP: 4px; PADDING-LEFT: 10px; padding-right:8px; border-radius: 5px!important;">校企合作</span>
+	           </strong><br/>
+	           <section class="cooperation">
+	           	<ul>
+	        		<li><img src="/yuanku/img/img10.gif"/></li>
+	        		<li><img src="/yuanku/img/img11.gif"/></li>
+	        		<li><img src="/yuanku/img/img12.gif"/></li>
+	        		<li><img src="/yuanku/img/img13.gif"/></li>
+	        		<li><img src="/yuanku/img/img14.gif"/></li>
+	        		<li><img src="/yuanku/img/img15.gif"/></li>
+	        	</ul>
+	        	<div style="clear: both;"></div>
+	           </section>
+	    </section>
+	    <section class="nav">
+	    	<{include file="mobile/navBottom.html"}>
+	    </section>
+	</body>
+</html>

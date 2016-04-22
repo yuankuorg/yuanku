@@ -1,0 +1,76 @@
+<script type="text/javascript">
+	$(function() {
+		//搜索学校
+		$("#seek").click(function(){
+			$.ajax({
+				type:"post",
+				url :"/yuanku/vip-schoolPop.html",
+				data : {"sname":$("#searchName").val()},
+				success : function( text ) {
+					$("#myModal .modal-content").empty().html(text);
+				},
+				async:true
+			});
+		});
+		
+		$("#comfirschool").click(function(){
+			$("#sid").val($(".sel:checked").data("sid"));
+			$("#schoolname").val($(".sel:checked").data("sname"));
+		});
+	})
+</script>
+
+<div class="modal-body">
+	<div class="panel panel-primary margin-base">
+		<div class="panel-heading">
+			<h3 class="panel-title"><label>选择学校</label></h3>		
+		</div>
+		
+		<div class="panel-body">
+		<form class="form-group">
+			<div class="col-lg-10">
+				<input id="searchName" type="text" class="form-control" placeholder="学校名称" value="">
+			</div>
+			<div class="col-lg-2">
+				<button id="seek" type="button" class="btn btn-info btn-ms paddingLR"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>搜索</button>
+			</div>
+		</form>
+		</div>	
+	
+		<div class="panel-body">
+		<table class="table table-striped table-bordered table-hover">
+			<thead>
+				<tr>
+					<td>选择</td>
+					<td>编号</td>
+					<td>学校LOGO</td>
+					<td>学校名称</td>
+					<td>操作</td>
+				</tr>
+			</thead>
+			<tbody>
+				<{foreach $data.data as $school}>
+					<tr>
+						<td>
+							<input type="radio" name="sel" class="sel" value="" data-sid="<{$school.sid}>" data-sname="<{$school.sname}>"/>
+						</td>
+						<td><{$school.sid}></td>
+						<td>
+							<img src="<{$school.logo}>" alt="加载失败" class="img-rounded" width="50">
+						</td>
+						<td><{$school.sname}></td>
+						<td>
+							<span class="del glyphicon glyphicon-trash mouse" data-sid="<{$school.sid}>" ></span>
+						</td>
+					</tr>
+				<{/foreach}>
+			</tbody>
+		</table>	
+	  	<{include file="admin/modalPages.html"  url="/yuanku/vip-schoolPop.html"}>
+		</div>
+	
+		<div class="modal-footer">
+			<button type="button" id="comfirschool" class="btn btn-primary" data-dismiss="modal">确定</button>
+		</div>
+	</div>
+</div>

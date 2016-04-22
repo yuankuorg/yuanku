@@ -1,0 +1,76 @@
+<script type="text/javascript">
+	//清除弹窗缓冲
+	$("#delModal").on("hidden.bs.modal", function() {
+	    $(this).removeData("bs.modal");
+	});
+	$("#myModal").on("hidden.bs.modal", function() {
+	    $(this).removeData("bs.modal");
+	});
+	//搜索记录
+	$("#seeklog").click(function(){
+		redriect("/yuanku/adminIndex-vipMana.html");
+		$.ajax({
+			type:"post",
+			url:"/yuanku/vip-seeklogStatus.html",
+			data:{"vipname":$("#logname").val(),"admin":$("#logadmin").val()},
+			success:function(text){
+				$(".modal-content").fadeIn(function(){
+					$(this).html(text);
+				});
+			},
+			async:true
+		});
+	})
+</script>
+
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="myModalLabel">状态修改记录</h4>
+  </div>
+  <div class="modal-body"> 
+    <div class="row">
+    	<div class="col-lg-12 pre-scrollable">
+    		<form class="form-horizontal">
+				<div class="form-group">
+					<div class="col-lg-5">
+						<input id="logname" type="text" class="form-control" placeholder="会员名称">
+					</div>
+					<div class="col-lg-5">
+						<input id="logadmin" type="text" class="form-control" placeholder="管理员">
+					</div>
+					<div class="col-lg-2">
+						<button type="button" id="seeklog" class="btn btn-default">搜索</button>
+					</div>
+				</div>
+			</form>
+    		<table class="table table-hover table-bordered">
+    			<thead>
+    				<tr>
+				    	<td>编号</td>
+				    	<td>姓名</td>
+				    	<td>旧值状态</td>
+				    	<td>新值状态</td>
+				    	<td>操作时间</td>
+				    	<td>操作员</td>
+				    </tr>
+    			</thead>
+			    <tbody>
+					<{foreach $data.log as $log}>
+						<tr>
+					    	<td><{$log@iteration}></td>
+					    	<td><{$log.vipname}></td>
+					    	<td><{if !empty($log.oldname)}><{$log.oldname}><{else}>(空)<{/if}></td>
+					    	<td><{if !empty($log.newname)}><{$log.newname}><{else}>(已删除)<{/if}></td>
+					    	<td><{$log.alterDate}></td>
+					    	<td><{$log.admin}></td>
+					    </tr>
+					<{/foreach}>
+			    </tbody>
+			  </table>
+    	</div>
+    </div>
+  </div>
+  <div class="modal-footer">
+  	<{include file="admin/modalPages.html" url="/yuanku/vip-seeklogStatus.html" }>
+    <button type="button" id="end" class="btn btn-primary" data-dismiss="modal">确定</button>
+  </div>

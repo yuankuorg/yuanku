@@ -1,0 +1,72 @@
+td,th{text-align: center;}
+.margin-base{margin-top: 10px;}
+.mouse{cursor: pointer;}
+
+/*卓仕宇*/
+.line-base{background-color: #2E6DA4; width: 100%; height: 1px; margin: 8px 0px;}
+.margin-top-0px{margin-top: 0px;}
+#vipDetails input[name = vipsex]{vertical-align: middle;}
+#vipMana .col-lg-4 .col-lg-6{padding: 0px 4px 0px 0px;}/*手机姓名表单*/
+#vipMana .col-lg-4,#vipMana .col-lg-8{padding: 0px;}/*会员搜索表单*/
+.paddingLR{padding-left: 6px; padding-right: 6px;}
+/*td内的数据溢出的用···代替*/
+/*需要的表格添加类box-table,td添加类box*/
+.box-table{table-layout: fixed;}
+.box{
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+body{
+	font-family: "微软雅黑";	
+	font-size: 14px;
+}
+
+#logo{
+	height: 100px;
+	background: url(/yuanku/img/logo.jpg);
+	background-color: #337ab7;	
+}
+
+#menu{
+	font-size: 16px;
+	position: fixed;
+	top: 100px;
+	left: 0px;
+	bottom: 0px;
+	border-right: 10px solid #337ab7;
+	margin: 0; 
+	padding: 0;
+	overflow-y: scroll;
+}
+#menu ul{
+	position: relative; 
+	width: 100%;
+	top:10px;
+}
+
+/*折叠菜单的样式,开始*/
+#menu .menuChild{
+	margin-top:-8px;
+	margin-bottom: 12px;
+}
+
+#menu .menuChild ul{
+	padding-left:20px;
+}
+/*折叠菜单的样式,结束*/
+
+
+.main{
+	position: fixed;
+	right: 0px;
+	top: 100px;
+	bottom: 0px;
+	overflow: scroll;
+}
+
+/*杨鑫润*/
+.margin5{
+	margin-bottom: 5px;
+}

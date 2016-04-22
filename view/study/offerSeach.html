@@ -1,0 +1,21 @@
+<{foreach $row as $offer}>
+<div class="weui_cells ">
+	<div class="weui_cell js_grid" data-id="offermine" data-taskid="<{$offer.taskid}>">
+    	<div class="weui_cell_hd">
+        	<img src="<{$offer.img}>" alt="icon">
+        	<h6><{$offer.name}></h6>
+    	</div>
+	    <div class="weui_cell_bd body  weui_cell_primary">
+	    	<h4><{$offer.title}>
+	    		<{if $offer.state eq 1}>
+	    			<span style="float: right;"><i class="weui_icon_success" title="已解决"></i></span>
+	    		<{else}>
+	    			<span style="float: right;"><i class="weui_icon_info" title="待解决"></i></span>
+	    		<{/if}>
+	    	</h4>
+	    	<p ><{$offer.content}></p>
+	    	<p class="cxt_time"><span style="color: red;">赏金：<{$offer.rewardpoints}></span> | <{$offer.releasetime}></p>
+    	</div>
+    </div>
+</div>
+<{/foreach}>

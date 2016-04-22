@@ -1,0 +1,75 @@
+<div class="page">
+	<script type="text/javascript">
+		$(function(){
+			var j = 1;
+			$(".Rankschool .js_grid").click(function(){
+				pageManager.go($(this).data("id"));
+			});
+			$("#schoolmore").click(function(){
+				$('#loadingToast').loadingShow();
+				j++;
+				$.ajax({ 
+					type:"post",
+					url:"Rank-getmoreschool.html",
+					dataType:"json",
+					data:{"curpage":j},
+					success:function( json ){
+						$('#loadingToast').hide();
+						if( json != false){
+							for(var dyn in json){
+								var temp = json[dyn];
+								var str = '<div class="weui_cells"><div class="weui_cell"><div class="weui_cell_hd"><img src="'+ temp.logo +'"  style="height: 50px; width: 50px;margin-right:5px;display:block;"></div><div class="weui_cell_bd weui_cell_primary"><p>'+ temp.sname +'</p><p>人数:'+ temp.schoolren +'/学校积分:'+ temp.spoint +'分&nbsp;&nbsp;总分:'+ temp.schooltotal +'分</p></div><div class="weui_cell_ft"><span></span></div></div></div>'; 
+								$("#school_fu").append(str);
+							}
+						}else{
+							$("#schoolmore").css("display","none");
+							$("#dialog").dialog("提示","无更多内容");
+						}	
+					},
+					async:true
+				});
+			});
+		});
+	</script>
+	<div class="weui_cells">
+		<img src="/yuanku/img/study/rankschool.jpg" style="width: 100%; height: 150px;" />
+	</div>	
+	<div class="bd" id="school_fu">
+        <{foreach $school as $s}>
+	        <div class="weui_cells">
+			    <div class="weui_cell">
+			    	<div class="weui_cell_hd">
+			        	<img src="<{$s.logo}>"  style="height: 50px; width: 50px;margin-right:5px;display:block;">
+			    	</div>
+				    <div class="weui_cell_bd weui_cell_primary">
+				    	<p><{$s.sname}></p>
+				    	<p>人数:<{$s.schoolren}>/学校积分:<{$s.spoint}>分&nbsp;&nbsp;总分:<{$s.schooltotal}>分</p>
+			    	</div>
+			    	<{if $s@index eq 0}>
+				    	<div class="weui_cell_ft">
+				    		<img src="/yuanku/img/study/school1.png"  style="height: 50px;"/>
+				    	</div>
+			    	<{/if}>
+			    	<{if $s@index eq 1}>
+				    	<div class="weui_cell_ft">
+				    		<img src="/yuanku/img/study/school2.png"  style="height: 50px;"/>
+				    	</div>
+			    	<{/if}>
+			    	<{if $s@index eq 2}>
+				    	<div class="weui_cell_ft">
+				    		<img src="/yuanku/img/study/school3.png"  style="height: 50px;"/>
+				    	</div>
+			    	<{/if}>
+			    	<{if $s@index > 2}>
+				    	<div class="weui_cell_ft">
+				    		<span></span>
+				    	</div>	
+		    		<{/if}>	
+			    </div>
+			</div>
+		<{/foreach}>  
+	</div>
+	<div class="bd">
+		<a href="javascript:void(0);" class="weui_btn weui_btn_plain_default yuankumore" id="schoolmore">加载更多</a>
+	</div>
+</div>

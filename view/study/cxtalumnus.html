@@ -1,0 +1,58 @@
+<!--我的校友-->
+<div class="page">
+	<script type="text/javascript">
+		$(function(){
+			var j = 1; 
+			//点击获取更多我的校友信息
+			$("#mymorealu").click(function(){
+				j++;
+				$('#loadingToast').loadingShow();
+				$.ajax({
+					type:"post",
+					url:"cxt-getmorealumnus.html",
+					dataType:"json",
+					data:{"curpage":j},
+					success:function( json ){
+						$('#loadingToast').hide();
+						if( json != false){
+							for(var dyn in json ){
+								var temp = json[dyn];
+								if( temp.state == null){
+									temp.state ="";
+								}
+								var str = '<div class="weui_cell"><div class="weui_cell_hd"><img src="' + temp.img + '" alt="icon"></div><div class="weui_cell_bd weui_cell_primary"><h4>' + temp.name + '</h4><p>积分:' + temp.exchange + '&nbsp;&nbsp;<span>闯关：' + temp.count + '&nbsp;&nbsp;</span><span>能力：' + temp.toatl + '</span></p></div><div class="weui_cell_ft" style="float: right;">' + temp.state + '</div></div>';
+								$(".cxtalumnus .weui_cells").append(str);
+							}
+						}else{
+							$("#dialog").dialog("提示","无更多内容");
+							$("#mymorealu").css("display","none");
+						}
+					},
+					async:true
+				});
+			});
+		});
+	</script>
+	<div class="bd">
+		<div class="weui_cells">
+			<{foreach $data as $alumnu}>
+			    <div class="weui_cell">
+			    	<div class="weui_cell_hd">
+			        	<img src="<{$alumnu.img}>" alt="icon">
+			    	</div>
+				    <div class="weui_cell_bd weui_cell_primary">
+				    	<h4><{$alumnu.name}></h4>
+				    	<p>积分:<{$alumnu.exchange}>&nbsp;&nbsp;<span>闯关：<{$alumnu.count}>&nbsp;&nbsp;</span><span>能力：<{$alumnu.total}></span></p>
+			    	</div>
+			    	<div class="weui_cell_ft" style="float: right;">
+			    		<{$alumnu.state}>
+			    	</div>
+			    </div>
+			<{/foreach}>
+		</div>
+	</div>
+	<div class="bd">
+		<a href="javascript:void(0);" class="weui_btn weui_btn_plain_default" id="mymorealu" style="font-size: 14px; margin: 10px 10px;">加载更多</a>
+	</div>
+	<div class="weui_cell_ft" style="height: 100px;"></div>
+</div>

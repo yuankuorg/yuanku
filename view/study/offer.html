@@ -1,0 +1,189 @@
+<div class="page">
+	<script type="text/javascript">
+		$(function() {
+			var j = 1;
+			//头栏切换
+			gomyoffer();
+			$(".offer #weui_gs_boder").click(function() {
+				$("#weui_gs_boder").css("border-bottom", "3px solid #039702");
+				$("#weui_gs_boder_one").css("border-bottom", "none");
+				$("#mine").css("display", "block");
+				$("#xun").css("display", "none");
+			});
+			$(".offer #weui_gs_boder_one").click(function() {
+				$("#weui_gs_boder").css("border-bottom", "none");
+				$("#weui_gs_boder_one").css("border-bottom", "3px solid #039702");
+				$("#mine").css("display", "none");
+				$("#xun").css("display", "block");
+			});
+			
+			//搜索按钮点击
+			var title = $("#searchMes").val();
+			$(".offer #find").click(function(){
+				if (title == "") {
+					$("#dialog").dialog("提示","请输入正确的题目！");
+					return;
+				}
+				$('#loadingToast').loadingShow();
+				$.ajax({
+					type:"post",
+					url:"/yuanku/offer-searchMes.html",
+					data:{"title":title},
+					success:function(text){
+						if( text.length != 0 ){
+							$('#loadingToast').hide();
+							$("#moreoffer").html("");
+							$("#moreoffer").append(text);
+							gomyoffer();
+						}else{
+							$("#dialog").dialog("提示","无更多内容");
+						}
+					},
+					async:true
+				});
+			});
+			
+			//点击加载更多
+			$(".offer #moretask").click(function(){
+				j++;
+				$('#loadingToast').loadingShow();
+				$.ajax({
+					type:"post",
+					url:"/yuanku/offer-moreOffer.html",
+					data:{"curpage":j,title : title},
+					success:function(text){
+						if( text.length != 0 ){
+							$('#loadingToast').hide();
+							$("#moreoffer").append(text);
+							gomyoffer();
+						}else{
+							$("#moretask").css("display","none");
+							$('#loadingToast').hide();
+							$("#dialog").dialog("提示","无更多内容");
+						}
+					},
+					async:true
+				});
+			});
+			//点击加载更多
+			$(".offer #mytask").click(function(){
+				j++;
+				$('#loadingToast').loadingShow();
+				$.ajax({
+					type:"post",
+					url:"/yuanku/offer-myTask.html",
+					data:{"curpage":j},
+					success:function(text){
+						if( text.length != 0 ){
+							$('#loadingToast').hide();
+							$("#mymore").append(text);
+							gomyoffer();
+						}else{
+							$("#mytask").css("display","none");
+							$('#loadingToast').hide();
+							$("#dialog").dialog("提示","无更多内容");
+						}
+					},
+					async:true
+				});
+			});
+			function gomyoffer(){
+				//页面跳转
+				$(".offer .js_grid").click(function() {
+					var taskid = {taskid:$(this).data("taskid")};
+					pageManager.go($(this).data("id"),taskid);
+				});
+			}
+			
+		});
+	</script>
+	<div class="weui_lxr_herad" id="weui_gs_boder_one" >任务列表</div>
+	<div class="weui_lxr_herad" id="weui_gs_boder" >我的任务</div>
+	<div id="xun">
+		<div class="weui_cells" style="clear: both;">
+			<div class="weui_cell weui_vcode" style="padding: 5px 5px;">
+		        <div class="weui_cell_bd body weui_cell_primary">
+		            <input class="weui_input" id="searchMes" type="text" placeholder="<{if isset($smarty.post.title)}><{$smarty.post.title}><{else}>搜索任务<{/if}>" />
+		        </div>
+		        <div>
+		            <a href="javascript:;" id="find"><img src="/yuanku/img/study/search.png" style="height: 25px;"/></a>
+		        </div>
+		    </div>
+    	</div>
+    	<div class="seach">
+    		<div class="weui_cells weui_cells_access">
+				<div class="bd " id="moreoffer">
+					<{foreach $row as $offer}>
+						<div class="weui_cells ">
+				    		<div class="weui_cell js_grid" data-id="offermine" data-taskid="<{$offer.taskid}>">
+						    	<div class="weui_cell_hd">
+						        	<img src="<{$offer.img}>" alt="icon">
+						        	<h6><{$offer.name}></h6>
+						    	</div>
+							    <div class="weui_cell_bd body  weui_cell_primary">
+							    	<h4><{$offer.title}>
+							    		<{if $offer.state eq 1}>
+							    			<span style="float: right;"><i class="weui_icon_success" title="已解决"></i></span>
+							    		<{else}>
+							    			<span style="float: right;"><i class="weui_icon_info" title="待解决"></i></span>
+							    		<{/if}>
+							    	</h4>
+							    	<p ><{$offer.content}></p>
+							    	<p class="cxt_time"><span style="color: red;">赏金：<{$offer.rewardpoints}></span> | <{$offer.releasetime}></p>
+						    	</div>
+						    </div>
+				        </div>
+			        <{/foreach}>
+				</div>	
+			</div>
+			<div class="bd">
+			   <a href="javascript:void(0);" class="weui_btn weui_btn_plain_default yuankumore" id="moretask" style="font-size: 14px;margin: 10px 0px;">加载更多</a>
+    		</div>
+    	</div>
+		
+	</div>
+	<!--我的任务-->
+	<div id="mine" style="display:none;clear: both;">
+		<div class="weui_cells head">		    
+			<div class="weui_cell">
+			    <div class="weui_cell_bd weui_cell_primary" id="weui_lxr_content_one">
+			       <img style="float: left;" src="<{$smarty.session.vip.img}>" />
+			       <div class="weui_lxr_text_title" style="width: 220px;float: right;">
+						<h3><{$smarty.session.vip.name}></h3>
+						<div>发布任务：<span><{$count}></span></div>
+						<div class="spacing js_grid" data-id="offeradd">
+				        	<a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_primary">发布任务</a>
+				        </div>
+	                </div>
+			    </div>
+			</div>
+		</div>
+		
+		<div class="weui_cells weui_cells_access">
+			<div class="bd" id="mymore">
+			  <{foreach $mydata as $my}>
+				<div class="weui_cells">
+					<div class="weui_cell js_grid" data-id="offermine" data-taskid="<{$my.taskid}>">
+						<div class="weui_cell_bd body  weui_cell_primary" style="width: 50px;height: 50px;">
+							<h4><{$my.title}>
+					    		<{if $my.state eq 1}>
+					    			<span style="float: right;"><i class="weui_icon_success" title="已解决"></i></span>
+					    		<{else}>
+					    			<span style="float: right;"><i class="weui_icon_info" title="待解决"></i></span>
+					    		<{/if}>
+					    	</h4>
+							<p><{$my.content}></p>
+							<p class="cxt_time"><span style="color: red;">赏金：<{$my.rewardpoints}></span> |<{$my.releasetime}></p>
+						</div>
+					</div>
+				</div>
+			  <{/foreach}>
+			</div>
+		</div>
+	  <div class="bd">
+		<a href="javascript:void(0);" class="weui_btn weui_btn_plain_default yuankumore" id="mytask" style="font-size: 14px;margin: 10px 0px;">加载更多</a>
+	  </div>
+	</div>
+	<!--
+		头栏内容分割线
+	-->

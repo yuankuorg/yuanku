@@ -1,0 +1,147 @@
+<script type="text/javascript">
+	$(function(){
+		$(".alt").click(function(){	
+			$.ajax({
+				type:"post",
+				url:"/yuanku/admin-adminIstrator.html",
+				success:function(text){
+					$(".main").html(text);
+				},
+				async:true
+			});
+		});
+		$("#add button").click(function(){
+			var flag=true;
+			$("#form input").each(function(){
+				if( $(this).attr("name")=="code"){
+					var code=$(this).val();
+					if(code.length==0||code.length>50){
+						$(this).attr("placeholder","账号不能为空");
+						flag=false;
+						return false;
+					}
+				}else if( $(this).attr("name")=="name"){
+					var name=$(this).val();
+						if(name.length==0||name.length>50){
+							$(this).attr("placeholder","姓名不能为空");
+							flag=false;
+							return false;
+						}
+				}else if( $(this).attr("name")=="moblile"){
+					var moblile=$(this).val();
+						if(moblile.length==0||moblile.length>11){
+							$(this).attr("placeholder","联系方式不能为空");
+							flag=false;
+							return false;
+						}
+				}else if($(this).attr("name")=="pwd"){
+					var pwd=$(this).val();
+						if(pwd.length==0||pwd.length>11){
+							$(this).attr("placeholder","密码不能为空");
+							flag=false;
+							return false;
+						}
+				}
+			});
+			
+			if(!flag){
+				return;
+			}
+			//修改管理员
+			var id=$("input[name=data-id]").val();
+			if(id){
+				$('#delModal').modal({
+					backdrop : true,
+					keyboard : true,
+					show     : true
+				});				
+				$('#delModal').unbind().on('hidden.bs.modal',function(){
+					var re = $("#modalok").attr("data-sub");
+					if(re=='true'){
+						$.ajax({
+							type:"post",
+							url:"/yuanku/admin-upadmin.html",
+							data:{"id":id,"code":$("input[name=code]").val(),"name":$("input[name=name]").val(),"moblile":$("input[name=moblile]").val(),"pwd":$("input[name=pwd]").val()},
+							dataType:"json",
+							success:function(obj){
+								$("#modalok").attr("data-sub","false");
+								if(obj.code==1){
+									alert("修改成功!");
+								}else if(obj.code==0){
+									$('#myModal').modal({
+										backdrop : true,
+										keyboard : true,
+										show     : true,
+										remote	 : '/yuanku/admin-showflase.html'
+									});
+								}
+								redriect("/yuanku/admin-adminIstrator.html");
+							},
+							async:true
+						});
+					}else{
+						$('#delModal').modal("hide");
+					}
+				});
+			}else{//新增管理员
+				$.ajax({
+					type:"post",
+					url:"/yuanku/admin-add.html",
+					data:{"code":$("input[name=code]").val(),"name":$("input[name=name]").val(),"moblile":$("input[name=moblile]").val(),"pwd":$("input[name=pwd]").val()},
+					success:function(text){
+						if(text=="true"){
+							alert("增加成功!");
+						}else if(text="false"){
+							alert("增加失败!");
+						}
+						redriect("/yuanku/admin-adminIstrator.html");
+					},
+					async:true
+				});
+			}
+			
+		});
+	});
+</script>
+<div class="panel panel-primary" style="margin-top:10px;">
+  <div class="panel-heading">
+  	<h3 class="panel-title"><span class="alt glyphicon glyphicon-share-alt pull-right" aria-hidden="true"></span><label class="update">新增管理员</label></h3>
+  	
+  </div>
+  <form class="form-horizontal" role="form" style="margin-top:10px;" id="form">
+   	<div class="form-group">
+      	<label for="firstname" class="col-sm-2 control-label">账号:</label>
+      	<div class="col-sm-3"> 	
+      	<input type="hidden" name="data-id" id="data-id" value="<{if !empty($data)}><{foreach $data as $res}><{$res.id}><{/foreach}><{/if}>" />
+        <input type="text" class="form-control" name="code" id="firstname" 
+            placeholder="请输入账号" value="<{if !empty($data)}><{foreach $data as $res}><{$res.code}><{/foreach}><{/if}>">
+      	</div>
+   	</div>
+   	<div class="form-group">
+      	<label for="lastname" class="col-sm-2 control-label">姓名:</label>
+      	<div class="col-sm-3">
+      		
+         	<input type="text" class="form-control" name="name" id="lastname" 
+            placeholder="请输入姓名" value="<{if !empty($data)}><{foreach $data as $res}><{$res.name}><{/foreach}><{/if}>"> 
+            
+      	</div>
+   	</div>
+   	<div class="form-group">
+      	<label for="lastname" class="col-sm-2 control-label">密码:</label>
+      	<div class="col-sm-3">	
+         	<input type="text" class="form-control" name="pwd" id="lastname" placeholder="请输入密码" value="">        
+      	</div>
+   	</div>
+   	<div class="form-group">
+      	<label for="lastname" class="col-sm-2 control-label">联系方式:</label>
+      	<div class="col-sm-3">
+         	<input type="text" class="form-control" name="moblile" id="lastname" placeholder="请输入联系方式" value="<{if !empty($data)}><{foreach $data as $res}><{$res.moblile}><{/foreach}><{/if}>">	
+      	</div>
+   	</div>
+   	<div class="form-group">
+      	<div class="col-sm-offset-2 col-sm-10" id="add">
+         	<button type="button" class="btn btn-default">添加</button>
+      	</div>
+   	</div>
+</form>
+</div>

@@ -1,0 +1,158 @@
+@CHARSET "UTF-8";
+
+/* 
+ *  全局样式
+ *  ---------------------------------------
+ *  作者: haibao(http://smwell.sinaapp.com/)
+ *  时间: 2015-1-6
+ *  企鹅：964279742
+ *  创意源于生活，代码如诗从你我开始
+ *  OOCSS虽好，需培养，需规范，需慢慢品尝
+ */
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	background-color: #f2f2f2;
+}
+
+body {
+	max-width: 640px;
+	margin: 0 auto;
+	box-shadow: 0 0 160px 0 #999;
+	position: relative;
+	font: .85em/1.4 "微软雅黑", "Microsoft Yahei", 'Arial', 'san-serif';
+	color: #666;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+	width: auto;
+	-ms-interpolation-mode: bicubic;
+	vertical-align: middle;
+}
+
+ul,
+li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+
+
+/*slider*/
+
+#slider-box {
+	position: relative;
+	width: 100%;
+	height: 175px;
+	overflow: hidden;
+}
+
+#slider {
+	height: 100%;
+	overflow: hidden;
+	*zoom: 1;
+	-webkit-backface-visibility: hidden;
+	-webkit-transform-style: preserve-3d;
+}
+
+#slider li {
+	width: 100%;
+	height: 100%;
+	float: left;
+	display: none;
+}
+
+#slider li.active {
+	display: block;
+	-webkit-animation-name: lightSpeedIn;
+	animation-name: lightSpeedIn;
+	-webkit-animation-timing-function: ease-out;
+	animation-timing-function: ease-out;
+	-webkit-animation-duration: 1s;
+	animation-duration: 1s;
+	-webkit-animation-fill-mode: both;
+	animation-fill-mode: both;
+}
+
+#slider li img {
+	width: 100%;
+}
+
+#arrow {
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+}
+
+#arrow li {
+	width: 12px;
+	height: 12px;
+	float: left;
+	display: inline-block;
+	margin: 0 3px;
+	background-color: #d5dbd6;
+	border-radius: 50%;
+	-webkit-border-radius: 50%;
+}
+
+#arrow li.active {
+	background-color: #c95122;
+}
+
+@-webkit-keyframes lightSpeedIn {
+	0% {
+		-webkit-transform: translateX(100%) skewX(-30deg);
+		transform: translateX(100%) skewX(-30deg);
+		opacity: 0;
+	}
+	60% {
+		-webkit-transform: translateX(-20%) skewX(30deg);
+		transform: translateX(-20%) skewX(30deg);
+		opacity: 1;
+	}
+	80% {
+		-webkit-transform: translateX(0%) skewX(-15deg);
+		transform: translateX(0%) skewX(-15deg);
+		opacity: 1;
+	}
+	100% {
+		-webkit-transform: translateX(0%) skewX(0deg);
+		transform: translateX(0%) skewX(0deg);
+		opacity: 1;
+	}
+}
+
+@keyframes lightSpeedIn {
+	0% {
+		-webkit-transform: translateX(100%) skewX(-30deg);
+		-ms-transform: translateX(100%) skewX(-30deg);
+		transform: translateX(100%) skewX(-30deg);
+		opacity: 0;
+	}
+	60% {
+		-webkit-transform: translateX(-20%) skewX(30deg);
+		-ms-transform: translateX(-20%) skewX(30deg);
+		transform: translateX(-20%) skewX(30deg);
+		opacity: 1;
+	}
+	80% {
+		-webkit-transform: translateX(0%) skewX(-15deg);
+		-ms-transform: translateX(0%) skewX(-15deg);
+		transform: translateX(0%) skewX(-15deg);
+		opacity: 1;
+	}
+	100% {
+		-webkit-transform: translateX(0%) skewX(0deg);
+		-ms-transform: translateX(0%) skewX(0deg);
+		transform: translateX(0%) skewX(0deg);
+		opacity: 1;
+	}
+}

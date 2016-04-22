@@ -1,0 +1,119 @@
+<script type="text/javascript">
+	$(function(){
+		
+		//点击重置按钮
+		$("#reset").click(function(){
+			$(".panel-body input").each(function(){
+				$(this).val("");
+			});
+
+			$.ajax({
+				type:"post",
+				url:"/yuanku/wechatGroupMsg-groupMsg.html",
+				data:{"n_title":$("#newstitle").val(),"code":$("#newadmin").val(),
+				"starttime":$("#starttime").val(),"endtime":$("#endtime").val()},
+				success:function( text ){
+					$(".main").fadeOut(function(){
+						$(this).html(text);
+						$(this).fadeIn();	
+					});						
+				},
+				async:true
+			});
+		});
+		//点击搜索按钮
+		$("#search").click(function(){
+			$.ajax({
+				type:"post",
+				url:"/yuanku/wechatGroupMsg-groupMsg.html",
+				data:{"n_title":$("#newstitle").val(),"code":$("#newadmin").val(),
+				"starttime":$("#starttime").val(),"endtime":$("#endtime").val()},
+				success:function( text ){
+					$(".main").fadeOut(function(){
+						$(this).html(text);
+						$(this).fadeIn();	
+					});						
+				},
+				async:true
+			});
+		});	
+		
+		//添加资讯到图文列表
+		$('.chooseNewTab .chooseNew').unbind().click(function(){
+			$('#theNewsList').append('<tr>'+$(this).parent().parent().html()+'</tr>');
+			$('#theNewsList').find('button').each(function(){
+				$(this).html('<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> 删除');
+			});
+			
+			$('#theNewsList .chooseNew').unbind().click(function(){
+				$(this).parent().parent().remove();
+			});
+			
+		});
+		
+		
+	});
+</script>
+
+
+<div class="panel panel-primary margin-base">
+	<div class="panel-heading">
+		<h3 class="panel-title"><label>从资讯添加图文消息</label></h3>		
+	</div>
+  	<div class="panel-body">
+		<form class="form-inline" style="margin-bottom: 10px;">
+		    <input type="text" class="form-control" id="newstitle" placeholder="搜索资讯标题" 
+		    	value="<{if !empty($smarty.post.n_title)}><{$smarty.post.n_title}><{/if}>">
+		    <input type="text" class="form-control" id="newadmin" placeholder="搜索添加人"
+		    	value="<{if !empty($smarty.post.code)}><{$smarty.post.code}><{/if}>">
+		    <input type="text" id="starttime" class="form-control" placeholder="最小时间"
+			onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',skin:'whyGreen' })" readonly="readonly"
+			value="<{if !empty($smarty.post.starttime)}><{$smarty.post.starttime}><{/if}>"/>
+			-
+			<input type="text" id="endtime" class="form-control" placeholder="最大时间"
+			onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',skin:'whyGreen' })" readonly="readonly"
+			value="<{if !empty($smarty.post.endtime)}><{$smarty.post.endtime}><{/if}>"/>	
+			<button type="button" class="btn btn-info" id="search">
+				<span class="glyphicon glyphicon-search" aria-hidden="true"></span> 搜索
+			</button>
+			<button type="button" class="btn btn-info" id="reset">
+				<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> 重置
+			</button>
+		</form>
+		<div class="line-base"></div>
+  	</div>
+  	<div class="table-responsive">
+		<table class="table table-striped table-bordered table-hover chooseNewTab">
+			<thead>
+				<tr>
+					<th width="5%">资讯ID</th>
+					<th width="22%">资讯标题</th>
+					<th width="10%">资讯封面</th>
+					<th width="10%">添加人</th>
+					<th width="20%">上传时间</th>
+					<th width="10%">操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<{foreach $data as $news}>
+					<tr>
+						<td><{$news.n_id}></td>
+						<td><{$news.n_title}></td>
+						<td><img src="<{$news.n_img}>" width="50px" height="50px"/></td>
+						<td><{$news.code}></td>
+						<td><{$news.addtime}></td>
+						<td>
+							<button  n_id="<{$news.n_id}>" type="button" class="btn btn-info chooseNew">
+									<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 添加
+							</button>
+						</td>
+					</tr>
+				<{/foreach}>
+			</tbody>
+		</table>  		
+  	</div>
+  	
+	<div class="panel-footer">
+		<{include file="admin/pages.html" url="/yuanku/wechatGroupMsg-chooseNews.html" hot='1'}>
+	</div>  	
+</div>

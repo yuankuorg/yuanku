@@ -1,0 +1,16 @@
+<{foreach $commoditydata as $cho}>
+    <a class="weui_cell getChenge" href="javascript:;" data-ischenge="<{$cho.exchange}>" data-isname="<{$getvipchenge.name}>" data-iscommoname="<{$cho.commoname}>" data-ispid="<{$cho.pid}>">
+        <div class="weui_cell_bd weui_cell_primary">
+            <img src="<{$cho.pricture}>">
+            <div class="weui_lxr_text">
+            	<span class="weui_lxr_span"><{$cho.commoname}></span><br />
+            	<span><{$cho.exchange}>积分</span><br />
+            	<span style="display: none;"><{$cho.pid}></span>
+            	<div class="weui_lxr_div_one" style="width: 80%; font-size: 12px;" ><{$cho.description}></div>
+            </div>
+        </div>
+        <div class="weui_cell_ft">
+        	兑换
+        </div>
+    </a>
+<{/foreach}>

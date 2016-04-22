@@ -1,0 +1,198 @@
+<script type="text/javascript">
+	$(function() {
+		del();
+		//返回
+		$(".panel-title #back").click(function() {
+			redriect($(this).attr("url"));
+		});
+		//增加一行
+		$(".plus").click(function(){
+			//增加的内容
+			var str = '<tr><td><span class="glyphicon glyphicon-trash mouse del" data-id="0"></span></td><td><span></span></td><td><{$smarty.session.admin.code}></td><td><input type="text" name="rtext" style="width: 100%;" /></td><td></td></tr>';
+			$(".panel table tbody").append(str);
+			del();
+			sorting();
+		});
+		
+		//提交回复
+		$("button").click(function() {
+			var flag = true;
+			//提交管理员,回复,时间
+			//提交前检查每行的回复input是否为空，空则不提交
+			$("table tbody tr input").each(function(){
+				var rtext = $(this).val();
+				if(rtext.length == 0){
+					alert("回复不能为空");
+					flag = false;
+					return false;
+				}else if (rtext.length>100) {
+					alert("回复不能超过100字！");
+					flag = false;
+					return false;
+				}
+			});
+			
+			if (!flag) {
+				return;				
+			}
+			
+			//检测回复表格
+			var replyarr = new Array();
+			//每行检查，但只检查data-id = 0
+			$("table tbody tr").each(function(){
+				var rid = $(this).find("td:nth-child(1) span").attr("data-id");
+				//新增加行里的回复才是要添加的回复，有了rid的是已经存在的
+				if (rid == "0") {					
+					var replyobj = {"code": $(this).find("td:nth-child(3)").text()};
+										
+					$(this).find("input").each(function(){
+						var name = $(this).attr("name");
+						var val = $(this).val();
+						replyobj[name]=val;	
+						flag = true;
+						return true;
+					});	
+					//把内容塞进数组
+					replyarr.push(replyobj);
+					return flag;
+				}								
+			});
+			//没有回复，则不提交
+			if( !flag ) {
+				return;				
+			}
+			if(replyarr == ""){
+				return;
+			}else{
+				$.ajax({
+					type: "post",
+					url: "/yuanku/comment-docommentReply.html",
+					data: {
+						"cid":$("input[name='cid']").val(),
+						"reply":replyarr
+					},
+					success: function(text) {
+						if (text == "false") {
+							alert("回复添加失败！");	
+						}else{
+							alert("回复添加成功！");
+							$(".main").fadeOut(function() {
+								$(this).html(text);
+								$(this).fadeIn();
+							});
+						}
+					},
+					async: true
+				});				
+			}
+		});
+	});
+	//删除,逐行删除
+	function del(){
+		$("table tbody tr td:nth-child(1) span").unbind().click(function(){
+			var rid = $(this).attr("data-id");
+			var t = $(this);
+			//新增行没有，全设置为0，新增行就在回复页删除，有回复的也有rid,要在数据库删
+			if (rid == "0") {
+				t.parent().parent().remove();
+				sorting();	
+			} else{
+				$.ajax({
+					type:"post",
+					url:"/yuanku/comment-delreply.html",
+					data:{"rid":rid},
+					success: function(text) {
+						if (text == "false") {
+							alert("删除失败！");	
+						}else{
+							alert("删除成功！");
+							t.parent().parent().remove();
+							sorting();	
+						}
+					},						
+					async:true
+				});
+			}
+		});
+	}	
+	//排序	
+	function sorting(){
+		$(".panel table tbody tr td:nth-child(2)").each(function(i){
+			$(this).find("span").html(i+1);
+		});
+	}
+</script>
+<div class="panel panel-primary margin-base">
+	<div class="panel-heading">
+		<h3 class="panel-title">评论回复
+			<nav class="pull-right glyphicon glyphicon-share-alt mouse" id="back"
+				url="/yuanku/comment-comment.html"></nav>
+		</h3>
+	</div>
+
+	<div class="panel-body">
+		<{if !empty($re)}>
+			<{foreach $re.comm as $comment}>
+				<form class="form-horizontal">
+					<div class="form-group">
+						<label for="n_id" class="col-lg-2 control-label">文章ID：</label>
+						<p class="form-control-static">
+							<{$comment.n_id}>
+						</p>
+					</div>
+					<div class="form-group">
+						<label for="cname" class="col-lg-2 control-label">微信号：</label>
+						<p class="form-control-static">
+							<{$comment.cname}>
+						</p>
+					</div>
+					<div class="form-group">
+						<label for="ctext" class="col-lg-2 control-label">评论：</label>
+						<input type="hidden" name="cid" value="<{$comment.cid}>" />
+						<p class="form-control-static">
+							<{$comment.ctext}>
+						</p>
+					</div>
+					<div class="form-group">
+						<label for="ctime" class="col-lg-2 control-label">评论时间：</label>
+						<p class="form-control-static">
+							<{$comment.ctime}>
+						</p>
+					</div>
+				</form>
+			<{/foreach}>
+		<{/if}>
+	</div>
+	<div class="table-responsive">
+		<table class="table table-striped table-bordered table-hover box-table">
+			<thead>
+				<tr>
+					<th width="3%"><span class="glyphicon glyphicon-plus mouse plus"></span></th>
+					<th width="5%">序号</th>
+					<th width="12%">管理员</th>
+					<th>回复</th>
+					<th width="15%">时间</th>
+				</tr>
+			</thead>
+			<tbody>
+				<{if !empty($re)}>
+					<{foreach $re.rep as $reply}>				
+						<tr>
+							<td>
+								<span class="glyphicon glyphicon-trash mouse del" data-id="<{$reply.rid}>"></span>
+							</td>
+							<td><span><{$reply@iteration}></span></td>
+							<td><{$reply.code}></td>
+							<td><{$reply.rtext}></td>
+							<td><{$reply.rtime}></td>					
+						</tr>
+					<{/foreach}>
+				<{/if}>
+			</tbody>							
+		</table>
+	</div>
+	
+	<div class="panel-footer">
+		<button type="button" class="btn btn-primary col-lg-offset-5 submit">提交</button>
+	</div>
+</div>

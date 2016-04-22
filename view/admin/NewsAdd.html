@@ -1,0 +1,156 @@
+<script type="text/javascript">
+	var editor;
+	$(function(){
+		//创建KindEditor
+		editor = KindEditor.create('#newscontent', {
+			allowFileManager : true,
+			filterMode: false
+		});
+		
+		//点击选择图片的按钮
+		$('#fileup').click(function() {
+			editor.loadPlugin('image', function() {
+				editor.plugin.imageDialog({
+					imageUrl : $('#imgurl').val(),
+					clickFn : function(url, title, width, height, border, align) {
+						$('#imgurl').val(url);
+						editor.hideDialog();
+						$("#img").attr({ src: url, alt: "Test Image" });
+					}
+				});
+			});
+		});
+		
+		//点击新增按钮或是更新按钮
+		$("#submit button").click(function(){
+			var flag=true;//这里有好几层循环，要几个return
+			$("#NewsAdd input[type=text]").each(function(){
+				if($(this).attr("name")=="newstitle"){
+					var n_title=$(this).val();
+					if(n_title.length==0 || n_title.length>50){
+						$(this).parent().next().html("新闻标题不能为空或超过50字符！");
+						flag=false;
+						return false;
+					}
+				}
+				
+			});
+			
+			if( !flag ){
+				return;
+			}
+		
+			var n_content=editor.html();
+			if(n_content.length==0 || n_content==""){
+				alert("新闻内容不能为空！")
+				flag=false;
+				return false;
+			}
+	
+			if( !flag ){
+				return;
+			}
+			var n_img=$("#imgurl").val();
+			if(n_img=="" || n_img.length==0){
+				alert("话题封面不能为空！");
+				flag=false;
+				return false;
+			}
+			if( !flag ){
+				return;
+			}
+			
+			var nid=$("input[name=data-nid]").val();
+			if(nid){//有nid说明是修改页面
+				alert("修改页面");	
+				$.ajax({
+					type:"post",
+					url:"/yuanku/news-doupdateNews.html",
+					data:{"n_id":nid,"n_title":$("input[name=newstitle]").val(),"n_content":n_content,"n_img":n_img},
+					dataType:"json",
+					success:function( obj ){
+						if(obj.code==1){//修改成功
+							alert(obj.message);							
+						}else if(obj.code==0){//修改失败
+							alert(obj.message);						
+						}
+						redriect("/yuanku/news-NewsMana.html");
+					},
+					async:true
+				});
+			}else{//无nid说明是新增页面
+				$.ajax({
+					type:"post",
+					url:"/yuanku/news-doaddNews.html",
+					data:{"n_title":$("input[name=newstitle]").val(),"n_content":n_content,"n_img":n_img},
+					success:function( text ){
+						if(text=="true"){
+							alert("增加成功！");
+						}else if(text=="false"){
+							alert("增加失败！");
+						}
+						redriect("/yuanku/news-NewsMana.html");
+					},
+					async:true
+				});					
+			}	
+		});		
+	
+		$("#NewsAdd input[type=text]").focus(function(){
+			$(this).parent().next().html("");
+		});
+	});
+</script>
+<div class="panel panel-primary margin-base">
+	<div class="panel-heading">
+		<h3 class="panel-title"><label>
+			<{if empty($data)}>
+				资讯添加
+			<{else}>
+				资讯查看
+			<{/if}>
+		</label></h3>		
+    </div>
+  	<div class="panel-body" id="NewsAdd">
+		<form class="form-horizontal">
+			<div class="form-group">
+			    <label for="newstitle" class="col-lg-2 control-label">资讯标题</label>
+			    <div class="col-lg-5">
+			    	<input type="hidden" name="data-nid" id="data-nid" value="<{if !empty($data)}><{$data.n_id}><{/if}>" />
+			    	<input type="text" class="form-control" id="newstitle" name="newstitle" 
+			      	value="<{if !empty($data)}><{$data.n_title}><{/if}>" placeholder="资讯标题">
+			    </div><div class="col-lg-3"></div>
+			</div>
+			<div class="form-group">
+			    <label for="newscontent" class="col-lg-2 control-label">资讯内容</label>
+			    <div class="col-lg-5">
+			    	<textarea style="width:680px;height:400px;visibility:hidden;" id="newscontent" name="newscontent">
+			    		<{if !empty($data)}><{$data.n_content}><{/if}>
+			    	</textarea>
+			    </div>
+			</div>
+			<div class="form-group">
+			    <label for="newsimg" class="col-lg-2 control-label">资讯封面</label>
+			    <div class="col-lg-3">
+			      <input type="button" id="fileup" value="选择图片" />
+			      <input type="text" id="imgurl" placeholder="选择图片" readonly="readonly" 
+			      	value="<{if !empty($data)}><{$data.n_img}><{/if}>"/>
+			    </div>
+			    <div class="col-lg-3">
+			    	<img src="<{if !empty($data)}><{$data.n_img}><{/if}>" height="60px" width="60px" id="img"/>
+			    </div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10" id="submit">
+			      <button type="button" class="btn btn-primary col-lg-2">
+					<{if empty($data)}>
+						新增
+					<{else}>
+						更新
+					<{/if}>
+			      </button>
+			    </div>
+			</div>
+		</form>
+  	</div>
+</div>

@@ -1,0 +1,20 @@
+<{foreach $data as $d}>
+	<div class="weui_cells">
+		<a class="weui_cell js_grid" href="javascript:;" data-id="checkResume" data-rid="<{$d.rid}>">
+		    <div class="weui_cell_hd">
+		        <img src="<{$d.img}>" alt="icon" style="height:56px;margin-right: 10px;">
+		    </div>
+		    <div class="weui_cell_bd weui_cell_primary">
+		    	<p class="ft_list1">电话：<span><{$d.mobile}></span></p>
+		    	<p class="ft_list1">邮箱：<span><{$d.email}></span></p>
+		    	<p class="ft_list1">工作经验：<span><{$d.workexp}></span></p>
+		    </div>
+		    <div>
+		        <p class="ft_list3"></p>
+		    </div>
+		</a>
+	</div>
+	<div class="weui_cells_tips">
+		<{$d.name}>&nbsp;投递于<span>&nbsp;<{$d.addtime}></span>
+	</div>
+<{/foreach}>

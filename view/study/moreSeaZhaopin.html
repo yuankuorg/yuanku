@@ -1,0 +1,19 @@
+<{foreach $data as $info}>
+    <div class="weui_cells">
+		<a class="weui_cell js_grid" href="javascript:;" data="<{$info.zid}>" data-id="checkZhaopinMain">
+		    <div class="weui_cell_hd">
+		        <img src="<{$info.img}>" alt="icon" style="height:56px;margin-right: 10px;">
+		    </div>
+		    <div class="weui_cell_bd weui_cell_primary">
+		    	<p class="p_list"><h3><{$info.company}></h3></p>
+		        <p class="p_list"><{$info.position}></p>
+		    </div>
+		    <div>
+				<p class="ft_list4">￥<{$info.pay}></p>
+		    </div>
+		</a>
+	</div>
+	<div class="weui_cells_tips">
+		<{$info.name}>&nbsp;发布于<span>&nbsp;<{$info.datetime}></span>
+	</div>
+<{/foreach}>

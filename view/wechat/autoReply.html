@@ -1,0 +1,224 @@
+<script type="text/javascript">
+	$(function(){
+		//点击checkbox全选
+		all();
+		
+		//点击新增按钮
+		$("#replyRuleAdd").click(function(){	
+			redriect($(this).attr("url"));
+		});
+		
+		//点击搜索按钮
+		$("#search").click(function(){
+			//alert("成功");
+			var thekey = $("#thekey").val();
+			var aid = $("#addid").val();
+			var data={"thekey":thekey,"aid":aid};
+			var url="/yuanku/wechatMan-autoReply.html";
+			redriect( url, data );
+		});
+		//点击重置按钮
+		$("#reset").click(function(){
+			$("#thekey").val("");
+			$("#addid").val("");
+		});
+		//点击修改按钮进入改变回复内容页面
+		$("#concernReplyChange,#nokeyReplyChange").unbind().click(function(){
+			var rid = $(this).attr("data-id");
+			var data={"rid":rid};
+			var url="/yuanku/wechatMan-autoReplyChange.html";
+			redriect( url, data );
+		});
+		
+		//点击修改关键字回复信息
+		$(".amend").click(function(){
+			var rid = $(this).attr("data-id");
+			var data={"rid":rid};
+			var url="/yuanku/wechatMan-replyRuleChange.html";
+			redriect( url, data );
+		});
+		
+		//批量删除关键字回复信息
+		$("#alldel").click(function(){
+			var rids = [];
+			$(".table tbody input[type=checkbox]:checked").each(function(){
+				rids.push( $(this).attr("data-id") );
+			});
+			if(rids.length == 0){
+				return false;
+			}
+			BsModel.OpenModel({
+				"title":"删除信息！",
+				"content":"确认删除这些关键字回复信息吗？",
+				"okcall":function(){
+					BsModel.CloseModel();
+					$.ajax({
+						type:"post",
+						url:"/yuanku/wechatMan-delsomekeys.html",
+						data:{"rids":rids.join(",")},
+						success: function(text){
+							if(text =='false'){
+								BsModel.OpenModel({
+									"title":'信息提示！',
+									"content":"删除失败"
+								});
+							}else{
+								BsModel.CloseModel();
+								redriect("/yuanku/wechatMan-autoReply.html");
+							}
+							
+						}
+					});
+				}
+			});
+		});
+		
+		//单独删除一个关键字回复信息
+		$(".del").click(function(){
+			var rid=$(this).attr("data-id");
+			BsModel.OpenModel({
+				"title":"删除信息！",
+				"content":"确认删除这个关键字回复信息吗？",
+				"okcall":function(){
+					BsModel.CloseModel();
+					$.ajax({
+						type:"post",
+						url:"/yuanku/wechatMan-delonekey.html",
+						data:{"rid":rid},
+						success: function(text){
+							if(text=='false'){
+								BsModel.OpenModel({
+									"title":'信息提示！',
+									"content":"删除失败，请确认"
+								});
+							}else{
+								BsModel.CloseModel();
+								redriect("/yuanku/wechatMan-autoReply.html");
+							}
+							
+						}
+					});
+				}
+			});
+		});
+	});
+</script>
+
+<div class="panel panel-primary margin-base">
+  	<!-- Default panel contents -->
+  	<div class="panel-heading"><h3 class="panel-title"><label>被关注回复</label></h3></div>
+  		<table class="table table-striped table-bordered table-hover">
+  			<thead>
+  				<tr>
+	  				<th width="10%">类型</th>
+	  				<th width="80%">内容</th>
+	  				<th width="10%">操作</th>
+  				</tr>
+  			</thead>
+  			<tbody>
+  				<{foreach $data.data1 as $reply}>
+  				<tr>
+					<td>文字</td>
+					<td> <{$reply.content}> </td>
+					<td>
+						<span class="details glyphicon glyphicon-pencil mouse" 
+								
+								id="concernReplyChange"
+								url="/yuanku/wechatMan-autoReplyChange.html"
+								data-id="<{$reply.rid}>"></span>
+					</td>
+  				</tr>
+  				<{/foreach}>
+  			</tbody>
+  		</table>
+  	<div class="panel-footer"></div>
+</div>	
+
+<div class="panel panel-primary margin-base">
+  	<!-- Default panel contents -->
+  	<div class="panel-heading"><h3 class="panel-title"><label>非关键字回复</label></h3></div>
+  		<table class="table table-striped table-bordered table-hover">
+  			<thead>
+  				<tr>
+	  				<th width="10%">类型</th>
+	  				<th width="80%">内容</th>
+	  				<th width="10%">操作</th>
+  				</tr>
+  			</thead>
+  			<tbody>
+  				<{foreach $data.data2 as $reply}>
+  				<tr>
+					<td>文字</td>
+					<td> <{$reply.content}> </td>
+					<td>
+						<span class="details glyphicon glyphicon-pencil mouse" 
+								id="nokeyReplyChange"
+								url="/yuanku/wechatMan-autoReplyChange.html"
+								data-id="<{$reply.rid}>"></span>
+					</td>
+  				</tr>
+  				<{/foreach}>
+  			</tbody>
+  		</table>
+  	<div class="panel-footer"></div>
+</div>
+
+
+<div class="panel panel-primary margin-base">
+  	<!-- Default panel contents -->
+  	<div class="panel-heading"><h3 class="panel-title"><label>关键字回复规则</label></h3></div>
+  	<div class="panel-body">
+  		<form class="form-inline" style="margin-bottom: 10px;">
+		    <input type="text" class="form-control" id="thekey" placeholder="搜索关键字" value="">
+		    <input type="text" class="form-control" id="addid" placeholder="搜索添加人"	value="">
+			<button type="button" class="btn btn-info btn-sm paddingLR" id="search">
+				<span class="glyphicon glyphicon-search" aria-hidden="true" id="search"></span> 搜索
+			</button>
+			<button type="button" class="btn btn-info btn-sm paddingLR" id="reset">
+				<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> 重置
+			</button>
+			<button id="replyRuleAdd" url="/yuanku/wechatMan-replyRuleAdd.html" type="button" class="btn btn-danger btn-sm paddingLR">
+				<span class="glyphicon glyphicon-plus" aria-hidden="true" data-id="0"></span> 新增
+			</button>
+		</form>
+  	</div>
+	<table class="table table-striped table-bordered table-hover">
+		<thead>
+			<tr>
+				<th width="3%">
+					<input type="checkbox" id="all" />
+				</th>
+  				<th width="10%">规则ID</th>
+  				<th width="10%">关键字</th>
+  				<th width="10%">类型</th>
+  				<th width="45%">内容</th>
+  				<th width="15%">添加人账号</th>
+  				<th width="10%">操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			<{foreach $data.data as $reply}>
+			<tr>
+				<td>
+					<input type="checkbox" name="" data-id="<{$reply.rid}>"/>
+				</td>
+				<td><{$reply.rid}></td>
+				<td><{$reply.thekey}></td>
+				<td>文字</td>
+				<td><{$reply.content}></td>
+				<td><{$reply.aid}></td>
+				<td>
+					<span class="details glyphicon glyphicon-pencil mouse amend" 
+							url="/yuanku/wechatMan-replyRuleAdd.html"
+							data-id="<{$reply.rid}>"></span>
+					<span class="glyphicon glyphicon-trash mouse delnews del" data-id="<{$reply.rid}>" ></span>
+				</td>
+			</tr>
+			<{/foreach}>
+		</tbody>
+		<td><span class="glyphicon glyphicon-trash mouse batchdel" id="alldel"></span></td>
+	</table>
+  	<div class="panel-footer">
+		<{include file="admin/pages.html" url="/yuanku/wechatMan-autoReply.html" }>
+	</div> 
+</div>

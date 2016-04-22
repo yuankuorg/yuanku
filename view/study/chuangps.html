@@ -1,0 +1,65 @@
+<div class="page" style="overflow-x: hidden;">
+	<script type="text/javascript">
+		$(function() {
+			$(".chuangps .js_grid").click(function(){
+				var cid = $(this).attr("data-cid");
+				var t = $(this);
+				$.ajax({
+					type:"post",
+					url :"chuang-changeState.html",
+					data:{ cid : cid },
+					success : function( text ){ 
+						//申请成功
+						if ( text == "true") {
+							$("#dialog").dialog("提示","提交申请成功");
+							t.hide();
+						} else {//操作失败的情况
+							$("#dialog").dialog("提示","提交申请失败,请稍后重试!");
+						}
+					},
+					async:true
+				});
+			});
+		});
+	</script>
+	<div class="weui_cells">
+		<div class="weui_cell">
+			<div class="weui_cell_bd weui_cell_primary">
+				<h4 class="vidioname"><{$chapterdata.title}></h4>
+				<p class="degree">难度系数：<{for $i=0 to $chapterdata.difficult-1}><img src="/yuanku/img/study/star.gif" class="starfill" /><{/for}></p>
+			</div>
+		</div>
+	
+		<div class="weui_cell">
+			<iframe class="video_iframe" style="z-index:1;width: 100%;"
+				frameborder="0" src="https://v.qq.com/iframe/player.html?vid=<{$chapterdata.video}>&amp;width=300&amp;height=200;auto=0" allowfullscreen="" frameborder="0">
+			</iframe>
+		</div>
+		<div class="weui_cell">
+			<div class="weui_cell_bd weui_cell_primary">
+				<p class="rule_title">闯关说明：</p>
+				<p class="rule"><{$chapterdata.expound}></p>
+			</div>
+		</div>
+		<div class="weui_cell"style="display: <{if !empty($chapterdata.material)}>block<{else}>none<{/if}>;">
+			<div class="weui_cell_bd weui_cell_primary">
+				<p class="rule_title">资料下载：</p>
+				<p class="rule">
+					<a href="<{$chapterdata.material}>" target="_blank">
+					材料下载地址</a>
+				</p>
+			</div>
+		</div>
+	</div>
+	<div class="button_sp_area area_mar " <{if $smarty.session.vip.items == 6 || $smarty.session.vip.items == 9 || $cstate.sid eq 4 || $cstate.sid eq 2}> style="display:none" <{/if}> >
+	<a href="javascript:;" id="apply"  class="weui_btn weui_btn_primary js_grid " data-id="applysub" data-cid="<{$chapterdata.cid}>" data-project="<{$chapterdata.project}>" data-score="<{$chapterdata.score}>" >申请通关</a>
+	</div>
+	<{if isset($change)}>
+		<{foreach $change as $ch}>
+		<div class="weui_cell">
+			<div class="weui_cell_bd weui_cell_primary">
+				<h4>你于 <{$ch.time}>&nbsp;&nbsp;<{$ch.expl}></h4>
+			</div>
+		</div>
+		<{/foreach }>
+	<{/if}>

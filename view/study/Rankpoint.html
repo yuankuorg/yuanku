@@ -1,0 +1,80 @@
+<div class="page">
+	<script type="text/javascript">
+		$(function(){		
+			var j = 1;
+			$(".Rankpoint .js_grid").click(function(){
+				pageManager.go($(this).data("id"));
+			});
+			$("#pointmore").click(function(){
+				$('#loadingToast').loadingShow();
+				j++;
+				$.ajax({
+					type:"post",
+					url:"Rank-getmorepoint.html",
+					dataType:"json",
+					data:{"curpage":j},
+					success:function( json ){
+						$('#loadingToast').hide();
+						if( json != false){
+							for(var dyn in json){
+								var temp = json[dyn];
+								var str = '<div class="weui_cells"><div class="weui_cell"><div class="weui_cell_hd"><img src="'+ temp.img +'"  style="height: 50px; width: 50px;margin-right:5px;display:block;"></div><div class="weui_cell_bd weui_cell_primary"><p>'+ temp.name +'(' + temp.schoolname + ')</p><p>积分:'+ temp.exchange +'分</p></div><div class="weui_cell_ft"><span></span></div></div></div>';
+								$("#point_fu").append(str);
+							}
+						}else{
+							$("#pointmore").css("display","none");
+							$("#dialog").dialog("提示","无更多内容");
+						}
+					},
+					async:true
+				});
+			});
+		})
+	</script>
+	<div class="weui_cells">
+		<img src="/yuanku/img/study/rankpoint.jpg" style="width: 100%; height: 150px;" />
+	</div>	
+	<div class="bd" id="point_fu">
+		<{foreach $point as $p}>
+	        <div class="weui_cells">
+			    <div class="weui_cell">
+			    	<div class="weui_cell_hd">
+			        	<img src="<{$p.img}>"  style="height: 50px; width: 50px;margin-right:5px;display:block">
+			    	</div>
+				    <div class="weui_cell_bd weui_cell_primary">
+				    	<p><{$p.name}>(<{$p.schoolname}>)</p>
+				    	<p>积分:<{$p.exchange}>分</p>
+			    	</div>
+			    	<{if $p@index eq 0}>
+				    	<div class="weui_cell_ft">
+				    		<img src="/yuanku/img/study/yi.png"  style="height: 50px;"/>
+				    	</div>
+			    	<{/if}>
+			    	<{if $p@index eq 1}>
+				    	<div class="weui_cell_ft">
+				    		<img src="/yuanku/img/study/er.png"  style="height: 50px;"/>
+				    	</div>
+			    	<{/if}>
+			    	<{if $p@index eq 2}>
+				    	<div class="weui_cell_ft">
+				    		<img src="/yuanku/img/study/san.png"  style="height: 50px;"/>
+				    	</div>
+			    	<{/if}>
+			    	<{if $p@index > 2}>
+			    	<div class="weui_cell_ft">
+			    		<span></span>
+			    	</div>	
+		    		<{/if}>
+			    </div>
+			</div>   
+		<{/foreach}>
+	</div>
+	<div class="bd">
+		<a href="javascript:void(0);" class="weui_btn weui_btn_plain_default yuankumore" id="pointmore">加载更多</a>
+	</div>
+</div>
+
+
+
+
+

@@ -1,0 +1,67 @@
+<div class="page">
+	<script type="text/javascript">
+		$(function(){
+			$(".checkMyZhaopin .js_grid").click(function() {
+				var zid ={"zid": $(this).attr("data")};
+				pageManager.go($(this).data("id"),zid);
+		    });
+
+			//后台页面删除功能
+		   	$(".checkMyZhaopin .delzp").click(function(){
+	   			var zid = $(this).attr("data");
+		   		$.ajax({
+		   		 	type: "post",
+		   		 	url : "/yuanku/Qiye-delZhaopin.html",
+		   		 	data: {"zid":zid},
+		   		 	success:function( res ){
+		   		 		if( res == "false"){
+							$("#dialog").dialog("提示","删除失败");
+						}else{
+							$("#dialog").dialog("提示","删除成功");
+							pageManager.back().back().go("zhaopin");
+						}
+		   		 	},
+		   		 	async:true
+		   		});
+		   	});
+	    });
+	</script>
+	<!--<div class="hd"></div>-->
+	<h1 class="h1_style">
+		<{$data.position}><span></span>
+		<a href="javascript:;" class="js_grid" data-id="entstore" data="<{$data.zid}>">
+			<img src="/yuanku/img/study/check.png" style="height:30px ;float: right;margin-right: 15px;margin-top: 5px;"/>
+		</a>
+	</h1>
+    <h3 class="h3_style"><{$data.company}>&nbsp;&nbsp;&nbsp;&nbsp;￥<{$data.pay}></h3>
+	<div class="bd">
+		<article class="weui_article">
+			<div>
+				<p style="padding-left: 0px;">
+	              	<span style="margin-right: 15px;"><img src="/yuanku/img/study/loca.png" style="width: 13px;"/>&nbsp;<{$data.address}> </span>
+	              	<span style="margin-right: 15px;"><img src="/yuanku/img/study/xueli.png" style="width: 15px;"/>&nbsp;<{$data.degree}></span> 
+	              	<span style="margin-right: 15px;"><img src="/yuanku/img/study/jiany.png" style="width: 15px;"/>&nbsp;<{$data.experience}></span>
+	            </p>
+			</div>
+            <section style="border-bottom: none;">
+                <section>
+                    <h3 style="color: #000000;">岗位职责</h3>
+                    <br>
+                    <p><{$data.responsible}></p>
+                </section>
+                <section>
+                    <h3 style="color: #000000;">任职要求</h3>
+                    <br>
+                    <p><{$data.requires}></p>
+                </section>
+                <section>
+                    <h3 style="color: #000000;">联系方式</h3>
+                    <br>
+                    <p><{$data.contacts}></p>
+                </section>
+                <a href="javascript:;" class="weui_btn weui_btn_primary js_grid"  data-id="alterZhaopin" data="<{$data.zid}>">修改</a>
+                <a href="javascript:;" class="weui_btn weui_btn_primary delzp" data="<{$data.zid}>">删除</a>
+            </section>
+        </article>
+	</div>
+</div>

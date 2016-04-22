@@ -1,0 +1,61 @@
+<script>
+	$(function(){
+		$("#text").blur(function(){
+			if( $(this).val() == "" || $(this).val().length == 0){
+				$("#span2").html("回复信息不能为空！");
+			}
+		}).focus(function(){
+    		$("#span2").html("");
+    	});
+    	
+    	$("#addkeyinfo").click(function (){
+    		var flag=true;
+			if( $("#text").val() == "" || $("#text").val().length == 0){
+				$("#span2").html("回复信息不能为空！");
+				flag=false;
+				return flag;
+			}
+			
+			if(flag == true){
+				var rid = $(this).attr("data-id");
+				$.ajax({
+					type:"post",
+					url:"/yuanku/wechatMan-saveText.html",
+					data: {"content":$("#text").val(),"rid":rid},
+					success: function( text ){
+						if( text == "false" ) {
+							BsModel.OpenModel({"title":"提示信息","content":"提交失败"});
+						} else {
+							redriect("/yuanku/wechatMan-autoReply.html");
+						}
+					},
+					async:true
+				});
+			}else{
+				return;
+			}
+		});
+	});
+</script>
+<div class="panel panel-primary margin-base">
+	<{foreach $data.data as $reply}>
+	<div class="panel-heading">
+		<h3 class="panel-title"><label>
+				回复信息修改		
+		</label></h3>		
+    </div>
+    <div class="panel-body" id="topicclassAdd">
+    	<label>关键字</label> <input type="text" name="key" id="keyword" value="<{$reply.thekey}>" readonly="readonly"/>
+    </div>
+
+    <div class="panel-body" id="topicclassAdd">
+		<input type="radio" id="" value="" checked="checked" /><label>文本模式</label>
+		<br />
+		<textarea class="col-lg-8" id="text" name="info"><{$reply.content}></textarea>
+		<span id="span2"></span>
+    </div>
+    <div class="panel-body" id="topicclassAdd">
+		<button id="addkeyinfo" data-id="<{$reply.rid}>" >保存修改</button>
+    </div> 
+    <{/foreach}>
+</div>

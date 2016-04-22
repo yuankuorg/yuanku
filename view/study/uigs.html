@@ -1,0 +1,112 @@
+<div class="page">
+	<script type="text/javascript">
+		var items = <{if isset($smarty.session.vip)}><{$smarty.session.vip.items}><{else}>-1<{/if}>;
+		
+		$(function() {
+			$(".uigs .js_grid").click(function() {
+				var score = $(this).data("score");
+				var addscore = $(this).data("addscore");
+				var cid = $(this).data("cid");
+				var project = $(this).data("project");
+				var data = {"cid":cid,"project":project,"score":score};
+				if( items == 6 || items == 9) { //如果为名企精英，直接跳转页面,不用扣分
+					pageManager.go($(this).data("id"),data);
+					return;
+				}
+				
+				var falg = false;
+				var t = $(this);
+				$.ajax({
+					type:"post",
+					url :"chuang-isdelexchange.html",
+					data: data,
+					success : function( text ){ 
+						//积分扣除成功
+						if ( text == "true" ) {
+							pageManager.go(t.data("id"),data);
+						}  else{
+							falg = true;
+						}
+					},
+					async:false
+				});
+				
+				if( falg ) {
+					$("#dialogConfirm").dialog("关卡信息", "需要先扣取"+ score +"积分，通过后获取"+ addscore +"积分，是否继续？");
+					$("#dialogConfirm .mes_right").unbind().click(function(){
+						$("#dialogConfirm").hide();
+						$.ajax({
+							type:"post",
+							url :"chuang-deductExchange.html",
+							data: data,
+							dataType : "json",
+							success : function( obj ){ 
+								//积分扣除成功
+								if (obj.code == 1) {
+									pageManager.go(t.data("id"),data);
+									return;
+								}
+								//积分不足的情况
+								if (obj.code == 2) {
+									$(".page").css("display","block");
+									$(".weui_msg").find("i").removeClass("weui_icon_success").addClass("weui_icon_info");
+									$(".page").find(".weui_msg_title").html("积分不足");
+									$(".page").find(".weui_msg_desc").html("请通过接任务或者签到获取！");
+									return;
+								}
+								//操作失败的情况
+								if (obj.code == 3) {
+									$(".page").css("display","block");
+									$(".weui_msg").find("i").removeClass("weui_icon_success").addClass("weui_icon_warn");
+									$(".page").find(".weui_msg_title").html("操作失败");
+									$(".page").find(".weui_msg_desc").html("请稍后重试");
+									return;
+								}
+							},
+							async:true
+						});
+					});
+				}
+			});
+		});
+	</script>
+
+	<img src="<{$projectdata.poster}>" style="width: 100%;" />
+	<article class="weui_article">
+		<section>
+			<section>
+				<h2>简介</h2>
+				<p style="padding: 0px;">
+					<{$projectdata.brief}>
+				</p>
+			</section>
+		</section>
+	</article>
+	<{if $smarty.session.vip.items eq 7 or $smarty.session.vip.items eq 6 or $smarty.session.vip.items eq 9}>
+		<div class="weui_grids">
+			<{for $i=1 to count($chaptercount)}>
+				<a href="javascript:;" class="weui_grid js_grid" data-cid="<{$chaptercount[$i-1].cid}>" data-project="<{$chaptercount[$i-1].project}>" data-score="<{$chaptercount[$i-1].score}>" data-addscore="<{$chaptercount[$i-1].addscore}>" data-id="chuangps">
+					<div class="weui_grid_icon">
+						<div style="background-color: #F26C60;height:28px;width:28px;border-radius: 100%;">
+							<div style="background-color: #F26C60;height:28px;width:28px;border-radius: 100%;color: #FFFFFF;line-height: 28px;text-align: center;">
+								<{$i}>
+							</div>
+						</div>
+					</div>
+					<p class="weui_grid_label">
+						<{$chaptercount[$i-1].title}>
+					</p>
+				</a>
+			<{/for}>
+		</div>
+	<{else}>
+		<article class="weui_article">
+			<section>
+				<h2 style="text-align: center;font-size: 18px;color: red;">抱歉！</h2>
+				<p style="font-size: 16px;color: red;">
+					关卡是为助学成才和名企精英专门设置，你的身份不符合，不能查看关卡信息！
+				</p>
+			</section>
+		</article>
+	<{/if}>
+</div>

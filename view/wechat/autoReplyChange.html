@@ -1,0 +1,55 @@
+<script>
+	$(function (){
+		$("#savetest").blur(function(){
+			if( $(this).val() == "" ||$(this).val() == 0){
+				$("#span1").html("回复信息不能为空");
+			}
+		}).focus(function(){
+    		$("#span1").html("");
+    	});
+    	
+		$("#save").click(function (){
+			var flag=true;
+			if($("#savetest").val() == "" || $("#savetest").val().length == 0){
+				$("#span1").html("回复信息不能为空");
+				flag = false;
+			}
+			if(flag){
+				var rid = $(this).attr("data-id");			
+				$.ajax({
+					type:"post",
+					url:"/yuanku/wechatMan-saveText.html",
+					data: {"content":$("#savetest").val(),"rid":rid},
+					success: function( text ){
+						if( text == "false" ) {
+							BsModel.OpenModel({"title":"提示信息","content":"提交失败"});
+						} else {
+							redriect("/yuanku/wechatMan-autoReply.html");
+						}
+					},
+					async:true
+				});
+			}else{
+				returm;
+			}
+		});
+	});
+</script>
+<div class="panel panel-primary margin-base">
+	<div class="panel-heading">
+		<h3 class="panel-title"><label>
+				回复信息修改		
+		</label></h3>		
+    </div>
+    <{foreach $data.data as $reply}>
+    <div class="panel-body" id="topicclassAdd">
+		<input type="radio" name="replyType" id="" value="" checked="checked" /><label>文本模式</label>
+		<br />
+		<textarea class="col-lg-8" id="savetest"><{$reply.content}></textarea>
+		<span id="span1"></span>
+    </div>
+    <div class="panel-body" id="topicclassAdd">
+		<button id="save" data-id="<{$reply.rid}>" >保存修改</button>
+    </div>
+    <{/foreach}>
+</div>

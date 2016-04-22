@@ -1,0 +1,76 @@
+<script type="text/javascript">
+	$(function(){				
+		$(".pages a").unbind().click(function(){
+			var obj = <{json_encode($smarty.post)}>;
+			
+			if (obj.length == 0){
+				obj = {};
+			}
+			obj["curpage"]=$(this).attr("page");
+			$.ajax({
+				type:"post",
+				url:"<{$url}>",
+				data:obj,
+				success:function(text){
+					$("#myModal .modal-content").fadeIn(function(){
+						$(this).empty().html(text);
+					});
+				},
+				async:true
+			});
+		});
+	});
+</script>
+	<div class="pages">
+		<nav class="text-center">
+			<ul class="pagination margin-top-0px">
+		    	<li>
+			    	<a href="javascript:void(0);" aria-label="Previous" page="1">
+			        	<span aria-hidden="true">&laquo;</span>
+			    	</a>
+			    </li>
+			    <li><a href="javascript:void(0);" page = "<{if $curpage <= 1}>1<{else}><{$curpage-1}><{/if}>">上一页</a></li>
+				<{if $curpage <= 5}>
+					<{if $page >= 10 }>
+						<{for $i=1 to 10}>
+							<{if $i == $curpage}>
+								<li class="active"><a href="javascript:void(0);" page="<{$i}>"><{$i}></a></li>	
+							<{else}>
+								<li><a href="javascript:void(0);" page="<{$i}>"><{$i}></a></li>	
+							<{/if}>			
+						<{/for}>
+					<{else}>
+						<{for $i=1 to $page }>
+							<{if $i == $curpage}>
+								<li class="active"><a href="javascript:void(0);" page="<{$i}>"><{$i}></a></li>	
+							<{else}>
+								<li><a href="javascript:void(0);" page="<{$i}>"><{$i}></a></li>	
+							<{/if}>			
+						<{/for}>
+					<{/if}>
+				<{elseif  $curpage >= $page - 10 }>
+					<{for $i=$page - 10 to $page}>
+						<{if $i == $curpage}>
+							<li class="active"><a href="javascript:void(0);" page="<{$i}>"><{$i}></a></li>	
+						<{else}>
+							<li><a href="javascript:void(0);" page="<{$i}>"><{$i}></a></li>	
+						<{/if}>			
+					<{/for}>
+				<{else}>
+					<{for $i=$curpage - 5 to $curpage + 5}>
+						<{if $i == $curpage}>
+							<li class="active"><a href="javascript:void(0);" page="<{$i}>"><{$i}></a></li>	
+						<{else}>
+							<li><a href="javascript:void(0);" page="<{$i}>"><{$i}></a></li>	
+						<{/if}>			
+					<{/for}>
+				<{/if}>
+			    <li><a href="javascript:void(0);" page="<{if $curpage >= $page}><{$page}><{else}><{$curpage+1}><{/if}>">下一页</a></li>
+			    <li>
+			    	<a href="javascript:void(0);" aria-label="Next" page="<{$page}>">
+			        	<span aria-hidden="true">&raquo;</span>
+		    		</a>
+		    	</li>
+			</ul>
+		</nav>
+	</div>

@@ -1,0 +1,106 @@
+<script type="text/javascript">
+	$(function(){				
+		//第五个之后的评论都隐藏起来
+		$(".comment-list li:gt(4)").hide();
+		//评论表的第五个之后的评论出现
+		$(".show-all-comment").click(function(){
+			$(this).hide()
+			$(".show-recent-only").show()
+			$(".comment-list li:gt(4)").slideDown()
+			return false;
+		});
+		//只展现5个评论
+		$(".show-recent-only").click(function(){
+			$(this).hide()
+			$(".show-all-comment").show()
+			$(".comment-list li:gt(4)").slideUp()
+			return false;
+		});	
+		$("button").click(function(){
+			var n_id = $("#n_id").val();
+			var cname = $("#cname").val();
+			var ctext = $("#ctext").val();
+			if( cname == "" || cname.length == 0 || ctext == "" || ctext.length == 0 ) {
+				return false;
+			}
+			$.ajax({
+				type:"post",
+				url:"/yuanku/mobile-sendComment.html",
+				data:{"n_id":n_id,"cname":cname,"ctext":ctext},
+				success:function(text){
+					if (text == "false") {
+						alert("评论失败！");	
+					}else{								
+						$(".t-comment").fadeOut(function() {
+							$(this).html(text);
+							$(this).fadeIn();
+						});
+					}
+				},
+				async:true
+			});
+		});	
+//		//点赞叠加功能
+//		var dian-zan=0;
+//		$(".dian-zan").click({
+//			dian-zan++;
+//			
+//		});
+	});		
+</script>
+<section class="t-comment">
+	<section class="pinlun"></section>
+		<!--发表评论-->
+	<section>
+		<ol class="comment-list">
+			<{if !empty($re)}>
+				<{foreach $re.comm as $comment}>
+					<li>
+						<div style="border-top:1px solid #CCCCCC; margin-bottom:2px;">
+							<p class="comment-head">
+							<cite>评论人:<{$comment.cname}></cite> 
+							<span class="timestamp"><{$comment.ctime}></span>
+							</p>
+							<div class="comment-body">
+								<p><{$comment.ctext}></p>									
+							</div>
+								<p style="display: inline-block;"><img src="/yuanku/img/dian-zan.png" class="dian-zan" width="20%" height="20%" style="cursor: pointer;"/></p>
+							<{if !empty($comment.code)}>
+								<p class="comment-head">
+								<cite>回复者:<{$comment.code}></cite>
+								<span class="timestamp"><{$comment.rtime}></span>
+								</p>
+								<div class="comment-huifu">
+									<p>回复:<{$comment.rtext}></p>									
+								</div>
+							<{/if}>
+						</div>						
+					</li>
+				<{/foreach}>
+			<{/if}>	
+		</ol>
+	</section>
+	<section class="pinlun">
+		<a href="#" class="show-recent-only">最新5个</a>
+		<a href="#" class="show-all-comment">所有评论 </a>
+	</section>
+	<!--评论列表-->
+	<section>
+		<form class="commentform" method="post">
+			<div class="commentcolumn">
+				<label for="cname">昵称：</label>
+				<input type="hidden" name="n_id" id="n_id" value="<{$re.news.n_id}>" />
+				<input type="text" id="cname" name="cname" required>
+		
+				<label for="ctext">评论：</label>						
+				<textarea id="ctext" name="ctext" required></textarea>
+			 
+			</div>
+			<div class="commentsubmit-wrap">
+				<button type="button" class="commentsubmit">发表评论</button>												
+			</div>
+		</form>				
+	</section>
+</section>
+<section class="nav"> 	
+</section>

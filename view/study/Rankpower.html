@@ -1,0 +1,75 @@
+<div class="page">
+	<script type="text/javascript">
+		$(function(){		
+			var j = 1;
+			$(".Rankpower .js_grid").click(function(){
+				pageManager.go($(this).data("id"));
+			});
+			$("#powermore").click(function(){
+				$('#loadingToast').loadingShow();
+				j++;
+				$.ajax({
+					type:"post",
+					url:"Rank-getmorepower.html",
+					dataType:"json",
+					data:{"curpage":j},
+					success:function( json ){
+						$('#loadingToast').hide();
+						if( json != false){
+							for(var dyn in json){
+								var temp = json[dyn];
+								var str = '<div class="weui_cells"><div class="weui_cell"><div class="weui_cell_hd"><img src="'+ temp.img +'"  style="height: 50px; width: 50px;margin-right:5px;display:block;"></div><div class="weui_cell_bd weui_cell_primary"><p>'+ temp.name +'(' + temp.schoolname + ')</p><p>积分:'+ temp.exchange +'分/闯关:'+ temp.chuang +'/解决问题:'+ temp.taskrec +'个/签到:'+ temp.sign +'次&nbsp;&nbsp;总分:'+ temp.total +'</p></div><div class="weui_cell_ft"><span></span></div></div></div>';
+								$("#power_fu").append(str);
+							}
+						}else{
+							$("#powermore").css("display","none");
+							$("#dialog").dialog("提示","无更多内容");
+						}
+					},
+					async:true
+				});
+			});
+		});
+	</script>
+	<div class="weui_cells">
+		<img src="/yuanku/img/study/rankpower.jpg" style="width: 100%; height: 150px;" />
+	</div>	
+	<div class="bd" id="power_fu">
+	        <{foreach $power as $w}>
+		        <div class="weui_cells">
+				    <div class="weui_cell">
+				    	<div class="weui_cell_hd">
+				        	<img src="<{$w.img}>"  style="height: 50px; width: 50px;margin-right:5px;display:block">
+				    	</div>
+					    <div class="weui_cell_bd weui_cell_primary">
+					    	<p><{$w.name}>(<{$w.schoolname}>)</p>
+					    	<p>积分:<{$w.exchange}>分/闯关:<{$w.chuang}>/解决问题:<{$w.taskrec}>个/签到:<{$w.sign}>次&nbsp;&nbsp;总分:<{$w.total}></p>
+				    	</div>
+				    	<{if $w@index eq 0}>
+				    	<div class="weui_cell_ft">
+				    		<img src="/yuanku/img/study/study1.png"  style="height: 50px;"/>
+				    	</div>
+				    	<{/if}>
+				    	<{if $w@index eq 1}>
+					    	<div class="weui_cell_ft">
+					    		<img src="/yuanku/img/study/study2.png"  style="height: 50px;"/>
+					    	</div>
+				    	<{/if}>
+				    	<{if $w@index eq 2}>
+					    	<div class="weui_cell_ft">
+					    		<img src="/yuanku/img/study/study3.png"  style="height: 50px;"/>
+					    	</div>
+				    	<{/if}>
+				    	<{if $w@index > 2}>
+				    	<div class="weui_cell_ft">
+				    		<span></span>
+				    	</div>	
+			    		<{/if}>	
+				    </div>
+				</div>   
+			<{/foreach}>
+		</div>
+	<div class="bd">
+		<a href="javascript:void(0);" class="weui_btn weui_btn_plain_default yuankumore" id="powermore">加载更多</a>
+	</div>
+</div>

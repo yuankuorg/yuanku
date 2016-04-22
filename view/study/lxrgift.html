@@ -1,0 +1,97 @@
+<script type="text/javascript">
+	$(".delnews").click(function(){
+		var pid=$(this).attr("data-id");
+		$('#delModal').modal({
+			backdrop : true,
+			keyboard : true,
+			show     : true
+		});	
+		$('#delModal').unbind().on('hidden.bs.modal',function(){
+			var re = $("#modalok").attr("data-sub");
+			if(re=='true'){
+				$.ajax({
+					type:"post",
+					url:"/yuanku/commoname-delchange.html",
+					data:{"pid":pid},
+					success: function(text){
+						text.trim(text);
+						if(text=='false'){
+							$("#modalok").attr("data-sub","false");
+							$('#myModal').modal({
+								backdrop : true,
+								keyboard : true,
+								show     : true,
+								remote	 : '/yuanku/admin-showflase.html'
+							});
+						}else{
+							$("#modalok").attr("data-sub","false");
+							redriect("/yuanku/commoname-choice.html");
+						}						
+					}
+				});
+			}else{
+				$('#delModal').modal("hide");
+			}
+		});
+	});
+</script>
+
+<div class="panel panel-primary margin-base">
+	<div class="panel-heading">
+		<h3 class="panel-title"><label>兑换人列表</label></h3>		
+	</div>
+  	<div class="panel-body">
+		<form class="form-inline" style="margin-bottom: 10px;">
+		    <input type="text" class="form-control" id="newstitle" placeholder="搜索兑换人" 
+		    	value="<{if !empty($smarty.post.n_title)}><{$smarty.post.n_title}><{/if}>">
+		    <input type="text" class="form-control" id="newadmin" placeholder="搜索联系号码"
+		    	value="<{if !empty($smarty.post.code)}><{$smarty.post.code}><{/if}>">
+		    <input type="text" id="starttime" class="form-control" placeholder="最小时间"
+			onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',skin:'whyGreen' })" readonly="readonly"
+			value="<{if !empty($smarty.post.starttime)}><{$smarty.post.starttime}><{/if}>"/>
+			-
+			<input type="text" id="endtime" class="form-control" placeholder="最大时间"
+			onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',skin:'whyGreen' })" readonly="readonly"
+			value="<{if !empty($smarty.post.endtime)}><{$smarty.post.endtime}><{/if}>"/>	
+			<button type="button" class="btn btn-info" id="search">
+				<span class="glyphicon glyphicon-search" aria-hidden="true"></span> 搜索
+			</button>
+			<button type="button" class="btn btn-info" id="reset">
+				<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> 重置
+			</button>
+		</form>
+		<div class="line-base"></div>
+  	</div>
+  	<div class="table-responsive">
+		<table class="table table-striped table-bordered table-hover">
+			<thead>
+				<tr>
+					<th width="10%">兑换编号</th>
+					<th width="20%">兑换人</th>
+					<th width="20%">商品名称</th>
+					<th width="20%">联系号码</th>
+					<th width="20%">兑换时间</th>
+					<th width="10%">操作</th>
+				</tr>
+			</thead>
+			<!--<td><span class="glyphicon glyphicon-trash mouse batchdel"></span></td>-->
+			<tbody>
+				
+				<{foreach $data as $cname}>
+					<tr>
+						<td><{$cname.eid}></td>
+						<td><{$cname.name}></td>
+						<td><{$cname.commoname}></td>
+						<td><{$cname.mobile}></td>
+						<td><{$cname.extime}></td>
+						<td>
+							<span class="glyphicon glyphicon-trash mouse delnews"></span>
+						</td>
+					</tr>
+				<{/foreach}>	
+					
+			</tbody>
+			
+		</table>  		
+  	</div>
+</div>

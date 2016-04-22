@@ -1,0 +1,142 @@
+<script type="text/javascript">
+	var editor; //图片的上传
+	$(function() {
+		editor = KindEditor.editor({
+			allowFileManager: true,
+			filterMode: false
+		});
+		$('#fileup').click(function() {
+			editor.loadPlugin('image', function() {
+				editor.plugin.imageDialog({
+					imageUrl: $('#imgurl').val(),
+					clickFn: function(url, title, width, height, border, align) {
+						$('#imgurl').val(url);
+						editor.hideDialog();
+						$("#img").attr({
+							src: url,
+							alt: "Poster"
+						});
+					}
+				});
+			});
+		});
+		//返回按钮
+		$("#goback").click(function() {
+				redriect($(this).attr("url"));
+			})
+			//	点击新增按钮或是更新按钮
+		var pid = $("input[name=data-id]").val();
+		$("#submit button").click(function() {
+			if (pid) {
+				//修改页面的跳转
+				$.ajax({
+					type:"post",
+					url:"/yuanku/commoname-updatechange.html",
+					data:{
+						"pid":$("#data-id").val(),
+						"commoname": $("#commoname").val(),
+						"exchange": $("#exchange").val(),
+						"yorn": $("#yorn option:checked").val(),
+						"description": $("#description").val(),
+						"imgurl": $("#imgurl").val()
+					},
+					dataType:"json",
+					success:function( obj ){
+						if(obj.code==1){//修改成功
+							alert(obj.message);			
+							redriect("/yuanku/commoname-choice.html");
+						}else if(obj.code==0){//修改失败
+							alert(obj.message);						
+						}
+					},
+					async:true
+				});
+			} else {
+				//增加跳转
+				$.ajax({
+					type: "post",
+					url: "/yuanku/commoname-Doaddchange.html",
+					data: {
+						"commoname": $("#commoname").val(),
+						"exchange": $("#exchange").val(),
+						"yorn": $("#yorn option:checked").val(),
+						"people": $("#people").val(),
+						"description": $("#description").val(),
+						"imgurl": $("#imgurl").val()
+					},
+					success: function(text) {
+						if (text == "true") {
+							alert("项目增加成功！");
+						} else if (text == "false") {
+							alert("项目增加失败！");
+						}
+						redriect("/yuanku/commoname-choice.html");
+					},
+					async: true
+				});
+			}
+		});
+	})
+</script>
+<div class="panel panel-primary margin-base" id="vipDetails">
+	<div class="header panel-heading">
+		<h3 class="panel-title">
+			<label>增加商品</label>
+			<span id="goback" url="/yuanku/commoname-choice.html" class="pull-right glyphicon glyphicon-circle-arrow-left" aria-hidden="true"></span>
+		</h3>
+	</div>
+	<div class="panel-body">
+			<div class="col-lg-6">
+				<form class="form-horizontal">
+					<div class="form-group">
+						<label class="col-lg-3 col-lg-offset-2 control-label">商品名称:</label>
+						<div class="col-lg-6">
+							<input type="hidden" name="data-id" id="data-id" value="<{if !empty($data)}><{$data.pid}><{/if}>" />
+							<input type="text" class="form-control" id="commoname" name="pname" placeholder="商品名称" value="<{if !empty($data)}><{$data.commoname}><{/if}>">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 col-lg-offset-2 control-label">所需积分:</label>
+						<div class="col-lg-6">
+							<input name="name" id="exchange" type="text" class="form-control" value="<{if !empty($data)}><{$data.exchange}><{/if}>">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 col-lg-offset-2 control-label">是否上架:</label>
+						<div class="col-lg-6">
+							<select name="" id="yorn">
+								<option value="0">是</option>
+								<option value="1">否</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 col-lg-offset-2 control-label">商品说明:</label>
+						<div class="col-lg-6">
+							<textarea class="form-control" id="description"><{if !empty($data)}><{$data.description}><{/if}></textarea>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="col-lg-3 selectimg">
+				<img src="<{if !empty($data)}><{$data.pricture}><{/if}>" 
+ 					height="200px" width="200px" id="img"/>
+				<input type="button" id="fileup" value="选择图片" />
+				<input type="text" class="col-lg-6" id="imgurl" readonly="readonly" value="<{if !empty($data)}><{$data.pricture}><{/if}>"/>
+				<div style="display: none;">
+			    	<textarea id="touxiang" name="touxiang"></textarea>
+				</div>
+			</div>
+			<div class="form-group" id="submit">
+				<div class="col-lg-offset-5 col-lg-6" >
+					<button type="button" class="sub btn btn-default">
+						<{if empty($data)}>
+							新增
+						<{else}>
+							更新
+						<{/if}>
+					</button>
+				</div>
+			</div>
+	</div>
+</div>

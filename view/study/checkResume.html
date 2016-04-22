@@ -1,0 +1,194 @@
+<div class="page">
+    <div class="bd">
+		<div class="weui_cells_title">个人信息</div>
+        <div class="weui_cells">
+            <div class="weui_cell">
+                <div class="weui_cell_hd"><label>姓名</label></div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <input class="weui_input" readonly="readonly"  type="text" value="<{if isset($data)}><{$data.name}><{/if}>"/>
+                    <input type="hidden" readonly="readonly"  name="rid" id="rid" value="<{if isset($data)}><{$data.rid}><{/if}>" />
+                </div>
+            </div>
+        </div>
+        <div class="weui_cells">
+            <div class="weui_cell">
+                <div class="weui_cell_hd"><label>性别</label></div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <input class="weui_input" readonly="readonly"  type="text" value="<{if isset($data)}><{$data.sex}><{/if}>"/>
+                </div>
+            </div>
+        </div>
+        <div class="weui_cells weui_cells">
+            <div class="weui_cell">
+                <div class="weui_cell_hd"><label>最高学历</label></div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <input class="weui_input" readonly="readonly"  type="text" value="<{if isset($data)}><{$data.heighedu}><{/if}>"/>
+                </div>
+            </div>
+        </div>
+        <div class="weui_cells weui_cells">
+            <div class="weui_cell">
+                <div class="weui_cell_hd"><label>工作年限</label></div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <input class="weui_input" readonly="readonly"  type="text" value="<{if isset($data)}><{$data.workexp}><{/if}>"/>
+                </div>
+            </div>
+        </div>
+        <div class="weui_cells weui_cells">
+            <div class="weui_cell">
+                <div class="weui_cell_hd"><label>所在城市</label></div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <input class="weui_input" readonly="readonly"  type="text" value="<{if isset($data)}><{$data.city}><{/if}>"/>
+                </div>
+            </div>
+        </div>
+        <div class="weui_cells weui_cells">
+            <div class="weui_cell">
+                <div class="weui_cell_hd"><label>联系电话</label></div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <input class="weui_input" readonly="readonly"  type="tel" value="<{if isset($data)}><{$data.mobile}><{/if}>"/>
+                </div>
+            </div>
+        </div>
+        <div class="weui_cells weui_cells">
+            <div class="weui_cell">
+                <div class="weui_cell_hd"><label>联系邮箱</label></div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <input class="weui_input" readonly="readonly"  type="email" value="<{if isset($data)}><{$data.email}><{/if}>"/>
+                </div>
+            </div>
+        </div>
+        <div class="weui_cells weui_cells">
+            <div class="weui_cell">
+                <div class="weui_cell_hd"><label>期望工作</label></div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <input class="weui_input" readonly="readonly"  type="text" value="<{if isset($data)}><{$data.targetjob}><{/if}>"/>
+                </div>
+            </div>
+        </div>
+        <div class="weui_cells_title">工作经历</div>
+        <div class="weui_cells weui_cells">
+            <div class="weui_cell">
+                <div class="weui_cell_hd"><label>公司名称</label></div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <input class="weui_input" readonly="readonly"  type="text" value="<{if isset($data)}><{$data.companyname}><{/if}>"/>
+                </div>
+            </div>
+        </div>
+        <div class="weui_cells weui_cells">
+            <div class="weui_cell">
+                <div class="weui_cell_hd"><label>你的职位</label></div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <input class="weui_input" readonly="readonly"  type="text" value="<{if isset($data)}><{$data.position}><{/if}>"/>
+                </div>
+            </div>
+        </div>
+        <div class="weui_cells weui_cells">
+            <div class="weui_cell">
+                <div class="weui_cell_hd"><label>入职时间</label></div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <input class="weui_input" readonly="readonly"  type="date" value="<{if isset($data)}><{$data.entrytime}><{/if}>"/>
+                </div>
+            </div>
+        </div>
+        <div class="weui_cells weui_cells">
+            <div class="weui_cell">
+                <div class="weui_cell_hd"><label>离职时间</label></div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <input class="weui_input" readonly="readonly"  type="date" value="<{if isset($data)}><{$data.leavetime}><{/if}>"/>
+                </div>
+            </div>
+        </div>
+        <div class="weui_cells weui_cells">
+            <div class="weui_cell">
+                <div class="weui_cell_hd"><label>工作内容</label></div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <input class="weui_input" readonly="readonly"  type="text" value="<{if isset($data)}><{$data.workcontent}><{/if}>"/>
+                </div>
+            </div>
+        </div>
+        <div class="weui_cells_title">教育经历</div>
+        <div class="weui_cells weui_cells">
+            <div class="weui_cell">
+                <div class="weui_cell_hd"><label>学校名称</label></div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <input class="weui_input" readonly="readonly"  type="text" value="<{if isset($data)}><{$data.schoolname}><{/if}>"/>
+                </div>
+            </div>
+        </div>
+        <div class="weui_cells weui_cells">
+            <div class="weui_cell">
+                <div class="weui_cell_hd"><label>所学专业</label></div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <input class="weui_input" readonly="readonly"  type="text" value="<{if isset($data)}><{$data.specialty}><{/if}>"/>
+                </div>
+            </div>
+        </div>
+        <div class="weui_cells weui_cells">
+            <div class="weui_cell">
+                <div class="weui_cell_hd"><label>毕业年份</label></div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <input class="weui_input" readonly="readonly"  type="text" value="<{if isset($data)}><{$data.graduation}><{/if}>"/>
+                </div>
+            </div>
+        </div>
+        <div class="weui_cells_title">项目经历</div>
+        <div class="weui_cells weui_cells">
+            <div class="weui_cell">
+                <div class="weui_cell_hd"><label>项目名称</label></div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <input class="weui_input" readonly="readonly"  type="text" value="<{if isset($data)}><{$data.projectname}><{/if}>"/>
+                </div>
+            </div>
+        </div>
+        <div class="weui_cells weui_cells">
+            <div class="weui_cell">
+                <div class="weui_cell_hd"><label>你的职责</label></div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <input class="weui_input" readonly="readonly"  type="text" value="<{if isset($data)}><{$data.responsibility}><{/if}>"/>
+                </div>
+            </div>
+        </div>
+        <div class="weui_cells weui_cells">
+            <div class="weui_cell">
+                <div class="weui_cell_hd"><label>项目开始时间</label></div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <input class="weui_input" readonly="readonly"  type="date" value="<{if isset($data)}><{$data.starttime}><{/if}>"/>
+                </div>
+            </div>
+        </div>
+        <div class="weui_cells weui_cells">
+            <div class="weui_cell">
+                <div class="weui_cell_hd"><label>项目结束时间</label></div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <input class="weui_input" readonly="readonly"  type="date" value="<{if isset($data)}><{$data.endtime}><{/if}>"/>
+                </div>
+            </div>
+        </div>
+        <div class="weui_cells_title">项目描述</div>
+        <div class="weui_cells weui_cells_form">
+            <div class="weui_cell">
+                <div class="weui_cell_bd weui_cell_primary">
+                    <textarea class="weui_textarea" readonly="readonly"  placeholder="请输入项目描述" rows="5"><{if isset($data)}><{$data.projectinfo}><{/if}></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="weui_cells_title">技能评价</div>
+        <div class="weui_cells weui_cells_form">
+            <div class="weui_cell">
+                <div class="weui_cell_bd weui_cell_primary">
+                    <textarea class="weui_textarea" readonly="readonly"  placeholder="请输入技能评价" rows="5"><{if isset($data)}><{$data.skill}><{/if}></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="weui_cells_title">自我描述</div>
+        <div class="weui_cells weui_cells_form">
+            <div class="weui_cell">
+                <div class="weui_cell_bd weui_cell_primary">
+                    <textarea class="weui_textarea" readonly="readonly"  placeholder="请输入自我描述" rows="5"><{if isset($data)}><{$data.myselfinfo}><{/if}></textarea>
+                </div>
+            </div>
+        </div>
+	</div>
+	<!--<div class="weui_cell_ft" style="height: 100px;"></div>-->
+</div>

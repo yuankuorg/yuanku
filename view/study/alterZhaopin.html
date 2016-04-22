@@ -1,0 +1,133 @@
+<!--
+作者：dovshui@163.com
+时间：2016-01-22
+描述：修改招聘信息
+-->
+<div class="page">
+	<script type="text/javascript">
+		$(function(){
+			$(".alterZhaopin #upsub").click(function(){
+				//修改
+		    	$.ajax({
+		    		type:"post",
+		    		url:"/yuanku/Qiye-upZhaopin.html",
+		    		data: {"company":$("#altercompany").val(),"position":$("#alterposition").val(),"address":$("#alteraddress").val(),"experience":$("#alterexperience").val(),
+	  	   	   	      		"pay":$("#alterpay").val(),"degree":$("#alterdegree").val(),"responsible":$("#alterresponsible").val(),"requires":$("#alterrequires").val(),
+	  	   	   	      		"contacts":$("#altercontacts").val(),"zid":$("#zid").val()},
+	  	   	   		success:function(res){
+	  	   	   		   if( res == "false" ){
+	  	   	   		   	  $("#dialog").dialog("提示","修改失败");
+	  	   	   		   }else{
+	  	   	   		   	  $("#dialog").dialog("提示","修改成功");
+	  	   	   		      pageManager.back().back().back().go("zhaopin");
+	  	   	   		   }	
+	  	   	   		},
+		    		async:true
+		    	});
+			});
+		})
+		
+	</script>
+	<!--<div class="hd"></div>-->
+	<div class="bd">
+		<div class="weui_cells weui_cells_form">
+			<div class="weui_cells">
+				<div class="weui_cell">
+					<div class="weui_cell_hd">
+						<label class="weui_label">公司名称</label>
+					</div>
+					<div class="weui_cell_bd weui_cell_primary">
+						<input class="weui_input" id="altercompany" type="text" value="<{if isset($data)}><{$data.company}><{/if}>" placeholder=""/>
+						<input type="hidden" name="zid" id="zid" value="<{if isset($data)}><{$data.zid}><{/if}>" />
+					</div>
+				</div>
+            </div>
+			<div class="weui_cells">
+				<div class="weui_cell">
+					<div class="weui_cell_hd">
+						<label class="weui_label">职位名称</label>
+					</div>
+					<div class="weui_cell_bd weui_cell_primary">
+						<input class="weui_input" id="alterposition" type="text" value="<{if isset($data)}><{$data.position}><{/if}>" placeholder=""/>
+					</div>
+				</div>
+            </div>
+            <div class="weui_cells">
+				<div class="weui_cell">
+					<div class="weui_cell_hd">
+						<label class="weui_label">工作地址</label>
+					</div>
+					<div class="weui_cell_bd weui_cell_primary">
+						<input class="weui_input"id="alteraddress" type="text" value="<{if isset($data)}><{$data.address}><{/if}>" placeholder=""/>
+					</div>
+				</div>
+            </div>
+            <div class="weui_cells">
+				<div class="weui_cell">
+					<div class="weui_cell_hd">
+						<label class="weui_label">工作经验</label>
+					</div>
+					<div class="weui_cell_bd weui_cell_primary">
+						<input class="weui_input"id="alterexperience" type="text" value="<{if isset($data)}><{$data.experience}><{/if}>" placeholder=""/>
+					</div>
+				</div>
+            </div><div class="weui_cells">
+				<div class="weui_cell">
+					<div class="weui_cell_hd">
+						<label class="weui_label">薪资待遇</label>
+					</div>
+					<div class="weui_cell_bd weui_cell_primary">
+						<input class="weui_input"id="alterpay" type="text" value="<{if isset($data)}><{$data.pay}><{/if}>" placeholder=""/>
+					</div>
+				</div>
+            </div>
+            <div class="weui_cells">
+				<div class="weui_cell weui_cell_select" >
+					<div class="weui_cell_hd">
+						<label class="weui_label weui_xzk">学历要求</label>
+					</div>
+					<div class="weui_cell_bd weui_cell_primary">
+						<select  class="weui_select" id="alterdegree">
+							<option value="高中" <{if isset($data) && $data.degree eq "高中"}>selected<{/if}> >高中</option>						
+							<option value="大专" <{if isset($data) && $data.degree eq "大专"}>selected<{/if}> >大专</option>
+							<option value="本科" <{if isset($data) && $data.degree eq "本科"}>selected<{/if}> >本科</option>
+							<option value="研究生" <{if isset($data) && $data.degree eq "研究生"}>selected<{/if}> >研究生</option>
+						</select>
+					</div>
+				</div>
+            </div>
+		</div>
+		<div class="weui_cells_title">岗位职责</div>
+		<div class="weui_cells weui_cells_form">
+			<div class="weui_cell">
+				<div class="weui_cell_bd weui_cell_primary">
+					<textarea class="weui_textarea" id="alterresponsible" placeholder="" rows="3"><{if isset($data)}><{$data.responsible}><{/if}></textarea>
+					<div class="weui_textarea_counter"></div>
+				</div>
+			</div>
+		</div>
+		<div class="weui_cells_title">任职要求</div>
+		<div class="weui_cells weui_cells_form">
+			<div class="weui_cell">
+				<div class="weui_cell_bd weui_cell_primary">
+					<textarea class="weui_textarea" id="alterrequires" placeholder="" rows="3"><{if isset($data)}><{$data.requires}><{/if}></textarea>
+					<div class="weui_textarea_counter"></div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="weui_cells_title">联系方式</div>
+		<div class="weui_cells weui_cells_form">
+			<div class="weui_cell">
+				<div class="weui_cell_bd weui_cell_primary">
+					<textarea class="weui_textarea" id="altercontacts" placeholder="" rows="1"><{if isset($data)}><{$data.contacts}><{/if}></textarea>
+					<div class="weui_textarea_counter"></div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<div>
+		<a href="javascript:;" style="margin:15px 15px;" class="weui_btn weui_btn_primary" id="upsub" data-id="ti">提交</a>
+	</div>
+</div>

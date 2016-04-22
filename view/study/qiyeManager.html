@@ -1,0 +1,155 @@
+<script type="text/javascript">
+$(function(){
+	//点击删除图标
+    $(".delnews").click(function(){
+		var zid=$(this).attr("data-id");
+		$('#delModal').modal({
+			backdrop : true,
+			keyboard : true,
+			show     : true
+		});	
+		$('#delModal').unbind().on('hidden.bs.modal',function(){
+			var re = $("#modalok").attr("data-sub");
+			if(re=='true'){
+				$.ajax({
+					type:"post",
+					url:"/yuanku/QiyeManager-delZhaopin.html",
+					data:{"zid":zid},
+					success: function(text){
+						text.trim(text);
+						if(text=='false'){
+							$("#modalok").attr("data-sub","false");
+							$('#myModal').modal({
+								backdrop : true,
+								keyboard : true,
+								show     : true,
+								remote	 : '/yuanku/admin-showflase.html'
+							});
+						}else{
+							$("#modalok").attr("data-sub","false");
+							redriect("/yuanku/QiyeManager-companyManager.html");
+						}						
+					}
+				});
+			}else{
+				$('#delModal').modal("hide");
+			}
+		});
+	});
+	
+	//点击修改图标进入修改话题页面
+	$(".details").click(function(){
+		var url=$(this).attr("url");
+		var data=new Array();
+		data={"zid":$(this).attr("data-id")};
+		redriect(url,data);
+	});
+	//搜索
+	$(".panel-body .search").click(function(){			
+		$.ajax({
+			type: "post",
+			url: "/yuanku/QiyeManager-companyManager.html",
+			data:{"company":$(".company").val(),"position":$(".position").val(),
+			      "minaddtime":$("#minaddtime").val(),"maxaddtime":$("#maxaddtime").val()},
+			success: function(text) {
+				$(".main").fadeOut(function(){
+					$(this).html(text);
+					$(this).fadeIn();	
+				});						
+			},
+			async: true
+		});			
+	});
+	//重置
+	$(".panel-body .reset").click(function(){
+		$(".company,.position,#minaddtime,#maxaddtime").val("");
+	})
+})
+</script>
+<div class="panel panel-primary margin-base">
+	<div class="panel-heading">
+		<h3 class="panel-title"><label>企业管理</label></h3>	
+		
+	</div>
+  	<div class="panel-body">
+		<form role="form" class="form-inline">
+			<div class="form-group">
+				<label for="company" class="sr-only">公司名称:</label>
+				<input type="text"  class="form-control company" placeholder="公司名称"
+					value="<{if !empty($smarty.post.company)}><{$smarty.post.company}><{/if}>" />
+			</div>			
+			<div class="form-group">
+				<label for="position" class="sr-only">职位名称:</label>
+				<input type="text" class="form-control position" placeholder="职位名称"
+					value="<{if !empty($smarty.post.position)}><{$smarty.post.position}><{/if}>" />
+			</div>
+			<div class="form-group">
+				<label for="time" class="sr-only">时间:</label>
+				<input type="text" id="minaddtime" class="form-control" placeholder="最小时间"
+					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',skin:'whyGreen' })" 
+					value="<{if !empty($smarty.post.minaddtime)}><{$smarty.post.minaddtime}><{/if}>"/>
+					-
+				<input type="text" id="maxaddtime" class="form-control" placeholder="最大时间"
+					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',skin:'whyGreen' })"
+					value="<{if !empty($smarty.post.maxaddtime)}><{$smarty.post.maxaddtime}><{/if}>"/>
+			</div>
+			<button type="button" class="btn btn-primary search">
+				<span class="glyphicon glyphicon-search"></span>
+				搜索
+			</button>
+			<button type="button" class="btn btn-info reset">
+				<span class="glyphicon glyphicon-refresh"></span>
+				重置
+			</button>
+		</form>
+		<div class="line-base"></div>
+  	</div>
+  	<div class="table-responsive">
+ 		<table class="table table-striped table-bordered table-hover">
+			<thead>
+				<tr>
+					<th>
+						<input type="checkbox"/>
+					</th>
+					<th>公司名称</th>
+					<th>职位名称</th>					
+					<th>工作地址</th>
+					<th>工作经验</th>
+					<th>学历要求</th>
+					<th>薪资待遇</th>
+					<th>联系方式</th>
+					<th>增加时间</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+					<{foreach $data as $d}>
+						<tr>
+							<td>
+								<input type="checkbox" name="" id="" value="<{$d.zid}>" />
+							</td>
+							<td><{$d.company}></td>
+							<td><{$d.position}></td>
+							<td><{$d.address}></td>
+							<td><{$d.experience}></td>
+							<td><{$d.degree}></td>
+							<td><{$d.pay}></td>
+							<td><{$d.contacts}></td>
+							<td><{$d.datetime}></td>
+						    <td><span class="details glyphicon glyphicon-pencil mouse" 
+									url="/yuanku/QiyeManager-altZhaopin.html"
+									data-id="<{$d.zid}>"></span>
+								<span class="glyphicon glyphicon-trash mouse delnews" data-id="<{$d.zid}>"></span>
+							</td>
+						</tr>	
+					<{/foreach}>
+			</tbody>
+			
+		</table>				 		
+  	</div>
+  	
+  	<!--底部分页-->
+	<div class="panel-footer" style="background: white;">
+		<{include file="admin/pages.html" url="/yuanku/QiyeManager-companyManager.html" }>
+	</div>  	
+</div>

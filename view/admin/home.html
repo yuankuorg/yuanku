@@ -1,0 +1,111 @@
+<script type="text/javascript">
+	function forwords(url,data){
+		$.ajax({
+			type:"post",
+			url:url,
+			data:data,
+			dataType:'text',
+			success:function(text){
+				$('.HotAndNew').fadeOut(function(){ 
+					$(this).html(text).fadeIn();
+				});
+			},
+			async:true
+		});
+	}
+   $(function(){
+   	//话题和资讯切换
+   		$('#panel-heading button').click(function(){ 
+    		$("#table > table").hide().eq($('#panel-heading button').index(this)).show();
+    		forwords($(this).attr("url"),"");
+    	});
+    });
+</script>
+<div class="panel panel-primary margin-base">
+  	<!-- Default panel contents -->
+  	<div class="panel-heading"><h3 class="panel-title"><label>报名信息</label></h3></div>
+  	<!-- Table -->
+	  	<table class="table table-striped table-bordered table-hover">
+			<thead>
+				<tr>
+					<th width="20%">状态</th>
+					<th width="20%">报名总数</th>
+					<th width="20%">日报名数</th>
+					<th width="20%">周报名数</th>
+					<th width="20%">月报名数</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+		         	<td>新会员</td>
+		         	<td><{$da.new.a}>(人)</td>
+		         	<td><{$da.new.b}>(人)</td>
+		         	<td><{$da.new.c}>(人)</td>
+		         	<td><{$da.new.d}>(人)</td>
+		      	</tr>
+		      	<tr>
+		         	<td>助学成才</td>
+		         	<td><{$da.zhuxue.a}>(人)</td>
+		         	<td><{$da.zhuxue.b}>(人)</td>
+		         	<td><{$da.zhuxue.c}>(人)</td>
+		         	<td><{$da.zhuxue.d}>(人)</td>
+		     	</tr>
+		     	<tr>
+		         	<td>名企精英</td>
+		         	<td><{$da.minqi.a}>(人)</td>
+		         	<td><{$da.minqi.b}>(人)</td>
+		         	<td><{$da.minqi.c}>(人)</td>
+		         	<td><{$da.minqi.d}>(人)</td>
+		      	</tr>
+		      	<tr>
+		         	<td>学校导师</td>
+		         	<td><{$da.school.a}>(人)</td>
+		         	<td><{$da.school.b}>(人)</td>
+		         	<td><{$da.school.c}>(人)</td>
+		         	<td><{$da.school.d}>(人)</td>
+		      	</tr>
+		      	<tr>
+		         	<td>合作企业</td>
+		         	<td><{$da.company.a}>(人)</td>
+		         	<td><{$da.company.b}>(人)</td>
+		         	<td><{$da.company.c}>(人)</td>
+		         	<td><{$da.company.d}>(人)</td>
+		      	</tr>
+		 	</tbody>
+	  	</table>
+		<div class="panel-footer">
+	 	</div>
+	</div>
+	<div class="panel panel-primary" id="table">
+	  	<div class="panel-heading" id="panel-heading">
+	  		<div class="btn-group">
+			  <button type="button" class="btn btn-primary hot" url="/yuanku/adminIndex-BestHotPage.html">源酷最热话题</button>
+			  <button type="button" class="btn btn-primary new" url="/yuanku/adminIndex-BestNewsPage.html">源酷最新资讯</button>
+			</div>
+	  	</div>
+	  		<div class="HotAndNew">
+		 	 	<table class="table table-striped table-bordered table-hover">
+				<thead>
+					<tr>
+						<th width="30%">话题标题</th>
+						<th width="30%">话题描述</th>
+						<th width="20%">添加人</th>
+						<th width="20%">添加时间</th>
+					</tr>
+				</thead>
+				<tbody>
+					<{foreach $re as $res}>
+			      	<tr>
+			         	<td><{$res.t_title}></td>
+			         	<td><{$res.t_description}></td>
+			         	<td><{$res.code}></td>
+			         	<td><{$res.addtime}></td>
+			     	</tr>
+			     	<{/foreach}>
+			 	</tbody>
+		  	</table>
+		  	<div class="panel-footer">
+		  		<{include file="admin/pages.html" url="/yuanku/adminIndex-home.html"}>
+			</div>
+		</div>
+	</div>

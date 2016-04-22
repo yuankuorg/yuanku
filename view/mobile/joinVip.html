@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<title>提示信息</title>
+		<link rel="stylesheet" type="text/css" href="/yuanku/css/weui.css"/>
+		<link rel="stylesheet" type="text/css" href="/yuanku/css/yuanku.css"/>
+		<script src="/yuanku/js/zepto.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+	<script type="text/javascript">
+		$(function(){
+			$("#showTooltips").click(function(){
+				//手机号码不能为空
+				var reg = /^[1][3,5,8,9][0-9]{9}$/;
+				var name = /^.?$/
+				if ( !reg.test($("input[name=mobile]").val() )){
+					$("#error").html("请填写正确的手机号码！");
+				}else if(name.test($("input[name=name]").val() )){
+					$("#error").html("请填写姓名！");
+				}else{
+					$.ajax({
+						type:"post",
+						url:"/yuanku/mobile-joinVip.html",
+						data:{"name":$("input[name=name]").val(),"mobile":$("input[name=mobile]").val(),"proj":$(".proj").val()},
+						success:function(text){
+							if(text == false){
+								$("#error").html("提交注册失败,请与管理员联系!");
+							}else{
+								$("html").html(text);
+							}
+						},
+						async:true
+					});
+				}
+			});
+			$("input").focus(function(){
+				$("#error").html("")
+			})
+		})
+	</script>
+<body>
+	<div class="hd" style="padding: 1em 0;">
+		<h3 class="page_title" style="font-size: 24px;">会员注册</h3>
+	</div>
+	<div id="error" style="text-align: center;color: red;"></div>
+	<div class="bd">
+		<div class="weui_cells_title">手机号</div>
+	    <div class="weui_cells weui_cells_form">
+	        <div class="weui_cell">
+	            <div class="weui_cell_hd"><label class="weui_label" style="color: red;">*</label></div>
+	            <div class="weui_cell_bd weui_cell_primary">
+	                <input class="weui_input" type="tel" name="mobile" placeholder="请输入手机号"/>
+	            </div>
+	        </div>
+	    </div>
+	    <div class="weui_cells_title">姓名</div>
+	    <div class="weui_cells weui_cells_form">
+	        <div class="weui_cell">
+	            <div class="weui_cell_hd"><label class="weui_label" style="color: red;">*</label>
+	            	
+	            </div>
+	            <div class="weui_cell_bd weui_cell_primary">
+	                <input class="weui_input" type="tel" name="name" placeholder="请输入姓名"/>
+	            </div>
+	        </div>
+	    </div>
+	    <div class="weui_cells_title">选择项目</div>
+	    <div class="weui_cells">
+	        <div class="weui_cell weui_cell_select">
+	            <div class="weui_cell_bd weui_cell_primary">
+	                <select class="weui_select proj" name="select1">
+	                    <option value="7">助学成才</option>
+	                    <option value="6">名企精英</option>
+	                </select>
+	            </div>
+	        </div>
+	    </div>
+	    <div class="weui_btn_area">
+	        <a class="weui_btn weui_btn_primary" href="javascript:" id="showTooltips">确定</a>
+	    </div>
+	</div>
+</body>

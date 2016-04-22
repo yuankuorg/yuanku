@@ -1,0 +1,56 @@
+<div class="page">
+	<script type="text/javascript">
+		$(function(){
+		    $(".checkZhaopinMain #send").click(function(){
+                $.ajax({
+                	type:"post",
+                	url :"/yuanku/Qiye-addEnts.html",
+                	data:{"zid":$(this).attr("data")},
+                	dataType:"json",
+                	success: function( obj ){
+                		if( obj.code == 2 || obj.code == 4 ) {
+                			$("#send").hide();
+                            $("#send1").show();
+                		}
+                		$("#dialog").dialog("提示",obj.mes);
+                	},
+                	async:true
+                });
+		    });
+		});
+	</script>
+	<!--<div class="hd"></div>-->
+	<h1 class="h1_style"><{$data.position}></h1>
+    <h3 class="h3_style"><{$data.company}>&nbsp;&nbsp;&nbsp;&nbsp;￥<{$data.pay}></h3>
+   
+	<div class="bd">
+		<article class="weui_article">
+			<div>
+				<p style="padding-left: 0px;">
+	              	<span style="margin-right: 15px;"><img src="/yuanku/img/study/loca.png" style="width: 13px;"/>&nbsp;<{$data.address}> </span>
+	              	<span style="margin-right: 15px;"><img src="/yuanku/img/study/xueli.png" style="width: 15px;"/>&nbsp;<{$data.degree}></span> 
+	              	<span style="margin-right: 15px;"><img src="/yuanku/img/study/jiany.png" style="width: 15px;"/>&nbsp;<{$data.experience}></span>
+	            </p>
+			</div>
+            <section style="border-bottom: none;">
+                <section>
+                    <h3 style="color: #000000;">岗位职责</h3>
+                    <br>
+                    <p><{$data.responsible}></p>
+                </section>
+                <section>
+                    <h3 style="color: #000000;">任职要求</h3>
+                    <br>
+                    <p><{$data.requires}></p>
+                </section>
+                <section>
+                    <h3 style="color: #000000;">联系方式</h3>
+                    <br>
+                    <p><{$data.contacts}></p>
+                </section>
+                <a href="javascript:;" class="weui_btn weui_btn_primary js_grid" data="<{$data.zid}>" id="send">发送简历</a>
+                <a href="javascript:;" style="display: none;" class="weui_btn weui_btn_disabled weui_btn_primary js_grid" id="send1">已发送</a>
+            </section>
+        </article>
+	</div>
+</div>

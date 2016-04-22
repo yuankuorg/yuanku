@@ -1,0 +1,296 @@
+<script type="text/javascript">
+	function getSelectedNews(){
+		var arr = new Array();
+		$("#selectedNews tbody tr").each(function(){			
+			var obj = {};
+			obj["n_id"] = $(this).find("td[name=n_id]").html();//资讯id
+			obj["n_title"] = $(this).find("td[name=n_title]").html();//资讯标题
+			obj["n_img"] = $(this).find("td[name=n_img] img").attr("src");//资讯封面
+			if( obj.n_id) {
+				arr.push(obj);
+			}
+		});
+		
+		return arr;
+	}
+	var editor;
+	$(function(){
+		var selectid = $("select").attr("select-id");
+		$("select option").each(function(){
+			if($(this).attr("data-tcid")==selectid){
+				$(this).attr("selected","selected");
+			}
+		});
+		
+		//创建KindEditor
+		editor = KindEditor.create('#newscontent', {
+			allowFileManager : true,
+			filterMode: false
+		});
+		
+		//点击选择图片的按钮
+		$('#fileup').click(function() {
+			editor.loadPlugin('image', function() {
+				editor.plugin.imageDialog({
+					imageUrl : $('#imgurl').val(),
+					clickFn : function(url, title, width, height, border, align) {
+						$('#imgurl').val(url);
+						editor.hideDialog();
+						$("#img").attr({ src: url, alt: "Test Image" });
+					}
+				});
+			});
+		});
+
+		
+	//	点击新增按钮或是更新按钮
+		$("#submit button").click(function(){
+			var flag=true;//这里有好几层循环，要几个return
+	//		先验证，再提交
+			$(".panel-body input[type=text]").each(function(){
+				console.log($(this));
+				if($(this).attr("name")=="t_title"){
+					var t_title=$(this).val();
+					if(t_title.length==0 || t_title.length>50){
+						$(this).parent().next().html("话题标题不能为空或超过50字符！");
+						flag=false;
+						return false;
+					}
+				}else if($(this).attr("name")=="t_description"){
+					var t_description=$(this).val();
+					if(t_description.length==0 || t_description.length>100){
+						$(this).parent().next().html("话题描述不能为空或超过100字符！");
+						flag=false;
+						return false;
+					}
+				}			
+			});	
+			
+			if( !flag ){
+				return;
+			}
+			
+			var t_img=$("#imgurl").val();
+			if(t_img=="" || t_img.length==0){
+				alert("话题封面不能为空！");
+				return false;
+			}
+			
+			var t_id=$("input[name=data-id]").val();
+			var tc_id=$("option:checked").attr("data-tcid");
+			
+			var p_nid=$("#selectedNews tbody input[type=radio]:checked").val();
+			if( !p_nid ) {
+				alert("必须要有首要资讯!");
+				return false;
+			}
+			
+			//话题中的资讯修改 josn获取
+			var topics_newsnums=new Array();
+			$("#selectedNews tbody tr").each(function(){
+				if( $(this).find("td[name=n_id]").html() ) {
+					var obj = {};
+					obj["tn_id"]=$(this).find("input[name=tn_id]").attr("value");
+					obj["n_id"]=$(this).find("td[name=n_id]").html();
+					topics_newsnums.push(obj);
+				}
+			});
+			
+			if( t_id ){//修改
+				$.ajax({
+					type:"post",
+					url:"/yuanku/topics-updateTopic.html",
+					data:{"t_id":t_id,"tc_id":tc_id,"tc_name":$("input[name=t_title]").val(),
+							"tc_description":$("input[name=t_description]").val(),
+							"p_nid":p_nid,"topics_newsnums":topics_newsnums,
+							"imgurl":$("#imgurl").val()},
+					dataType:"json",
+					success:function( obj ){
+						if(obj.code==1){//修改成功
+							alert(obj.message);			
+							redriect("/yuanku/topics-TopicsMana.html");
+						}else if(obj.code==0){//修改失败
+							alert(obj.message);						
+						}
+					},
+					async:true
+				});
+			}else{//新增
+				$.ajax({
+					type:"post",
+					url:"/yuanku/topics-doaddTopics.html",
+					data:{"t_title":$("input[name=t_title]").val(),
+					"t_description":$("input[name=t_description]").val(),
+					"tc_id":$("option:checked").attr("data-tcid"),
+					"t_img":t_img,
+					"topics_newsnums":topics_newsnums,
+					"p_nid":p_nid},
+					success:function( text ){
+						if(text=="true"){
+							alert("话题增加成功！");
+						}else if(text=="false"){
+							alert("话题增加失败！");
+						}
+						redriect("/yuanku/topics-TopicsMana.html");
+					},
+					async:true
+				});	
+			}
+		});	
+		
+		//用于清除提示
+		$("#topicclassAdd input[type=text]").focus(function(){
+			$(this).parent().next().html("");
+		});
+		//删除话题中的资讯
+		$("#selectedNews tbody tr").each(function(){
+			var t_id=$("input[name=data-id]").val();
+			var t = $(this);
+			
+			$(this).find(".del").click(function(){
+				if( t_id) {
+					var n_id = t.find("td[name=n_id]").html();
+					$.ajax({
+						type:"post",
+						url:"/yuanku/topics-delTopics_News.html",
+						data:{"t_id":t_id,"n_id":n_id},
+						success:function(text){
+							if(text){
+								alert("删除成功");
+							}else{
+								alert("删除失败")
+							}
+						},
+						async:true
+					});
+				}
+				
+				t.find("input[name=tn_id]").val("");
+				t.find("td[name=n_id]").html("");
+				t.find("td[name=n_title]").html("");
+				t.find("td[name=n_img] img").attr("src","");
+				t.find("input[name=isprimary]").val("").attr("checked",false);
+			});
+		})
+	});	
+</script>
+<div class="panel panel-primary margin-base">
+	<div class="panel-heading">
+		<h3 class="panel-title"><label>话题添加</label></h3>		
+    </div>
+ 	<div class="panel-body">
+ 		<div class="row">
+ 			<div class="col-lg-8">
+				<form class="form-horizontal">
+					<div class="form-group">
+					    <label for="t_title" class="col-lg-2 control-label">话题名称</label>
+					    <div class="col-lg-5">
+					    	<input type="hidden" name="data-id" id="data-id" value="<{if !empty($data)}><{$data.t_id}><{/if}>" />
+					        <input type="text" class="form-control" id="t_title" name="t_title" 
+					        	placeholder="话题名称" 
+					        	value="<{if !empty($data)}><{$data.t_title}><{/if}>">
+					    </div><div class="col-lg-5"></div>
+					</div>
+				    <div class="form-group">
+				    	<label for="t_description" class="col-lg-2 control-label">话题描述</label>
+				    	<div class="col-lg-5">
+				      		<input type="text" class="form-control" id="t_description" 
+				      			name="t_description" placeholder="话题描述"
+				      			value="<{if !empty($data)}><{$data.t_description}><{/if}>">
+				    	</div><div class="col-lg-5"></div>
+				  	</div>
+				  	<div class="form-group">
+				    	<label for="topicstype" class="col-lg-2 control-label">话题类别</label>
+					    <div class="col-lg-5">
+				    		<select class="form-control" select-id="<{$data.tc_id}>">
+						  		<{foreach $tc as $topicclass}>
+						  			<option data-tcid="<{$topicclass.tc_id}>"><{$topicclass.tc_name}></option>
+						  		<{/foreach}>
+							</select>
+					    </div>
+				  	</div>
+					<div class="form-group">
+					    <label for="t_img" class="col-lg-2 control-label">话题封面</label>
+					    <div class="col-lg-6">
+					      <input type="button" id="fileup" value="选择图片" />
+					      <input type="text" id="imgurl" placeholder="选择图片" readonly="readonly"
+					      	value="<{if !empty($data)}><{$data.t_img}><{/if}>"/>
+					    </div>
+					</div>
+				  	<div class="form-group">
+				    	<label for="topicsnews" class="col-lg-2 control-label">话题中的资讯</label>
+				    	<div class="col-lg-5">
+					    	<div class="col-lg-5">
+					      		<button type="button" class="btn btn-default" id="selectNews"
+					      			href="/yuanku/topics-newslistModal.html"
+					      			data-toggle="modal" data-target="#myModal">选择资讯</button>
+					    	</div>
+				    	</div>
+				  	</div>
+				  	<div class="form-group">
+				  		<label for="selectnews" class="col-lg-2 control-label">选择的资讯</label>			  		
+				  		<div class="table-responsive">
+				  			<table class="table table-striped table-bordered table-hover"
+				  				id="selectedNews">
+				  				<thead>
+				  					<th>资讯id</th>
+				  					<th>资讯标题</th>
+				  					<th>资讯封面</th>
+				  					<th>isprimary</th>
+				  					<th>删除</th>
+				  				</thead>
+				  				<tbody>
+				  					<{for $foo = 0 to 3}>
+				  						<{if empty($newslist[$foo])}>
+					  						<tr>
+					  							<input type="hidden" name="tn_id" id="" value="" />
+						  						<td name="n_id" id="n_id"></td>
+						  						<td name="n_title" id="n_title"></td>
+						  						<td name="n_img"><img src="" width="30px" height="30px"/></td>
+						  						<td><input type="radio" name="isprimary" value="" <{if $foo == 0}>checked<{/if}> /></td>
+						  						<td><span class="del glyphicon glyphicon-trash mouse"></span></td>
+					  						</tr>
+				  						<{else}>
+				  							<tr>
+					  							<input type="hidden" name="tn_id" id="" value="<{$newslist[$foo].tn_id}>" />
+						  						<td name="n_id" id="n_id"><{$newslist[$foo].n_id}></td>
+						  						<td name="n_title" id="n_title"><{$newslist[$foo].n_title}></td>
+						  						<td name="n_img"><img src="<{$newslist[$foo].n_img}>" width="30px" height="30px"/></td>
+						  						<td><input type="radio" name="isprimary" <{if $newslist[$foo].n_id == $data["p_nid"]}>checked<{/if}> value="<{$newslist[$foo].n_id}>"/></td>
+						  						<td><span class="del glyphicon glyphicon-trash mouse"></span></td>
+					  						</tr>
+				  						<{/if}>
+				  					<{/for}>
+				  				</tbody>
+				  			</table>
+				  		</div>
+				  	</div>
+				  	<div class="form-group">
+				    	<div class="col-sm-offset-2 col-sm-10" id="submit">
+				      		<button type="button" class="btn btn-primary col-lg-2">
+								<{if empty($data)}>
+									新增
+								<{else}>
+									更新
+								<{/if}>
+				      		</button>
+				    	</div>
+				  	</div>				  	
+					<div class="form-group" style="display: none;">
+					    <label for="newscontent" class="col-lg-2 control-label">资讯内容</label>
+					    <div class="col-lg-5">
+					    	<textarea style="width:680px;height:400px;visibility:hidden;" id="newscontent" name="newscontent">
+					    		<{if !empty($data)}><{$data.n_content}><{/if}>
+					    	</textarea>
+					    </div>
+					</div>
+				</form> 		 				
+ 			</div>
+ 			<div class="col-lg-4">
+ 				<!--<img src="/yuanku/img/touxiang.jpg" id="img" width=/>-->
+ 				<img src="<{if !empty($data)}><{$data.t_img}><{/if}>" 
+ 					height="200px" width="200px" id="img"/>
+ 			</div>
+ 		</div>
+ 	</div>
+</div>

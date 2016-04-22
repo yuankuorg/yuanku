@@ -1,0 +1,10 @@
+<{foreach $getChengeData as $po}>
+    <div class="weui_cell">
+        <div class="weui_cell_hd"><img src="<{$po.pricture}>" style="width:20px;margin-right:5px;display:block"></div>
+        <div class="weui_cell_bd weui_cell_primary">
+            <p><{$po.commoname}></p>
+        </div>
+        <div class="weui_cell_ft"><{$po.exchange}></div>分
+        <p class="time">兑换时间:<{$po.extime}></p>
+    </div>
+<{/foreach}>

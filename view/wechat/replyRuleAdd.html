@@ -1,0 +1,103 @@
+<script>
+	function checkkey(obj){
+		var flag = true;
+		if( obj.attr("name") == "key"){
+			if( obj.val() == "" || obj.val().length == 0){
+				$("#span1").html("关键字不能为空");
+				flag = false;
+			}else{
+				$.ajax({
+					type:"post",
+					url:"/yuanku/wechatMan-checkkey.html",
+					data:{"keyword":obj.val()},
+					success: function( text){
+						text = text.trim();
+						if( text == 'false' ){
+							$("#span1").html("关键字重复");
+							flag = false;
+						} else{
+							$("#span1").html("关键字可用");
+						}
+						
+					},
+					async:false
+				});
+			}
+		}else{
+			if( obj.val() == "" || obj.val().length == 0){
+				$("#span2").html("回复信息不能为空");
+				flag = false;
+			}
+		}
+		return flag;
+	}
+	
+	function clear( obj ){
+		if( obj.attr("name") == "key"){
+			$("#span1").html("");
+		}else{
+			$("#span2").html("");
+		}
+	}
+
+	$(function (){
+		$("#keyword,#text").blur(function(){
+    		checkkey($(this));
+    	}).focus(function(){
+    		clear($(this));
+    	});
+		
+		
+		$("#addkeyinfo").click(function (){
+			var flag = true;
+			$("#keyword,#text").each(function(){
+				if( checkkey($(this)) == false){
+					flag = false;
+					return false;
+				}
+			});
+			
+			if( flag == false ) {
+				return;
+			}
+			
+			$.ajax({
+				type:"post",
+				url:"/yuanku/wechatMan-addkeyinfo.html",
+				data: {"content":$("#text").val(),"keyword":$("#keyword").val()},
+				success: function( text ){
+					if( text == "true" ){
+						redriect("/yuanku/wechatMan-autoReply.html")
+					}else{
+						BsModel.OpenModel({
+							"title":'信息提示！',
+							"content":"添加关键字自动回复信息失败！"
+						});
+					}
+				},
+				async:true
+			});
+		});
+	});
+</script>
+<div class="panel panel-primary margin-base">
+	<div class="panel-heading">
+		<h3 class="panel-title"><label>
+				回复信息修改		
+		</label></h3>		
+    </div>
+    <div class="panel-body" id="topicclassAdd">
+    	<label>关键字</label> <input type="text" name="key" id="keyword" value="" />
+    	<span id="span1"></span>
+    </div>
+
+    <div class="panel-body" id="topicclassAdd">
+		<input type="radio" id="" value="" checked="checked" /><label>文本模式</label>
+		<br />
+		<textarea class="col-lg-8" id="text" name="info"></textarea>
+		<span id="span2"></span>
+    </div>
+    <div class="panel-body" id="topicclassAdd">
+		<button id="addkeyinfo">保存修改</button>
+    </div>    
+</div>

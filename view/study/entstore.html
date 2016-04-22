@@ -1,0 +1,67 @@
+<!--
+	作者：dovshui@163.com
+	时间：2016-02-13
+	描述：企业查看收到的简历
+-->
+<div class="page">
+	<script type="text/javascript">
+		var zid = <{if isset($smarty.post.zid)}><{$smarty.post.zid}><{else}>0<{/if}>;
+        function more(){
+    		$(".entstore .js_grid").click(function() {
+				var rid ={"rid" :$(this).data("rid")};
+				pageManager.go($(this).data("id"),rid);
+		    });
+    	}
+        $(function(){
+        	more();
+        	 //加载更多
+		    var i=1
+			$(".entstore #morecheckRes").click(function(){
+				i++;
+				$.ajax({ 
+					type:"post",
+					url:"/yuanku/Qiye-getmorecheckRes.html",
+					data:{"curpage":i,"zid":zid},
+					success:function( text ){
+						if( text != "" ){
+							$("#morecheckRes1").append(text);
+							more();
+						}else{
+							$("#dialog").dialog("提示","无更多内容");
+							$("#getmore").hide();
+						}
+					},
+					async:true
+				});
+			});
+        })
+	</script>
+	<div class="bd">
+        <div class="weui_cells_access" id="morecheckRes1">
+        	<{foreach $data as $d}>
+        		<div class="weui_cells">
+					<a class="weui_cell js_grid" href="javascript:;" data-id="checkResume" data-rid="<{$d.rid}>">
+					    <div class="weui_cell_hd">
+					        <img src="<{$d.img}>" alt="icon" style="height:56px;margin-right: 10px;">
+					    </div>
+					    <div class="weui_cell_bd weui_cell_primary">
+					    	<p class="ft_list1">电话：<span><{$d.mobile}></span></p>
+					    	<p class="ft_list1">邮箱：<span><{$d.email}></span></p>
+					    	<p class="ft_list1">工作经验：<span><{$d.workexp}></span></p>
+					    </div>
+					    <div>
+					        <p class="ft_list3"></p>
+					    </div>
+					</a>
+				</div>
+				<div class="weui_cells_tips">
+					<{$d.name}>&nbsp;投递于<span>&nbsp;<{$d.addtime}></span>
+				</div>
+			<{/foreach}>
+		</div>
+		<div class="bd">
+			<a href="javascript:void(0);" class="weui_btn weui_btn_plain_default yuankumore" id="morecheckRes">加载更多</a>
+		</div>
+    </div>
+</div>
+		

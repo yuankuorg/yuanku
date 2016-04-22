@@ -1,0 +1,157 @@
+<script type="text/javascript">
+	var editor; //图片的上传
+	$(function() {
+		editor = KindEditor.create('textarea[name="content"]', {
+			allowFileManager : true
+		});
+		//返回按钮
+		$("#goback").click(function() {
+			redriect($(this).attr("url"));
+		})
+			//	点击新增按钮或是更新按钮
+		var cid = $("input[name=data-id]").val();
+		$("#submit button").click(function() {
+			if (cid) {
+				//修改页面的跳转
+				$.ajax({
+					type:"post",
+					url:"/yuanku/chuangManager-updateChapter.html",
+					data:{
+						  "cid"  : cid,
+						"project":$("#pid option:checked").attr("data-pid"),
+						 "title" :$("#title").val(),
+					  "difficult":$("#difficult").val(),
+						  "video":$("#video").val(),
+					   "material":$("#material").val(),
+						  "score":$("#score").val(),
+					   "addscore":$("#addscore").val(),
+						"expound":editor.text()
+					},
+					dataType:"json",
+					success:function( obj ){
+						if(obj.code==1){//修改成功
+							alert(obj.message);			
+							redriect("/yuanku/chuangManager-showChapter.html");
+						}else if(obj.code==0){//修改失败
+							alert(obj.message);						
+						}
+					},
+					async:true
+				});
+			} else {
+				//增加跳转
+				$.ajax({
+					type: "post",
+					url: "/yuanku/chuangManager-doaddChapter.html",
+					data: {
+						"project":$("#pid option:checked").attr("data-pid"),
+						 "title" :$("#title").val(),
+					  "difficult":$("#difficult").val(),
+						  "video":$("#video").val(),
+					   "material":$("#material").val(),
+						  "score":$("#score").val(),
+					   "addscore":$("#addscore").val(),
+						"expound":editor.text()
+					},
+					success: function(text) {
+						if (text == "true") {
+							alert("关卡增加成功！");
+						} else if (text == "false") {
+							alert("关卡增加失败！");
+						}
+						redriect("/yuanku/chuangManager-showChapter.html");
+					},
+					async: true
+				});
+			}
+		});
+	})
+</script>
+<div class="panel panel-primary margin-base">
+	<div class="panel-heading">
+		<h3 class="panel-title"><label>关卡添加</label>
+			<span id="goback" url="/yuanku/chuangManager-showChapter.html" class="pull-right glyphicon glyphicon-circle-arrow-left" aria-hidden="true"style="cursor: pointer;"></span>
+		</h3>
+	</div>
+	<div class="panel-body">
+		<div class="row">
+			<div class="col-lg-10">
+				<form class="form-horizontal">
+					<div class="form-group">
+						<label for="pname" class="col-lg-3 control-label">项目名称：</label>
+						<div class="col-lg-8">
+							<input type="hidden" name="data-id" id="data-id" value="<{if !empty($data)}><{$data.cid}><{/if}>" />
+								<select name="" class="form-control" id="pid" value="<{if !empty($data)}><{$data.pname}><{/if}>">
+									<{foreach $cp as $projectclass}>
+									<option data-pid="<{$projectclass.pid}>" <{if !empty($data) && ($data.pid eq $projectclass.pid) }>selected<{/if}> ><{$projectclass.pname}></option>
+									<{/foreach}>
+								</select>
+						</div>
+						<div class="col-lg-5"></div>
+					</div>
+					<div class="form-group">
+						<label for="title" class="col-lg-3 control-label">项目标题：</label>
+						<div class="col-lg-8">
+							<input type="text" class="form-control" id="title" name="pname" placeholder="项目标题" value="<{if !empty($data)}><{$data.title}><{/if}>">
+						</div>
+						<div class="col-lg-5"></div>
+					</div>
+					<div class="form-group">
+						<label for="difficult" class="col-lg-3 control-label">难度系数：</label>
+						<div class="col-lg-8">
+							<input type="text" class="form-control" id="difficult" name="pname" placeholder="请输入1--5的数字" value="<{if !empty($data)}><{$data.difficult}><{/if}>">
+						</div>
+						<div class="col-lg-5"></div>
+					</div>
+					<div class="form-group">
+						<label for="video" class="col-lg-3 control-label">视频地址：</label>
+						<div class="col-lg-8">
+							<input type="text" class="form-control" id="video" name="pname" placeholder="" value="<{if !empty($data)}><{$data.video}><{/if}>">
+						</div>
+						<div class="col-lg-5"></div>
+					</div>
+					<div class="form-group">
+						<label for="material" class="col-lg-3 control-label">材料地址：</label>
+						<div class="col-lg-8">
+							<input type="text" class="form-control" id="material" name="pname" placeholder="" value="<{if !empty($data)}><{$data.material}><{/if}>">
+						</div>
+						<div class="col-lg-5"></div>
+					</div>
+					<div class="form-group">
+						<label for="score" class="col-lg-3 control-label">需要积分：</label>
+						<div class="col-lg-8">
+							<input type="text" class="form-control" id="score" name="pname" placeholder="" value="<{if !empty($data)}><{$data.score}><{/if}>">
+						</div>
+						<div class="col-lg-5"></div>
+					</div>
+					<div class="form-group">
+						<label for="addscore" class="col-lg-3 control-label">获得积分：</label>
+						<div class="col-lg-8">
+							<input type="text" class="form-control" id="addscore" name="pname" placeholder="" value="<{if !empty($data)}><{$data.addscore}><{/if}>">
+						</div>
+						<div class="col-lg-5"></div>
+					</div>
+					<div class="form-group">
+						<label for="expound" class="col-lg-3 control-label">规则说明：</label>
+						<div class="col-lg-5">
+							<textarea name="content" id="expound" style="width:670px;height:400px;visibility:hidden;" id="expound" class="form-control" value=""><{if !empty($data)}><{$data.expound}><{/if}></textarea>
+						</div>
+						<div class="col-lg-7"></div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-sm-offset-5 col-sm-10" id="submit">
+							<button type="button" class="btn btn-primary col-lg-2">
+								<{if empty($data)}>
+									新增
+									<{else}>
+										更新
+										<{/if}>
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

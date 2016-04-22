@@ -1,0 +1,22 @@
+<div class="page">
+	<script type="text/javascript">
+		$(function() {
+			$(".applysub .js_grid").click(function() {
+				pageManager.go($(this).data("id"));
+			});
+		})
+	</script>
+	<div class="weui_msg">
+		<div class="weui_icon_area"><i class="weui_icon_success weui_icon_msg"></i></div>
+		<div class="weui_text_area">
+			<h2 class="weui_msg_title">申请成功</h2>
+			<p class="weui_msg_desc">扣除积分：<{($score.score)}></p>
+		</div>
+		<div class="weui_opr_area">
+			<p class="weui_btn_area">
+				<a href="javascript:;" class="weui_btn weui_btn_primary js_grid" data-id = "uigs">返回关卡页</a>
+				<a href="javascript:;" class="weui_btn weui_btn_default js_grid" data-id = "home">返回首页</a>
+			</p>
+		</div>
+	</div>
+</div>

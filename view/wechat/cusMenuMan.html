@@ -1,0 +1,256 @@
+<script type="text/javascript">
+
+	//删除菜单的按钮的事件绑定
+	function cusMenuDel(){
+		$("span[name=firstMenuDel]").unbind().click(function(){
+			$(this).parent().parent().parent().remove();
+			firstMenuCheck();
+		});
+		$("span[name=secondMenuDel]").unbind().click(function(){
+			$(this).parent().parent().remove();
+			$("span[name=secondMenuDel]").each(function(){
+				secondMenuCheck($(this).parent().parent().parent());
+			});
+		});
+	}
+
+
+
+	//一级菜单数量控制
+	function firstMenuCheck(){
+		var flag=true;
+		var num=0;
+		$(".oneCusMenu").each(function(){
+			$(this).find(".firstMenu").each(function(j){
+				num++;
+			});
+			//总共只能有3个一级菜单
+			if(num>2){
+				return flag=false;
+			}
+		});
+		return flag;
+	}
+	
+	//二级菜单数量控制和分配序号
+	function secondMenuCheck(obj){
+		var flag=true;
+		var num=0;
+		obj.each(function(i){
+			$(this).find(".secondMenu").each(function(){
+				num++;
+				//每个一级菜单下最多有7个二级菜单
+				if(num>6){
+					return flag=false;
+				}	
+			});
+					
+		});
+		return flag;
+	}
+
+
+	//增加二级菜单事件绑定
+	function secondMenuAdd(){
+		$("button[name=secondMenuAdd]").unbind().click(function(){
+			if(secondMenuCheck($(this).parent().parent().parent())){
+				$(this).parent().parent().find("input[name=cusMenuUrl],input[name=cusMenuType]").remove();
+				$(this).parent().parent().after('<tr class="secondMenu"><td>├一一一</td><td><input type="text" name="cusMenuName" id="" value="" /></td><td><input type="text" name="cusMenuType" id="" value="view"  placeholder="输入view或者click" /></td><td><input type="text" name="cusMenuUrl" id="" value="" placeholder="格式http://XXX.XXX/" /></td><td><span name="secondMenuDel" class="glyphicon glyphicon-trash mouse delnews" data-id=""></span></td></tr>');
+				cusMenuDel();
+				secondMenuCheck($(this).parent().parent().parent());
+			}else{
+				alert("每个一级菜单下最多有7个二级菜单");
+			}
+		});
+	}
+
+	$(function(){
+		//增加一级菜单事件绑定
+		$("#firstMenuAdd").unbind().click(function(){
+			if(firstMenuCheck()){
+				$("#cusMenuTable").append('<tbody class="oneCusMenu"><tr class="firstMenu"><td><button type="button" class="btn btn-info btn-sm paddingLR" name="secondMenuAdd"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 添加二级菜单</button></td><td><input type="text" name="cusMenuName" id="" value="" /></td><td><input type="text" name="cusMenuType" id="" value="view"  placeholder="输入view或者click" /></td><td><input type="text" name="cusMenuUrl" id="" value="" placeholder="格式http://XXX.XXX/" /></td><td><span name="firstMenuDel" class="glyphicon glyphicon-trash mouse delnews" data-id=""></span></td></tr></tbody>');		
+			}else{
+				alert("一级菜单数量最多3个");
+			}
+			secondMenuAdd();
+			cusMenuDel();
+			firstMenuCheck();
+		});
+		cusMenuDel();
+		secondMenuAdd();
+		
+		//创建菜单
+		$("#cusMenuCreate").click(function(){
+			var button=[];
+			$("#cusMenuTable tbody").each(function(){
+				var sub_button=[];
+				var theTr=$(this).find('tr');
+				if(theTr.length==1){
+					var theType =theTr.find('input[name=cusMenuType]').val();
+					if(theType=='view'){
+						button.push({
+							'name':theTr.find('input[name=cusMenuName]').val(),
+							'type':theTr.find('input[name=cusMenuType]').val(),
+							'url':theTr.find('input[name=cusMenuUrl]').val()
+						});						
+					}else if(theType=='click'){
+						button.push({
+							'name':theTr.find('input[name=cusMenuName]').val(),
+							'type':theTr.find('input[name=cusMenuType]').val(),
+							'key':theTr.find('input[name=cusMenuUrl]').val()
+						});	
+					}
+
+				}else{
+					var sub_buttonName='';
+					theTr.each(function(i){
+						if(i==0){
+							sub_buttonName=$(this).find('input[name=cusMenuName]').val();
+							}else{
+							//var theType =theTr.find('input[name=cusMenuType]').val();
+							var theType =$(this).find('input[name=cusMenuType]').val();
+							if(theType=='view'){
+								sub_button.push({
+									'name':$(this).find('input[name=cusMenuName]').val(),
+									'type':$(this).find('input[name=cusMenuType]').val(),
+									'url':$(this).find('input[name=cusMenuUrl]').val()
+								});						
+							}else if(theType=='click'){
+								sub_button.push({
+									'name':$(this).find('input[name=cusMenuName]').val(),
+									'type':$(this).find('input[name=cusMenuType]').val(),
+									'key':$(this).find('input[name=cusMenuUrl]').val()
+								});	
+							}						
+						}
+										
+					});	
+					button.push({
+						'name':sub_buttonName,
+						'sub_button':sub_button
+					});	
+				}
+				
+			});
+			
+			
+			BsModel.OpenModel({
+				"title" : "消息确定",
+				"content" : '确定提交菜单内容 ？',
+				"okcall" : function(){
+					$.ajax({
+						type : "post",
+						url : "/yuanku/wechatCusMenu-setCusMenu.html",
+						data : {'button':button},
+						dataType : "text",
+						success : function ( text ){
+							if(text=='true'){
+								BsModel.OpenModel({
+									"title" : "提交成功",
+									"content" : '提交成功，自定义菜单已修改，24小时内生效，若要看到即时效果，请取消关注公众号再关注查看。'
+								});
+							}else{
+								BsModel.OpenModel({
+									"title" : "提交失败",
+									"content" : '提交失败，已清除access_token缓存'
+								});								
+							}
+						},
+						async:true
+					});
+				}
+			});
+		});
+		
+		$("#delMenu").click(function(){
+			BsModel.OpenModel({
+				"title" : "消息确定",
+				"content" : '确定删除自定义菜单 ？',
+				"okcall" : function(){
+					$.ajax({
+						type : "post",
+						url : "/yuanku/wechatCusMenu-delCusMenu.html",
+						dataType : "text",
+						success : function ( text ){
+							redriect( "/yuanku/wechatCusMenu-cusMenuMan.html");
+							if(text=='true'){
+								BsModel.OpenModel({
+									"title" : "删除成功",
+									"content" : '删除成功，自定义菜单已删除，24小时内生效，若要看到即时效果，请取消关注公众号再关注查看。'
+								});
+							}else{
+								BsModel.OpenModel({
+									"title" : "删除失败",
+									"content" : '删除失败'
+								});								
+							}
+						},
+						async:true
+					});
+				}
+			});
+		});
+		
+	});
+</script>
+
+<div class="panel panel-primary margin-base">
+	<div class="panel-heading">
+		<h3 class="panel-title"><label>
+				自定义菜单管理		
+		</label></h3>		
+    </div>
+    <div class="panel-body">
+    	<button type="button" class="btn btn-info btn-sm paddingLR" id="firstMenuAdd">
+			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 添加一级菜单
+		</button>   
+    </div>
+    <table class="table table-striped table-bordered table-hover" id="cusMenuTable">
+    	<thead>
+    		<th>菜单顺序</th>
+    		<th>菜单名称</th>
+    		<th>类型</th>
+    		<th>设定值</th>
+    		<th width="10%">操作</th>
+    	</thead>
+    	<{if isset($data)}>
+    		<{foreach $data.menu.button as $button}>
+    				<tbody class="oneCusMenu">
+    					<tr class="firstMenu">
+    						<td ><button type="button" class="btn btn-info btn-sm paddingLR" name="secondMenuAdd"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 添加二级菜单</button></td>
+    						<td><input type="text" name="cusMenuName" id="" value="<{$button.name}>" /></td>
+    						
+    							<{if isset($button.type)}>
+    								<td><input type="text" name="cusMenuType" id="" value="<{$button.type}>" placeholder="输入view或者click"  /></td>
+    								<td>
+    									<input type="text" name="cusMenuUrl" id="" value="<{if isset($button.url)}><{$button.url}><{/if}><{if isset($button.key)}><{$button.key}><{/if}>" placeholder="格式http://XXX.XXX/" />
+    								</td>
+    							<{else}>
+    								<td></td><td></td>
+    							<{/if}>
+    						
+    						<td><span name="firstMenuDel" class="glyphicon glyphicon-trash mouse delnews" data-id=""></span></td>
+    					</tr>
+    					<{foreach $button.sub_button as $sub_button}>
+    					<tr class="secondMenu">
+    						<td>├一一一</td>
+	    					<td><input type="text" name="cusMenuName" id="" value="<{$sub_button.name}>" /></td>
+	    					<td><input type="text" name="cusMenuType" id="" value="<{$sub_button.type}>"  placeholder="输入view或者click" /></td>
+	    					<td><input type="text" name="cusMenuUrl" id="" value="<{if isset($sub_button.url)}><{$sub_button.url}><{/if}><{if isset($sub_button.key)}><{$sub_button.key}><{/if}>" placeholder="格式http://XXX.XXX/" /></td>
+	    					<td><span name="secondMenuDel" class="glyphicon glyphicon-trash mouse delnews" data-id=""></span></td>
+	    				</tr>
+    					<{/foreach}>
+    				</tbody>		
+    		<{/foreach}>
+    	<{/if}>
+    </table>
+    <div class="panel-body">
+    	<button type="button" class="btn btn-danger btn-sm paddingLR" id="cusMenuCreate">
+			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 提交
+		</button> 
+    	<button type="button" class="btn btn-danger btn-sm paddingLR" id="delMenu">
+			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 删除自定义菜单
+		</button> 
+    </div>
+    <div class="panel-footer"></div>
+</div>

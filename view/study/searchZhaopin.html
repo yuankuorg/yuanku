@@ -1,0 +1,90 @@
+<!--
+	作者：dovshui@163.com
+	时间：2016-01-23
+	描述：搜索招聘信息
+-->
+<div class="page">
+	<script type="text/javascript">
+		function goMore() {
+			$(".searchZhaopin .js_grid").unbind().click(function() {
+				var zid ={"zid": $(this).attr("data")};
+				pageManager.go($(this).data("id"),zid);
+		    });
+		}
+		
+		$(function(){
+			goMore();
+			var j = 1;
+		    //搜索
+		    $(".searchZhaopin #find").click(function(){
+		    	$('#loadingToast').loadingShow();
+				$.ajax({
+					type: "post",
+					url: "/yuanku/Qiye-gosearchZhaopin.html",
+					data:{"company":$("#searchMes").val(),"position":$("#searchMes").val()},
+					success: function(text) {
+						$('#loadingToast').hide();
+						$(".searchZhaopin .bd").html(text);
+					},
+					async: true
+				});			
+			});
+			//加载更多
+			$(".searchZhaopin #getmoreZhao").click(function(){
+				$('#loadingToast').loadingShow();
+				j++;
+				$.ajax({ 
+					type:"post",
+					url:"/yuanku/Qiye-getmoreSeaZhaopin.html",
+					data:{"curpage":j,"company":$("#searchMes").val(),"position":$("#searchMes").val()},
+					success:function( text ){
+						$('#loadingToast').hide();
+						if( text == "" || text.length == 0){
+							$("#dialog").dialog("提示","无更多内容");
+//							$(".searchZhaopin #getmoreZhao").hide();
+						}else{
+							$(".searchZhaopin #morezhao").append(text);
+							goMore();
+						}
+					},
+					async:true
+				});
+			});
+		});
+	</script>
+    <img src="/yuanku/img/study/img_05.jpg"/>
+	<div class="bd">
+		<div class="weui_cells">
+			<div class="weui_cell weui_vcode" style="padding: 5px 5px;">
+		        <div class="weui_cell_bd weui_cell_primary">
+		            <input class="weui_input" id="searchMes" type="text" placeholder="请输入职位名或公司名" value="<{if isset($smarty.post.company)}><{$smarty.post.company}><{/if}>"/>
+		        </div>
+		        <div>
+		            <a href="javascript:;" id="find"><img src="/yuanku/img/study/search.png" style="height: 25px;"/></a>
+		        </div>
+		    </div>
+	    </div>
+		<div id="morezhao">
+			<{foreach $data as $info}>
+			    <div class="weui_cells">
+					<a class="weui_cell js_grid" href="javascript:;" data="<{$info.zid}>" data-id="checkZhaopinMain">
+					    <div class="weui_cell_hd">
+					        <img src="<{$info.img}>" alt="icon" style="height:56px;margin-right: 10px;">
+					    </div>
+					    <div class="weui_cell_bd weui_cell_primary">
+					    	<p class="p_list"><h3><{$info.company}></h3></p>
+					        <p class="p_list"><{$info.position}></p>
+					    </div>
+					    <div>
+							<p class="ft_list4">￥<{$info.pay}></p>
+					    </div>
+					</a>
+				</div>
+				<div class="weui_cells_tips">
+					<{$info.name}>&nbsp;发布于<span>&nbsp;<{$info.datetime}></span>
+				</div>
+			<{/foreach}>
+		</div> 
+		<a href="javascript:void(0);" class="weui_btn weui_btn_plain_default" id="getmoreZhao" style="font-size: 14px;margin: 10px 10px;">加载更多</a>
+	</div>
+</div>

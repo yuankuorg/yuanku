@@ -1,0 +1,176 @@
+<div class="page">
+<script type="text/javascript">
+	function reload() {
+		//兑换成功，刷新当前页面
+		$.ajax({
+			type:"post",
+			url:"Jifen-Lxrjifen.html",
+			success : function( text ) {
+				$(".jifen").empty().html(text);
+			},
+			async:true
+		});
+	}
+	
+	function bindDetail() {
+		$(".jifen .getChenge").unbind().click(function(){
+			var commoname = $(this).data("iscommoname");
+			var pid	= $(this).data("ispid");
+			var exchange = $(this).data("ischenge")
+			var data = {"commoname":commoname,"pid":pid,"exchange":exchange};
+			
+			$("#dialogConfirm").dialog("提示", "兑换商品将扣除"+ exchange +"积分,重复兑换不返还积分。是否继续?");
+			$("#dialogConfirm .mes_right").unbind().click(function(){
+				$("#dialogConfirm").hide();
+				$.ajax({
+					type: "post",
+					url : "Jifen-addchange.html",
+					data: data,
+					dataType : "json",
+					success : function( obj ){
+						if( obj.code == 1 ) {
+							$("#dialog").dialog("提示", "积分不足!");
+						} else if( obj.code == 2 ) {
+							$("#dialog").dialog("提示", "兑换失败，请与管理员联系!");
+						} else {
+							$("#dialog").dialog("提示", "兑换成功");
+							reload();
+						}
+					},
+					async : true
+				});
+			});
+		});
+	}
+	
+	$(function(){
+		$("#weui_lxr_boder").click(function () {
+			$("#weui_lxr_boder_one").css("border-bottom","none");
+		});
+		$("#weui_lxr_boder_one").click(function () {
+			$(this).css("border-bottom","3px solid #039702");
+			$("#weui_lxr_content").css("display","none");
+			$("#weui_lxr_title").css("display","block");
+		});
+		
+		$("#weui_lxr_boder").click(function () {
+			$(this).css("border-bottom","3px solid #039702");
+			$("#weui_lxr_content").css("display","block");
+			$("#weui_lxr_title").css("display","none");
+		});
+		$("#weui_lxr_boder_one").click(function () {
+			$("#weui_lxr_boder").css("border-bottom","none");
+		});
+		
+		//在后台判断的方法
+		bindDetail();
+		
+		var pomorecount = 1;
+		var chomorecount = 1;
+		//我的兑换加载更多
+		$(".jifen #pomore").click(function(){
+			pomorecount++;
+			$.ajax({
+				type:"post",
+				url:"Jifen-chengePage.html",
+				data:{"curpage":pomorecount},
+				success:function( text ){
+					if( text.length != 0 ){
+						$("#pocontent").append(text);
+					}else{
+						$("#pomore").css("display","none");
+						$("#dialog").dialog("提示","无更多内容");
+					}
+				},
+				async:true
+			});
+		});
+		
+		$(".jifen #chomore").click(function(){
+			chomorecount++;
+			$.ajax({
+				type:"post",
+				url:"Jifen-commodityPage.html",
+				data:{"curpage":chomorecount},
+				success:function( text ){
+					if( text.length != 0 ){
+						$("#pocontent").append(text);
+						bindDetail();
+					}else{
+						$("#chomore").css("display","none");
+						$("#dialog").dialog("提示","无更多内容");
+					}
+				},
+				async:true
+			});
+		});
+	});
+</script>
+	<div class="weui_cells" id="weui_lxr_body">		    
+		<div class="weui_cell">
+		    <div class="weui_cell_bd weui_cell_primary" id="weui_lxr_content_one">
+		       <img style="float: left;" src="<{$getvipchenge.img}>" />
+		       <div class="weui_lxr_text_title" >
+                	<span><{$getvipchenge.name}></span><br />
+                	剩余积分:<{$getvipchenge.exchange}>
+                </div>
+		    </div>
+		</div>
+	</div>
+	<div class="weui_lxr_herad" id="weui_lxr_boder">积分兑换</div>
+	<div class="weui_lxr_herad" id="weui_lxr_boder_one">我的兑换</div>
+	<style type="text/css">
+		.jifen .mineget{}
+		.jifen .mineget img{
+			width: 60px !important;
+			height: 60px;
+		}
+		.jifen .mineget .time{
+			float: right;
+			position: absolute;
+			top: 60px;
+			right: 5px;
+			color: #ccc;
+		}
+	</style>
+	<div class="weui_cells mineget" id="weui_lxr_title" style="clear: both;">
+		<div class="bd" id="pocontent">
+			<{foreach $getChengeData as $po}>
+		        <div class="weui_cell">
+		            <div class="weui_cell_hd"><img src="<{$po.pricture}>" alt="" style="width:20px;margin-right:5px;display:block"></div>
+		            <div class="weui_cell_bd weui_cell_primary">
+		                <p><{$po.commoname}></p>
+		            </div>
+		            <div class="weui_cell_ft"><{$po.exchange}></div>分
+		            <p class="time">兑换时间:<{$po.extime}></p>
+		        </div>
+	        <{/foreach}>
+		</div>
+        <div class="bd">
+        	<a href="javascript:void(0);" class="weui_btn weui_btn_plain_default yuankumore" id="pomore">加载更多</a>
+        </div>
+    </div>
+    <div class="weui_cells weui_cells_access" id="weui_lxr_content">
+    	<div class="bd" id="chocontent">
+    	<{foreach $commoditydata as $cho}>
+	        <a class="weui_cell getChenge" href="javascript:;" data-ischenge="<{$cho.exchange}>" data-isname="<{$getvipchenge.name}>" data-iscommoname="<{$cho.commoname}>" data-ispid="<{$cho.pid}>">
+	            <div class="weui_cell_bd weui_cell_primary">
+	                <img src="<{$cho.pricture}>">
+	                <div class="weui_lxr_text">
+	                	<span class="weui_lxr_span"><{$cho.commoname}></span><br />
+	                	<span><{$cho.exchange}>积分</span><br />
+	                	<span style="display: none;"><{$cho.pid}></span>
+	                	<div class="weui_lxr_div_one" style="width: 80%; font-size: 12px;" ><{$cho.description}></div>
+	                </div>
+	            </div>
+	            <div class="weui_cell_ft">
+	            	兑换
+	            </div>
+	        </a>
+	    <{/foreach}>
+	    </div>
+	    <div class="bd">
+        	<a href="javascript:void(0);" class="weui_btn weui_btn_plain_default yuankumore" id="chomore">加载更多</a>
+        </div>
+	</div>
+</div>

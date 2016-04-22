@@ -1,0 +1,91 @@
+<!--
+	作者：linghonfu123@126.com
+	时间：2016-01-27
+	描述：轮播图
+-->
+<script type="text/javascript">
+var editor;
+$(function(){
+	//创建KindEditor
+	editor = KindEditor.editor({
+		allowFileManager: true,
+		filterMode: false
+	});
+	$("input[name=imgurl]").click(function(){
+		var t = $(this);
+		editor.loadPlugin('image', function() {
+			editor.plugin.imageDialog({
+				imageUrl: t.val(),
+				clickFn: function(url, title, width, height, border, align) {
+					t.val(url);
+					editor.hideDialog();
+				}
+			});
+		});
+	});
+	
+	$("#sure").click(function() {
+		var arr = new Array();
+		$(".form-control[name=imgurl]").each(function(){
+			if($(this).val()) {
+				arr.push({"info":"",imgurl:$(this).val()})
+			}
+		});
+		$.ajax({
+			type:"post",
+			url:"/yuanku/images-incarousel.html",
+			data : {"imgs":arr},
+			success : function( text ) {
+				if(text == "true"){
+					alert("添加成功");
+				}else{
+					alert("添加失败");
+				}
+			},
+			async:true
+		});
+	});
+});
+</script>
+
+<style type="text/css">
+	.lists_l{
+		padding: 10px 0;
+		border-bottom: solid 1px #005599;
+	}
+	#sure{
+		width: 200px;
+		margin: 10px 45%;
+	}
+</style>
+<div class="panel panel-primary" style="margin-top:10px;">
+	<div class="panel-heading">
+		<h3 class="panel-title"><span class="alt glyphicon glyphicon-picture" aria-hidden="true"></span> <label class="update">轮播管理</label></h3>
+	</div>
+	<div class="panel-body">
+		<div class="sgroup lists_l">
+			<h3>添加轮播图片</h3>
+		</div>
+		<{for $i = 1 to 5}>
+			<div class="form-inline lists_l inp">
+				<div class="form-group">
+				    <label style="color: #004C99;"><{$i}>、</label>
+			    </div>
+			  	<div class="form-group">
+				    <label for="info1">描述：</label>
+				    <input type="text" class="form-control" name="info" placeholder="图片描述">
+			    </div>
+			    <div class="form-group">
+				    <label for="url1">链接：</label>
+				    <input type="text" class="form-control" name="url" placeholder="网页链接">
+			    </div>
+			    <div class="form-group">
+				    <label for="imgurl1">上传图片：</label>
+				    <input type="text" class="form-control" name="imgurl" placeholder="点击添加 900x500" readonly="readonly">
+			    </div>
+			</div>
+		<{/for}>
+			
+		<button id="sure" class="btn btn-primary">确认</button>
+	</div>
+</div>

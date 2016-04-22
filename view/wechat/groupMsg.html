@@ -1,0 +1,115 @@
+<script type="text/javascript">
+	$("#myModal").on("hidden.bs.modal", function() {
+	    $(this).removeData("bs.modal");
+	});//清楚弹窗缓存
+	$(function(){
+		
+		$.ajax({
+			url  : "/yuanku/wechatGroupMsg-chooseNews.html",
+			type : "post",
+			success:function(text){
+				$(".HotAndNew").html(text);
+			},
+			async:true
+		});
+		
+		//群发消息按钮
+		$('#sendArticle').unbind().click(function(){
+			var nidArr=[];
+			$('#theNewsList').find('button').each(function(){
+				nidArr.push($(this).attr('n_id'));
+			});
+			
+			BsModel.OpenModel({
+				"title" : "消息确定",
+				"content" : '确定提交图文消息 ？',
+				"okcall" : function(){
+					$.ajax({
+						url  : "/yuanku/wechatGroupMsg-sendGroupMsg.html",
+						type : "post",
+						data:{'n_id':nidArr},
+						success:function(text){
+							BsModel.OpenModel({
+								"title" : "提交结果",
+								"content" : '返回信息:'+text
+							});
+						},
+						async:true
+					});
+				}
+			});
+		});
+		
+		//预览图文消息发送接口
+		$('#previewArticle').unbind().click(function(){
+			var nidArr=[];
+			$('#theNewsList').find('button').each(function(){
+				nidArr.push($(this).attr('n_id'));
+			});
+			
+			BsModel.OpenModel({
+				"title" : "消息确定",
+				"content" : '确定提交图文消息 ？',
+				"okcall" : function(){
+					$.ajax({
+						url  : "/yuanku/wechatGroupMsg-previewGroupMsg.html",
+						type : "post",
+						data:{'n_id':nidArr,'preOpenid':$('#preOpenid').val()},
+						success:function(text){
+							BsModel.OpenModel({
+								"title" : "提交结果",
+								"content" : ''+text
+							});
+						},
+						async:true
+					});
+				}
+			});
+		});
+		
+	});	
+	
+	
+</script>
+
+
+<div class="panel panel-primary margin-base">
+	<div class="panel-heading">
+		<h3 class="panel-title"><label>图文消息列表</label></h3>		
+	</div>
+  	<div class="panel-body">
+  		<table class="table table-striped table-bordered table-hover">
+	  		<thead>
+				<tr>
+					<th width="5%">资讯ID</th>
+					<th width="22%">资讯标题</th>
+					<th width="10%">资讯封面</th>
+					<th width="10%">添加人</th>
+					<th width="20%">上传时间</th>
+					<th width="10%">操作</th>
+				</tr>
+			</thead>
+			<tbody id='theNewsList'>
+				
+			</tbody>
+		</table>
+  	</div>
+   	
+    <div class="panel-body selectOpenId" id="">
+    	
+    	<input type="hidden" style="width: 280px;"  name="weixinOpenId" id="preOpenid" value="" />    	
+    	
+    	<label>指定预览帐号</label> <input type="text"  name="weixin" readonly="readonly"  value="" />    	
+    	<button type="button" style="display: inline-block;" class="btn btn-default"
+		href="/yuanku/vip-ShowOpenId.html" data-toggle="modal" data-target="#myModal">选择微信号</button>
+    </div>
+	<div class="panel-body">    
+   		<button type="button" class="btn btn-warning" id="previewArticle">
+				<span class="glyphicon glyphicon-send" aria-hidden="true"></span> 预览发送
+		</button>
+  		<button type="button" class="btn btn-danger" id="sendArticle">
+				<span class="glyphicon glyphicon-send" aria-hidden="true"></span> 发送到所有人
+		</button>
+  	</div> 	
+</div>
+<div class="HotAndNew"></div>

@@ -1,0 +1,414 @@
+/*可以在这里添加你自己的css*/
+html {
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    line-height: 1.6
+}
+
+body {
+    -webkit-touch-callout: none;
+    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+    background-color: #fff;
+    color: #3e3e3e;
+    line-height: inherit
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 400;
+    font-size: 16px
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font-style: normal;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    -webkit-box-sizing: border-box !important;
+    word-wrap: break-word !important
+}
+/*去掉浏览器添加的焦点样式*/
+*:focus{outline: none;}
+
+a {
+    color: #607fa6;
+    text-decoration: none
+}
+
+p {
+    clear: both;
+    min-height: 1em;
+}
+
+ul,li{ list-style:none;}
+em {
+    font-style: italic
+}
+
+fieldset {
+    min-width: 0
+}
+
+blockquote {
+    margin: 0;
+    padding-left: 10px;
+    border-left: 3px solid #dbdbdb
+}
+
+img {
+    height: auto !important
+}
+
+.conetnBox {
+	margin: 10px 3px; padding:15px 0px 15px 5px;
+	color: rgb(62, 62, 62); line-height: 30px;
+	box-shadow: rgb(170, 170, 170) 0px 0px 3px; 
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0); 
+	-webkit-box-shadow: rgb(170, 170, 170) 0px 0px 3px;
+	position: relative;
+}
+
+/*会员报名页面*/
+.marginTop5{margin-top: 5px;}
+.joinVip{width: 80%;margin: auto;}
+.joinVip h1{font-weight: bold; font-size: 20px;text-align: center;}
+.joinVip tr{line-height: 450%;}
+.joinVip tr td img{vertical-align: middle;}
+.joinVip tr td input{ width: 100%;  height: 38px;font-size: 120%; border: 1px solid rgba(243,116,134,0.5);box-shadow:inset 0 1px 2px rgba(0,0,0,.1);border-radius: 5px;;}
+.joinVip tr td textarea{width: 120%;   vertical-align: middle; height: 60px;font-size: 100%; resize: none;border: 1px solid rgba(243,116,134,0.5); border-radius: 5px;}
+.joinVip tr td select{width: 120%;   vertical-align: middle; height: 60px;font-size: 100%; resize: none;border: 1px solid rgba(243,116,134,0.5); border-radius: 5px;}
+.joinVip tr td a{ background-image: url(/yuanku/img/joinVip_button.jpg); padding: 10px 42%; border-radius: 2px; color: #FFFFFF;}
+#error{ color: red; height: 12px;}
+/*注册成功页面*/
+#true{text-align: center;}
+#true h1{ margin-bottom: 10px;}
+#true a{ background:#0085D9 ;padding: 5px 10%;border-radius: 10px; color: #FFFFFF;}
+/*制作团队页面*/
+.ourTime_box1{width: 30%;height: 180px; position: relative; text-align: center; font-size: 12px; float: left; margin: 5px;}
+.ourTime_box1 img{margin-top: -30%; border-radius: 50%;}
+.ourTime_box2{width: 100%;height: 150px; position: absolute; bottom: 0px; border: 1px solid rgba(255,255,255,0.5); border-radius: 2px;box-shadow: 0px 1px 3px rgba(0,0,0,0.3)}
+.ourTime_box2 span{ color:#DC5E61; font-size: 12px;}
+.ourTime_box2 p{font-size: 10px;}
+.conetnBox strong a{
+	position: absolute;
+	right:10px;
+	top:15px;
+}
+/*前端首页*/
+.biaoti{
+	font-weight:800;
+	font-family:Times New Roman;
+	word-wrap: break-word !important; 
+	max-width: 100%;COLOR: rgb(255,255,255); 
+	padding:6px 10px;
+	background-color: rgb(220,94,97);
+	border-radius: 5px!important;
+	margin-left:7px;
+}
+.img{
+	margin-top:10px;
+}
+.img ul{
+	list-style:none;
+}
+.img ul li{
+	float: left;
+	width: 30%;
+	margin: 0px 0px 0px 2.5%;
+}
+.titles{
+	padding-top:5px;
+	width:95%;
+	margin: auto;
+	text-indent:20px;
+}
+.zhaopin{
+	margin:5px 0px 0px 4%;
+	text-align: center;
+}
+.zhaopin ul{
+	list-style:none;
+}
+.zhaopin ul li{
+	float:left;
+	width: 33%;
+	font-size:12px;
+}
+.cooperation{
+	margin-top:10px;
+}
+.cooperation ul{
+	list-style:none;
+}
+.cooperation ul li{
+	float: left;
+	width:20%;
+	margin: 0px 0px 0px 9%;
+}
+.cooperation ul li img{
+	width: 100%;
+}
+.top{
+	background: url(/yuanku/img/img7.gif) no-repeat;
+	background-size: 100% 100%;
+	width:100%;
+	position: fixed;
+	top:0px;
+	left: 0px;
+	z-index: 1;
+}
+.top ul li{
+	line-height: 40px;
+	width:20%;
+	float:left;
+	text-align:center;
+}
+.top ul li a{
+	color:#FFFFFF;
+	text-decoration: none;
+	font-size: 24px;
+}
+.bottom{
+	width:100%;
+	position: fixed;
+	bottom:0px;
+	left: 0px;
+}
+.bottom ul li{
+	background:rgba(220,94,97,0.7);
+	height:30px;
+	line-height:30px;
+	border-right:1px solid #FFFFFF;
+	width:20%;
+	float:left;
+	text-align:center;
+}
+.bottom ul li a{
+	color:#FFFFFF;
+	text-decoration: none;
+	font-size: 14px;
+	display: inline-block;
+}
+.nav{
+	height:30px;
+}
+.meun-nav li:hover{
+	background:rgba(220,94,97,1);
+}
+.meun{
+	width: 20%;
+	position: fixed;
+	bottom: 30px;
+	right:0%;
+	}
+.meun ul li{
+	background:rgba(220,94,97,0.7);
+	height:30px;
+	line-height:30px;
+	border-bottom:1px solid #FFFFFF;
+	width:98%;
+	text-align:center;
+}
+.meun ul li a{
+		color:#FFFFFF;
+		text-decoration: none;
+}
+
+/*三级页面*/
+/*标题和正文*/
+.t-main{margin: 5px;text-align: center;}
+.t-title{
+	text-align: center; min-height: 5em;
+}
+.t-title2{
+	margin: 10px; display: inline-block; 
+	padding: 5px;;
+}
+.title1{
+	border:1px solid #dc5e61;
+}
+.pinlun{
+	border-top:2px solid #dc5e61;
+	text-align: right;
+}
+
+.subtitle{color:inherit; font-size:14px;}
+.article{text-align:justify;padding: 15px 10px 30px;text-align: justify; text-indent:20px;}
+.article img{display: block;width: 100%;}
+
+/*发表评论*/
+/*列表*/
+/* Clearfix hack */
+.commentform:before, 
+.commentform:after { 
+  content: " "; display: table; 
+}
+
+.commentform:after { 
+  clear: both; 
+}
+
+.commentcolumn {
+  padding: 10px 30px;
+  float: left;
+}
+
+.commentform label {
+  display: block;
+  padding: 40px 5px 5px 2px;
+  font-size: 1.1em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  float:left;
+}
+
+.commentform input,
+.commentform textarea{
+  font-family: 'Lato', Calibri, Arial, sans-serif;
+  line-height: 1.5;
+  font-size: 1.4em;
+  padding: 5px 10px;
+  display: block;
+  width: 100%;
+}
+ 
+.commentform textarea {
+  min-height: 50px;
+}
+
+/*错误（无效）的样式，当鼠标在焦点上的时候，添加红色的阴影，还有感叹号小图标*/
+.commentform input:focus:invalid,.commentform textarea:focus:invalid{
+	background: #fff url(/yuanku/img/invalid.PNG) no-repeat 98% center;
+	box-shadow: 0 0 5px #D45252;
+	border: 2px solid rgb(255,61,65);
+}
+/*填写正确的信息，定义样式为绿色的边框和绿色的阴影，
+ * 及正确打勾的小图标，这时候，不管鼠标是否在焦点上，都要保持正确的状态*/
+.commentform input:required:valid,.commentform textarea:required:valid{
+	background: #fff url(/yuanku/img/valid.PNG) no-repeat 98% center;
+	box-shadow: 0 0 5px #5cd053;
+	border: 2px solid #28921f;
+} 
+ 
+.commentsubmit-wrap {
+  text-align: center;
+  padding-top: 40px;
+  clear: both;
+}
+ 
+.commentform .commentsubmit {
+  border: none;
+  width: auto;
+  cursor: pointer;
+  text-transform: uppercase;
+  display: inline-block;
+  padding: 15px 30px;
+  font-size: 1.1em;
+  border-radius: 2px;
+  letter-spacing: 1px;
+  color: #fff;
+}
+	 
+.commentsubmit{
+  background: rgb(255,61,65);
+}
+.commentsubmit:hover{opacity: .85;cursor: pointer;}
+.commentsubmit:active{
+	background-color: #68b12f;
+    background: -webkit-gradient(linear, left top, left bottom, from(#68b12f), to(#50911e));
+    background: -webkit-linear-gradient(top, #68b12f, #50911e);
+    background: -moz-linear-gradient(top, #68b12f, #50911e);
+    background: -ms-linear-gradient(top, #68b12f, #50911e);
+    background: -o-linear-gradient(top, #68b12f, #50911e);
+    background: linear-gradient(top, #68b12f, #50911e);
+	border: 1px solid #20911e;
+	box-shadow: 0 0 10px 5px #356b0b inset;
+    -webkit-box-shadow:0 0 10px 5px #356b0b inset ;
+    -moz-box-shadow: 0 0 10px 5px #356b0b inset;
+    -ms-box-shadow: 0 0 10px 5px #356b0b inset;
+    -o-box-shadow: 0 0 10px 5px #356b0b inset;
+}
+ 
+@media screen and (max-width: 48em) {
+  .commentcolumn {
+	width: 100%;
+	padding: 10px;
+  }
+}
+@media screen and (min-width: 48em) {
+  .commentcolumn {
+	width: 33%;
+	padding: 10px;
+  }
+  .comment-list,.commentsubmit-wrap,.t-comment-title {
+	width: 33%;
+  }   
+}
+
+/* comment display page */
+.comment-list {
+	list-style: none;
+	margin-top:25px;
+}
+.comment-list:after { 
+  clear: both; 
+}
+.comment-list li {
+	/*background:-webkit-gradient(linear, left top, left bottom, from(#FFFF00), to(#fff));*/
+	width: 96%;
+	margin: 0 2%;
+	height: auto;
+}
+.comment-head,.comment-foot {
+	/*border: 2px solid #FF3D41;*/
+	padding: 5px 10px;
+	font-size:14px;
+	cursor: pointer;
+	position: relative;
+	height:25px;
+}
+.comment-huifu{
+	padding: 2px 0px 2px 20px;
+	text-align:left;
+}
+.comment-head .timestamp,.comment-foot .timestamp {
+	color: #666666;
+	font-size: 95%;
+	position: absolute;
+	right: 10px;top: 5px;
+}
+.comment-head cite,.comment-foot cite {
+	font-size: 100%;
+	font-weight: bold;
+	font-style: normal;
+	position: absolute;
+	left: 10px;
+	top: 5px;
+}
+.comment-body {
+	text-align: left;
+	padding: 2px 0px 2px 20px;
+	border-bottom:1px dashed #CCCCCC;
+}
+.collapse_buttons {
+	text-align: right;
+	padding: 5px 0;
+	width: 383px;
+}
+.collapse_buttons a {
+	margin-left: 15px;
+	float: right;
+}
+.show-all-comment {
+	background: url(/yuanku/img/tall-down-arrow.gif) no-repeat right center;
+	padding-right: 12px;
+}
+.show-recent-only {
+	display: none;
+	background: url(/yuanku/img/tall-up-arrow.gif) no-repeat right center;
+	padding-right: 12px;
+}
+.collpase-all-comment {
+	padding-right: 12px;
+}

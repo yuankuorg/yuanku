@@ -1,0 +1,253 @@
+<script type="text/javascript">
+	$(function(){
+		$("#button").click(function(){
+			$.ajax({
+				type:"post",
+				url:"/yuanku/adminIndex-addadmins.html",
+				success:function(text){
+					$(".main").html(text);
+				},
+				async:true
+			});
+		});
+		$("#sousuo").click(function(){
+			$.ajax({
+				type:"post",
+				url:"/yuanku/admin-adminIstrator.html",
+				data:{"code":$("input[name=code]").val(),"name":$("input[name=name]").val()},
+				success:function(text){
+					$(".main").fadeOut(function(){
+						$(this).html(text);
+						$(this).fadeIn();	
+					});	
+				},
+				async:true
+			});
+		})
+		$("#update tr td:nth-child(4) span:nth-child(2)").click(function(){
+			var id=$(this).attr("data-id");
+			$.ajax({
+				type:"post",
+				url:"/yuanku/adminIndex-addadmin.html",
+				data:{"id":id},
+				success:function(text){
+					$(".main").html(text);
+					$(".update").html("修改管理员");
+					//$(".btn").html("提交");
+				},
+				async:true
+			});
+		});
+		$("#modaladmin tr td span").click(function(){
+			var id=$(this).attr("data-id");
+			$.ajax({
+				type:"post",
+				url:"/yuanku/admin-modaladmin.html",
+				data:{"id":id},
+				success:function(text){
+					$(".main").html(text);
+				},
+				async:true
+			});
+		});
+		//删除管理员
+		$("#update tr td:nth-child(4) span:nth-child(1)").click(function(){
+			var id=$(this).attr("data-id");
+			$('#delModal').modal({
+				backdrop : true,
+				keyboard : true,
+				show     : true
+			});	
+			$('#delModal').unbind().on('hidden.bs.modal',function(){
+				var re = $("#modalok").attr("data-sub");
+				if(re=='true'){
+					$.ajax({
+						type:"post",
+						url:"/yuanku/admin-deladmin.html",
+						data:{"id":id},
+						success: function(text){
+							if(text=='false'){
+								$("#modalok").attr("data-sub","false");
+								$('#myModal').modal({
+									backdrop : true,
+									keyboard : true,
+									show     : true,
+									remote	 : '/yuanku/admin-showflase.html'
+								});
+							}else{
+								$("#modalok").attr("data-sub","false");
+								redriect("/yuanku/admin-adminIstrator.html");
+							}						
+						}
+					});
+				}else{
+					$('#delModal').modal("hide");
+				}
+			});
+		});
+		
+		$("#init").click(function(){
+			$('#delModal').modal({
+				backdrop : true,
+				keyboard : true,
+				show     : true
+			});	
+			$('#delModal').unbind().on('hidden.bs.modal',function(){
+				var re = $("#modalok").attr("data-sub");
+				if(re=='true'){
+					$.ajax({
+						type:"post",
+						url:"/yuanku/wechatUser-initUsers.html",
+						beforeSend:function(){
+							BsModel.OpenModel({
+								"title" : "初始化中",
+								"content" : "正在初始化中，请稍等...<br /><br />成功之后将弹出成功对话框，将我关闭即可;<br />"
+							})
+						},
+						success: function(text){
+							if(text=='false'){
+								$("#modalok").attr("data-sub","false");
+								$('#myModal').modal({
+									backdrop : true,
+									keyboard : true,
+									show     : true,
+									remote	 : '/yuanku/admin-showflase.html'
+								});
+							}else{
+								$("#modalok").attr("data-sub","false");
+								BsModel.OpenModel({
+									"title" : "提示",
+									"content" : "初始化成功"
+								});
+								redriect("/yuanku/wechatUser-wechatUser.html");
+							}
+						}
+					});		
+				}else{
+					$('#delModal').modal("hide");
+				}
+			});
+		});
+	
+		$("#reflush").click(function(){
+			$('#delModal').modal({
+				backdrop : true,
+				keyboard : true,
+				show     : true
+			});	
+			$('#delModal').unbind().on('hidden.bs.modal',function(){
+				var re = $("#modalok").attr("data-sub");
+				if(re=='true'){
+					$.ajax({
+						type:"post",
+						url:"/yuanku/wechatUser-reflush.html",
+						beforeSend:function(){
+							BsModel.OpenModel({
+								"title" : "初始化中",
+								"content" : "正在初始化中，请稍等...<br /><br />成功之后将弹出成功对话框，将我关闭即可;<br />"
+							})
+						},
+						success: function(text){
+							if(text=='false'){
+								$("#modalok").attr("data-sub","false");
+								$('#myModal').modal({
+									backdrop : true,
+									keyboard : true,
+									show     : true,
+									remote	 : '/yuanku/admin-showflase.html'
+								});
+							}else{
+								$("#modalok").attr("data-sub","false");
+								BsModel.OpenModel({
+									"title" : "提示",
+									"content" : "初始化成功"
+								});
+								redriect("/yuanku/wechatUser-wechatUser.html");
+							}
+						}
+					});		
+				}else{
+					$('#delModal').modal("hide");
+				}
+			});
+		});
+	});
+</script>
+<div class="panel panel-primary margin-base" id="table">
+	<div class="panel-heading" id="panel-heading"><h3 class="panel-title"><label>管理员管理</label></h3></div>
+	<div class="panel-body">
+	    <p>
+	    	<form class="form-inline">
+				<div class="form-group">
+				  	<label for="exampleInputName2"></label>
+				    <input type="text" class="form-control" name="code" id="exampleInputName2" placeholder="账号搜索" value="<{if !empty($smarty.post.code)}><{$smarty.post.code}><{/if}>">
+				</div>
+				<div class="form-group">
+				    <label for="exampleInputEmail2"></label>
+				    <input type="email" class="form-control" name="name" id="exampleInputEmail2" placeholder="姓名搜索" value="<{if !empty($smarty.post.name)}><{$smarty.post.name}><{/if}>">
+				</div>
+				<button type="button" class="btn btn-primary" id="sousuo">
+					<span class="glyphicon glyphicon-search"></span>
+					搜索
+				</button>
+				<button id="button" type="button" class="btn btn-info">
+					<span class="glyphicon glyphicon-plus" ></span>
+					新增
+				</button>
+	 		</form>
+	    </p>
+	    <div class="line-base"></div>
+  	</div>
+    <table class="table table-bordered table-striped table-hover">
+	    <thead>
+		    <tr>
+		        <th>账号</th>
+	            <th>姓名</th>
+	            <th>联系方式</th>
+	            <th>操作</th>
+	      	</tr>
+	   	</thead>
+	   	<tbody id="update">
+	   		<{foreach $re as $res}>
+		      	<tr>
+		         	<td><{$res.code}></td>
+		         	<td><{$res.name}></td>
+		         	<td><{$res.moblile}></td>
+		         	<td>
+		         		<span class="glyphicon glyphicon-trash mouse" aria-hidden="true" url="/yuanku/adminIndex-adminIstator.html" data-id="<{$res.id}>"></span>
+		         		<span class="glyphicon glyphicon-pencil mouse" data-id="<{$res.id}>" aria-hidden="true"></span>
+		         	</td>
+		      	</tr>
+		    <{/foreach}>
+	   	</tbody>
+	</table>
+	<div class="panel-footer">
+		<{include file="admin/pages.html" url="/yuanku/admin-adminIstrator.html" }>
+	</div>
+	<div class="panel-heading" id="panel-heading"><h3 class="panel-title"><label>超级管理员管理</label>
+		<button type="button" class="btn btn-danger" id="init" style="float: right; margin-top: -5px;">
+			<span class="glyphicon glyphicon-add"></span>初始化微信用户
+		</button>
+		<button type="button" class="btn btn-danger" id="reflush" style="float: right; margin-top: -5px;">
+			<span class="glyphicon glyphicon-add"></span>刷新会员图像
+		</button>
+	</div>
+	<table class="table table-striped table-bordered table-hover">
+	    <thead>
+		    <tr>
+		        <th>账号</th>
+	            <th>操作</th>
+	      	</tr>
+	   	</thead>
+	   	<tbody id="modaladmin">
+	   		<{foreach $dat as $res}>
+	      	<tr>
+	        	<td><{$res.code}></td>
+	         	<td>
+	         		<span data-id="<{$res.id}>" class="glyphicon glyphicon-pencil mouse" aria-hidden="true"></span>
+	         	</td>
+	      	</tr>
+	      	<{/foreach}>
+	   	</tbody>
+	</table>
+</div>

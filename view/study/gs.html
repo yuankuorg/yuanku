@@ -1,0 +1,21 @@
+<div class="page">
+	<script type="text/javascript">
+		$(function() {
+			$(".gs .js_grid").click(function() {
+				var pid = {
+					"pid": $(this).data("pid")
+				};
+				 pageManager.go($(this).data("id"), pid);
+			});
+		});
+	</script>
+	<div class="bd">
+		<ul>
+			<{for $i=0 to count($projectdata)-1}>
+				<li>
+					<a href="javascript:;" data-id="uigs" data-pid="<{$projectdata[$i].pid}>" class="js_grid"><img src="<{$projectdata[$i].poster}>"/></a>
+				</li>
+				<{/for}>
+		</ul>
+	</div>
+</div>

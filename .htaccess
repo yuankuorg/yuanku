@@ -1,0 +1,6 @@
+RewriteEngine On
+
+RewriteRule ^mobile-third-(.*).html$ index.php?oper=mobile-third&n_id=$1
+RewriteRule ^mobile-second-(.*).html$ index.php?oper=mobile-second&tc_id=$1
+RewriteRule ^mobile-checkstatus-(.*).html$ index.php?oper=mobile-checkstatus&r_id=$1
+RewriteRule ^(.*)-(.*).html$ index.php?oper=$1-$2

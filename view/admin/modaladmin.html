@@ -1,0 +1,88 @@
+<script type="text/javascript">
+	$(function(){
+		$(".alt").click(function(){	
+			$.ajax({
+				type:"post",
+				url:"/yuanku/admin-adminIstrator.html",
+				success:function(text){
+					$(".main").html(text);
+				},
+				async:true
+			});
+		});
+		//超级管理员修改
+		$("#add button").click(function(){
+			var id=$("input[name=data-id]").val();
+			var pwd=$("input[name=pwd]").val();
+			if(pwd==''){
+				$('#myModal').modal({
+					backdrop : true,
+					keyboard : true,
+					show     : true,
+					remote	 : '/yuanku/admin-showflase.html'
+				});
+				return;
+			}
+			$('#delModal').modal({
+				backdrop : true,
+				keyboard : true,
+				show     : true
+			});
+			$('#delModal').unbind().on('hidden.bs.modal',function(){
+				var re = $("#modalok").attr("data-sub");
+				if(re=='true'){
+					$.ajax({
+						type:"post",
+						url:"/yuanku/admin-moadmin.html",
+						data:{"id":id,"code":$("input[name=code]").val(),"pwd":pwd},
+						dataType:"json",
+						success:function(obj){
+							$("#modalok").attr("data-sub","false");
+							if(obj.code==1){
+								alert("修改成功!");
+							}else if(obj.code==0){
+								$('#myModal').modal({
+									backdrop : true,
+									keyboard : true,
+									show     : true,
+									remote	 : '/yuanku/admin-showflase.html'
+								});
+							}
+							redriect("/yuanku/admin-adminIstrator.html");
+						},
+						async:true
+					});
+				}else{
+					$('#delModal').modal("hide");
+				}
+			});
+		});
+	});
+</script>
+<div class="panel panel-primary" style="margin-top:10px;">
+  		<div class="panel-heading">
+      		<h3 class="panel-title"><span class="alt glyphicon glyphicon-share-alt pull-right" aria-hidden="true"></span>修改</h3>
+   		</div>
+   <form class="form-horizontal" role="form"  style="margin-top:10px;">
+	    <div class="form-group">
+	        <label for="firstname" class="col-sm-2 control-label">账号:</label>
+	        <div class="col-sm-3">
+	        	<input type="hidden" name="data-id" id="data-id" value="<{if !empty($data)}><{foreach $data as $res}><{$res.id}><{/foreach}><{/if}>" />
+	         	<input type="text" name="code" class="form-control" id="firstname" 
+	            	placeholder="" value="<{if !empty($data)}><{foreach $data as $res}><{$res.code}><{/foreach}><{/if}>">
+	      	</div>
+	   	</div>
+	   	<div class="form-group">
+	      	<label for="lastname" class="col-sm-2 control-label">密码:</label>
+	      	<div class="col-sm-3">
+	         	<input type="text" name="pwd" class="form-control" id="lastname" 
+	            placeholder="" value="">
+	      	</div>
+	   	</div>
+	   	<div class="form-group">
+	      	<div class="col-sm-offset-2 col-sm-10" id="add">
+	         	<button type="button" class="btn btn-default">提交</button>
+	      	</div>
+	   	</div>
+	</form>
+</div>

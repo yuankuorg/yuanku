@@ -1,0 +1,181 @@
+<script type="text/javascript">
+	//清除弹窗缓冲
+	$("#myModal").on("hidden.bs.modal", function() {
+	    $(this).removeData("bs.modal");
+	});
+	$(function(){
+		//添加状态
+		$("#statusAdd").click(function(){
+			if($("#statu").val().length == 0){
+				$("#statu").css("border","red 1px solid")
+			}else{
+				$.ajax({
+					type:"post",
+					url:"/yuanku/vip-statusAdd.html",
+					data:{"status":$("#statu").val()},
+					success:function(text){
+						if(text){
+							$('#myModal').removeData("bs.modal");
+							$('#myModal').modal({
+								backdrop : true,
+								keyboard : true,
+								show     : true,
+								remote	 : '/yuanku/vip-modalVip.html'
+							});
+//							alert("成功");
+//							$("#myModal").show();
+						}else{
+							alert("失败");
+						}
+					},
+					async:true
+				});
+			}
+		})
+		//增加项目
+		$("#itemsAdd").click(function(){
+			if($("#item").val().length == 0){
+				$("#item").css("border","red 1px solid")
+			}else{
+				$.ajax({
+					type:"post",
+					url:"/yuanku/vip-itemsAdd.html",
+					data:{"item":$("#item").val()},
+					success:function(text){
+						if(text){
+							$('#myModal').removeData("bs.modal");
+							$('#myModal').modal({
+								backdrop : true,
+								keyboard : true,
+								show     : true,
+								remote	 : '/yuanku/vip-modalVip.html'
+							});
+						}else{
+							alert("失败");
+						}
+					},
+					async:true
+				});
+			}
+		})
+		//点击还原border颜色
+		$("input").each(function(){
+			$(this).focus(function(){
+				$(this).css("border","1px solid #cccccc");
+			})
+		})
+		//删除状态
+		$(".statusDel").each(function(){
+			$(this).click(function(){
+				var sid = $(this).attr("sid")
+				var t = $(this);
+				$.ajax({
+					type:"post",
+					url:"/yuanku/vip-statusDel.html",
+					data:{"sid":sid},
+					success:function(text){
+						if(text){
+							alert("成功");
+							t.parent().parent().remove();
+						}else{
+							alert("失败");
+						}
+					},
+					async:true
+				});
+			})
+		})
+		//删除项目
+		$(".itemsDel").each(function(){
+			$(this).click(function(){
+				var iid = $(this).attr("iid");
+				var t = $(this);
+				$.ajax({
+					type:"post",
+					url:"/yuanku/vip-itemsDel.html",
+					data:{"iid":iid},
+					success:function(text){
+						if(text){
+							alert("成功");
+							t.parent().parent().remove();
+						}else{
+							alert("失败");
+						}
+					},
+					async:true
+				});
+			})
+		})
+	})
+</script>
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="myModalLabel">状态/项目 设置</h4>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+    	<div class="col-lg-6 pre-scrollable">
+    		<form class="form-horizontal">
+				<div class="form-group">
+					<div class="col-lg-7">
+						<input id="statu" type="text" class="form-control" placeholder="状态名称">
+					</div>
+					<div class="col-lg-5">
+						<button type="button" id="statusAdd" class="btn btn-default">添加状态</button>
+					</div>
+				</div>
+			</form>
+    		<table class="table table-hover table-bordered">
+    			<thead>
+    				<tr>
+				    	<td>序号</td>
+				    	<td>状态</td>
+				    	<td>删除</td>
+				    </tr>
+    			</thead>
+			    <tbody>
+					<{foreach $data.status as $status}>
+						<tr>
+					    	<td><{$status@iteration}></td>
+					    	<td><{$status.sname}></td>
+					    	<td><span sid="<{$status.sid}>" <{if $status@iteration != 1}> class="statusDel glyphicon glyphicon-trash mouse"<{else}>class="glyphicon glyphicon-ban-circle"<{/if}>></span></td>
+					    </tr>
+					<{/foreach}>
+			    </tbody>
+			  </table>
+    	</div>
+    	<div class="col-lg-6 pre-scrollable">
+    		<form class="form-horizontal">
+				<div class="form-group">
+					<div class="col-lg-7">
+						<input id="item" type="text" class="form-control" placeholder="项目名称">
+					</div>
+					<div class="col-lg-5">
+						<button type="button" id="itemsAdd" class="btn btn-default">添加项目</button>
+					</div>
+				</div>
+			</form>
+    		<table class="table table-hover table-bordered">
+    			<thead>
+    				<tr>
+				    	<td>序号</td>
+				    	<td>项目</td>
+				    	<td>删除</td>
+				    </tr>
+    			</thead>
+			    <tbody>
+			    	<{foreach $data.items as $items}>
+						<tr>
+					    	<td><{$items@iteration}></td>
+					    	<td><{$items.iname}></td>
+					    	<td><span iid="<{$items.iid}>" class="itemsDel glyphicon glyphicon-trash mouse"></span></td>
+					    </tr>
+					<{/foreach}>
+			    </tbody>
+			  </table>
+    	</div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" id="end" class="btn btn-primary" data-dismiss="modal">确定</button>
+  </div>
