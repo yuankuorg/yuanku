@@ -7,7 +7,7 @@ class DynamicOper{
 		where c.vid=v.id and c.sid=4) as count,(select (t.exchange + t.chuang*50 + t.taskrec*50 + t.sign) from totalpoint t where t.id = v.id) as total,( select pname from study_project where
 		pid = (select pid from study_chuang c1 where c1.vid = v.id order by c1.vcid
 		desc limit 0,1)) as state from vip v where v.school=(select school from vip
-		where openid=?) and openid !=? and isdel=0 limit {$start},{$count}";
+		where openid=? and isdel = 0) and openid !=? and isdel=0 limit {$start},{$count}";
 		$pre = $conn->prepare($sql);
 		$pre->execute( array($_SESSION["vip"]["openid"],$_SESSION["vip"]["openid"]) );
 		return $pre->fetchAll();
